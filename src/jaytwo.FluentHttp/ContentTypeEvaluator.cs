@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using jaytwo.MimeHelper;
 
 namespace jaytwo.FluentHttp
 {
@@ -13,7 +12,7 @@ namespace jaytwo.FluentHttp
 
         public static bool IsJsonContentType(MediaTypeHeaderValue mediaTypeHeader)
         {
-            if (mediaTypeHeader?.MediaType == MediaType.application_json
+            if (mediaTypeHeader?.MediaType == "application/json"
                 || mediaTypeHeader.MediaType.EndsWith("/json")
                 || mediaTypeHeader.MediaType.EndsWith("+json"))
             {
@@ -45,7 +44,7 @@ namespace jaytwo.FluentHttp
         {
             var knownBinaryMediaTypes = new[]
             {
-                MediaType.application_octet_stream,
+                "application/octet-stream",
             };
 
             var binaryMediaTypePrefixes = new[]

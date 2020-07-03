@@ -6,7 +6,6 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using jaytwo.FluentHttp.Exceptions;
 using jaytwo.MimeHelper;
-using Microsoft.Extensions.Logging;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -15,14 +14,11 @@ namespace jaytwo.FluentHttp.Tests
     public class HttpClientTests
     {
         private readonly HttpClient _httpClient;
-
         private readonly ITestOutputHelper _output;
-        private readonly ILogger _logger;
 
         public HttpClientTests(ITestOutputHelper output)
         {
             _output = output;
-            _logger = output.BuildLogger();
             _httpClient = new HttpClient().WithBaseAddress("http://httpbin.org");
         }
 
@@ -368,105 +364,6 @@ namespace jaytwo.FluentHttp.Tests
                 var expected = response.AsAnonymousType(prototype);
                 Assert.Equal("world", expected.args["hello"]);
                 Assert.Equal("banana", expected.json["fruit"]);
-            }
-        }
-
-        [Fact]
-        public async Task BasicAuth_Works()
-        {
-            // arrange
-            var user = "hello";
-            var pass = "world";
-
-            // act
-            var response = await _httpClient.SendAsync(request =>
-            {
-                request
-                    .WithMethod(HttpMethod.Get)
-                    .WithUriPath($"/basic-auth/{user}/{pass}")
-                    .WithBasicAuthentication(user, pass);
-            });
-
-            using (response)
-            {
-                // assert
-                Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            }
-        }
-
-        [Fact]
-        public async Task HiddenBasicAuth_Works()
-        {
-            // arrange
-            var user = "hello";
-            var pass = "world";
-
-            // act
-            var response = await _httpClient.SendAsync(request =>
-            {
-                request
-                    .WithMethod(HttpMethod.Get)
-                    .WithBasicAuthentication(user, pass)
-                    .WithUriPath($"/hidden-basic-auth/{user}/{pass}");
-            });
-
-            using (response)
-            {
-                // assert
-                Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            }
-        }
-
-        [Theory]
-        [InlineData("auth", "MD5")]
-        [InlineData("auth-int", "MD5")]
-        // not worth supporting, not even postman or mozilla supports RFC 7616
-        //[InlineData("auth", "SHA-256")]
-        //[InlineData("auth", "SHA-512")]
-        //[InlineData("auth-int", "SHA-256")]
-        //[InlineData("auth-int", "SHA-512")]
-        public async Task DigestAuth_Works(string qop, string algorithm)
-        {
-            // arrange
-            var user = "hello";
-            var pass = "world";
-
-            // act
-            using (var httpClient = new HttpClient())
-            {
-                var response = await httpClient.SendAsync(request =>
-                {
-                    request
-                        .WithMethod(HttpMethod.Get)
-                        .WithBaseUri("http://httpbin.org") // full url is required in the request
-                        .WithUriPath($"/digest-auth/{qop}/{user}/{pass}/{algorithm}")
-                        .WithDigestAuthentication(_httpClient, user, pass);
-                });
-
-                // assert
-                Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            }
-        }
-
-        [Fact]
-        public async Task TokenAuth_Works()
-        {
-            // arrange
-            var token = "hello";
-
-            // act
-            var response = await _httpClient.SendAsync(request =>
-            {
-                request
-                    .WithMethod(HttpMethod.Get)
-                    .WithUriPath($"/bearer")
-                    .WithTokenAuthentication(token);
-            });
-
-            using (response)
-            {
-                // assert
-                Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             }
         }
 

@@ -5,12 +5,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
-using jaytwo.FluentHttp.Authentication;
-using jaytwo.FluentHttp.Authentication.Basic;
-using jaytwo.FluentHttp.Authentication.Digest;
-using jaytwo.FluentHttp.Authentication.Token;
 using jaytwo.FluentUri;
-using jaytwo.MimeHelper;
 using jaytwo.UrlHelper;
 using Newtonsoft.Json;
 
@@ -62,12 +57,12 @@ namespace jaytwo.FluentHttp
 
         public static HttpRequestMessage WithHeaderAcceptApplicationJson(this HttpRequestMessage httpRequestMessage)
         {
-            return httpRequestMessage.WithHeaderAccept(MediaType.application_json);
+            return httpRequestMessage.WithHeaderAccept("application/json");
         }
 
         public static HttpRequestMessage WithHeaderAcceptTextXml(this HttpRequestMessage httpRequestMessage)
         {
-            return httpRequestMessage.WithHeaderAccept(MediaType.text_xml);
+            return httpRequestMessage.WithHeaderAccept("text/xml");
         }
 
         public static HttpRequestMessage WithHeaderAccept(this HttpRequestMessage httpRequestMessage, string mediaType, double quality)
@@ -410,42 +405,9 @@ namespace jaytwo.FluentHttp
             return httpRequestMessage;
         }
 
-        public static HttpRequestMessage WithAuthentication(this HttpRequestMessage httpRequestMessage, IAuthenticationProvider authenticationProvider)
-        {
-            authenticationProvider.Authenticate(httpRequestMessage);
-            return httpRequestMessage;
-        }
-
-        public static HttpRequestMessage WithBasicAuthentication(this HttpRequestMessage httpRequestMessage, string user, string pass)
-        {
-            return httpRequestMessage.WithAuthentication(new BasicAuthenticationProvider(user, pass));
-        }
-
-        public static HttpRequestMessage WithTokenAuthentication(this HttpRequestMessage httpRequestMessage, string token)
-        {
-            return httpRequestMessage.WithAuthentication(new TokenAuthenticationProvider(token));
-        }
-
-        public static HttpRequestMessage WithTokenAuthentication(this HttpRequestMessage httpRequestMessage, Func<string> tokenDelegate)
-        {
-            return httpRequestMessage.WithAuthentication(new TokenAuthenticationProvider(tokenDelegate));
-        }
-
-        public static HttpRequestMessage WithTokenAuthentication(this HttpRequestMessage httpRequestMessage, ITokenProvider tokenProvider)
-        {
-            return httpRequestMessage.WithAuthentication(new TokenAuthenticationProvider(tokenProvider));
-        }
-
-#if !NETSTANDARD1_1
-        public static HttpRequestMessage WithDigestAuthentication(this HttpRequestMessage httpRequestMessage, HttpClient httpClient, string user, string pass)
-        {
-            return httpRequestMessage.WithAuthentication(new DigestAuthenticationProvider(httpClient, user, pass));
-        }
-#endif
-
         public static HttpRequestMessage WithJsonContent(this HttpRequestMessage httpRequestMessage, string json)
         {
-            return httpRequestMessage.WithStringContent(json, MediaType.application_json);
+            return httpRequestMessage.WithStringContent(json, "application/json");
         }
 
         public static HttpRequestMessage WithJsonContent(this HttpRequestMessage httpRequestMessage, object data)
@@ -456,7 +418,7 @@ namespace jaytwo.FluentHttp
 
         public static HttpRequestMessage WithUrlEncodedFormContent(this HttpRequestMessage httpRequestMessage, string urlEncodedFormData)
         {
-            return httpRequestMessage.WithStringContent(urlEncodedFormData, MediaType.application_x_www_form_urlencoded);
+            return httpRequestMessage.WithStringContent(urlEncodedFormData, "application/x-www-form-urlencoded");
         }
 
         public static HttpRequestMessage WithUrlEncodedFormContent(this HttpRequestMessage httpRequestMessage, object data)

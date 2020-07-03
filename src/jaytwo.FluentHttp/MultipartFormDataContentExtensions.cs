@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
-using jaytwo.MimeHelper;
 using Newtonsoft.Json;
 
 namespace jaytwo.FluentHttp
@@ -76,7 +75,7 @@ namespace jaytwo.FluentHttp
         {
             if (InclusionRuleHelper.IncludeContent(value, inclusionRule))
             {
-                var content = new StringContent(value, Encoding.UTF8, MediaType.text_plain);
+                var content = new StringContent(value, Encoding.UTF8, "text/plain");
                 return multipartFormDataContent.WithContent(content, name);
             }
 
@@ -93,7 +92,7 @@ namespace jaytwo.FluentHttp
             if (InclusionRuleHelper.IncludeContent(value, inclusionRule))
             {
                 var json = JsonConvert.SerializeObject(value);
-                var content = new StringContent(json, Encoding.UTF8, MediaType.application_json);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
                 return multipartFormDataContent.WithContent(content, name);
             }
 
