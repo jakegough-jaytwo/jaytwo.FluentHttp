@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using jaytwo.FluentUri;
@@ -44,6 +45,38 @@ namespace jaytwo.FluentHttp
             if (InclusionRuleHelper.IncludeContent(value, inclusionRule))
             {
                 httpRequestMessage.Headers.AddSmartly(name, value);
+            }
+
+            return httpRequestMessage;
+        }
+
+        public static HttpRequestMessage WithHeader(this HttpRequestMessage httpRequestMessage, string name, object value)
+            => httpRequestMessage.WithHeader(name, value, InclusionRule.IncludeAlways);
+
+        public static HttpRequestMessage WithHeader(this HttpRequestMessage httpRequestMessage, string name, object value, InclusionRule inclusionRule)
+            => httpRequestMessage.WithHeader(name, "{0}", value, inclusionRule);
+
+        public static HttpRequestMessage WithHeader(this HttpRequestMessage httpRequestMessage, string name, string format, object value)
+            => httpRequestMessage.WithHeader(name, format, value, InclusionRule.IncludeAlways);
+
+        public static HttpRequestMessage WithHeader(this HttpRequestMessage httpRequestMessage, string name, string format, object value, InclusionRule inclusionRule)
+        {
+            if (InclusionRuleHelper.IncludeContent(value, inclusionRule))
+            {
+                httpRequestMessage.WithHeader(name, string.Format(format, value), inclusionRule);
+            }
+
+            return httpRequestMessage;
+        }
+
+        public static HttpRequestMessage WithHeader(this HttpRequestMessage httpRequestMessage, string name, string format, object[] values)
+            => httpRequestMessage.WithHeader(name, format, values, InclusionRule.IncludeAlways);
+
+        public static HttpRequestMessage WithHeader(this HttpRequestMessage httpRequestMessage, string name, string format, object[] values, InclusionRule inclusionRule)
+        {
+            if (InclusionRuleHelper.IncludeContent(values, inclusionRule))
+            {
+                httpRequestMessage.WithHeader(name, string.Format(format, values), inclusionRule);
             }
 
             return httpRequestMessage;
@@ -345,6 +378,19 @@ namespace jaytwo.FluentHttp
             return httpRequestMessage;
         }
 
+        public static HttpRequestMessage WithUriQueryParameter(this HttpRequestMessage httpRequestMessage, string key, string format, object value)
+            => httpRequestMessage.WithUriQueryParameter(key, format, value, InclusionRule.IncludeAlways);
+
+        public static HttpRequestMessage WithUriQueryParameter(this HttpRequestMessage httpRequestMessage, string key, string format, object value, InclusionRule inclusionRule)
+        {
+            if (InclusionRuleHelper.IncludeContent(value, inclusionRule))
+            {
+                return httpRequestMessage.WithUriQueryParameter(key, string.Format(format, value), inclusionRule);
+            }
+
+            return httpRequestMessage;
+        }
+
         public static HttpRequestMessage WithUriQueryParameter(this HttpRequestMessage httpRequestMessage, string key, object value)
             => httpRequestMessage.WithUriQueryParameter(key, value, InclusionRule.IncludeAlways);
 
@@ -385,9 +431,6 @@ namespace jaytwo.FluentHttp
             return httpRequestMessage;
         }
 
-        public static HttpRequestMessage WithUriQueryParameter(this HttpRequestMessage httpRequestMessage, string key, object[] values)
-            => httpRequestMessage.WithUriQueryParameter(key, values, InclusionRule.IncludeAlways);
-
         public static HttpRequestMessage WithUriQueryParameter(this HttpRequestMessage httpRequestMessage, string key, object[] values, InclusionRule inclusionRule)
         {
             if (InclusionRuleHelper.IncludeContent(values, inclusionRule))
@@ -404,6 +447,88 @@ namespace jaytwo.FluentHttp
 
             return httpRequestMessage;
         }
+
+        public static HttpRequestMessage WithUriQueryParameter(this HttpRequestMessage httpRequestMessage, string key, object[] values)
+            => httpRequestMessage.WithUriQueryParameter(key, values, InclusionRule.IncludeAlways);
+
+        public static HttpRequestMessage WithUriQueryParameter(this HttpRequestMessage httpRequestMessage, string key, string format, object[] values)
+            => httpRequestMessage.WithUriQueryParameter(key, format, values, InclusionRule.IncludeAlways);
+
+        public static HttpRequestMessage WithUriQueryParameter(this HttpRequestMessage httpRequestMessage, string key, string format, object[] values, InclusionRule inclusionRule)
+        {
+            if (InclusionRuleHelper.IncludeContent(values, inclusionRule))
+            {
+                httpRequestMessage.WithUriQueryParameter(key, string.Format(format, values), inclusionRule);
+            }
+
+            return httpRequestMessage;
+        }
+
+        public static HttpRequestMessage WithUriQueryParameter(this HttpRequestMessage httpRequestMessage, string key, bool? value)
+            => httpRequestMessage.WithUriQueryParameter(key, value, InclusionRule.IncludeAlways);
+
+        public static HttpRequestMessage WithUriQueryParameter(this HttpRequestMessage httpRequestMessage, string key, bool? value, InclusionRule inclusionRule)
+            => httpRequestMessage.WithUriQueryParameter(key, value, BooleanFormatting.Default, inclusionRule);
+
+        public static HttpRequestMessage WithUriQueryParameter(this HttpRequestMessage httpRequestMessage, string key, bool value)
+            => httpRequestMessage.WithUriQueryParameter(key, value, InclusionRule.IncludeAlways);
+
+        public static HttpRequestMessage WithUriQueryParameter(this HttpRequestMessage httpRequestMessage, string key, bool value, InclusionRule inclusionRule)
+            => httpRequestMessage.WithUriQueryParameter(key, value, BooleanFormatting.Default, inclusionRule);
+
+        public static HttpRequestMessage WithUriQueryParameter(this HttpRequestMessage httpRequestMessage, string key, bool? value, BooleanFormatting formatting)
+            => httpRequestMessage.WithUriQueryParameter(key, value, formatting, InclusionRule.IncludeAlways);
+
+        public static HttpRequestMessage WithUriQueryParameter(this HttpRequestMessage httpRequestMessage, string key, bool? value, BooleanFormatting formatting, InclusionRule inclusionRule)
+            => httpRequestMessage.WithUriQueryParameter(key, BooleanFormattingHelper.Format(value, formatting), inclusionRule);
+
+        public static HttpRequestMessage WithUriQueryParameter(this HttpRequestMessage httpRequestMessage, string key, bool value, BooleanFormatting formatting)
+            => httpRequestMessage.WithUriQueryParameter(key, value, formatting, InclusionRule.IncludeAlways);
+
+        public static HttpRequestMessage WithUriQueryParameter(this HttpRequestMessage httpRequestMessage, string key, bool value, BooleanFormatting formatting, InclusionRule inclusionRule)
+            => httpRequestMessage.WithUriQueryParameter(key, BooleanFormattingHelper.Format(value, formatting), inclusionRule);
+
+        public static HttpRequestMessage WithUriQueryParameter(this HttpRequestMessage httpRequestMessage, string key, DateTime? value)
+            => httpRequestMessage.WithUriQueryParameter(key, value, InclusionRule.IncludeAlways);
+
+        public static HttpRequestMessage WithUriQueryParameter(this HttpRequestMessage httpRequestMessage, string key, DateTime? value, InclusionRule inclusionRule)
+            => httpRequestMessage.WithUriQueryParameter(key, value, DateTimeFormatting.Default, inclusionRule);
+
+        public static HttpRequestMessage WithUriQueryParameter(this HttpRequestMessage httpRequestMessage, string key, DateTime value)
+            => httpRequestMessage.WithUriQueryParameter(key, value, InclusionRule.IncludeAlways);
+
+        public static HttpRequestMessage WithUriQueryParameter(this HttpRequestMessage httpRequestMessage, string key, DateTime value, InclusionRule inclusionRule)
+            => httpRequestMessage.WithUriQueryParameter(key, value, DateTimeFormatting.Default, inclusionRule);
+
+        public static HttpRequestMessage WithUriQueryParameter(this HttpRequestMessage httpRequestMessage, string key, DateTime? value, DateTimeFormatting formatting)
+            => httpRequestMessage.WithUriQueryParameter(key, value, formatting, InclusionRule.IncludeAlways);
+
+        public static HttpRequestMessage WithUriQueryParameter(this HttpRequestMessage httpRequestMessage, string key, DateTime? value, DateTimeFormatting formatting, InclusionRule inclusionRule)
+            => httpRequestMessage.WithUriQueryParameter(key, DateTimeFormattingHelper.Format(value, formatting), inclusionRule);
+
+        public static HttpRequestMessage WithUriQueryParameter(this HttpRequestMessage httpRequestMessage, string key, DateTime value, DateTimeFormatting formatting)
+            => httpRequestMessage.WithUriQueryParameter(key, value, formatting, InclusionRule.IncludeAlways);
+
+        public static HttpRequestMessage WithUriQueryParameter(this HttpRequestMessage httpRequestMessage, string key, DateTime value, DateTimeFormatting formatting, InclusionRule inclusionRule)
+            => httpRequestMessage.WithUriQueryParameter(key, DateTimeFormattingHelper.Format(value, formatting), inclusionRule);
+
+        public static HttpRequestMessage WithUriQueryParameter(this HttpRequestMessage httpRequestMessage, string key, DateTimeOffset? value)
+            => httpRequestMessage.WithUriQueryParameter(key, value, InclusionRule.IncludeAlways);
+
+        public static HttpRequestMessage WithUriQueryParameter(this HttpRequestMessage httpRequestMessage, string key, DateTimeOffset? value, InclusionRule inclusionRule)
+            => httpRequestMessage.WithUriQueryParameter(key, value, DateTimeFormatting.Default, inclusionRule);
+
+        public static HttpRequestMessage WithUriQueryParameter(this HttpRequestMessage httpRequestMessage, string key, DateTimeOffset? value, DateTimeFormatting formatting)
+            => httpRequestMessage.WithUriQueryParameter(key, value, formatting, InclusionRule.IncludeAlways);
+
+        public static HttpRequestMessage WithUriQueryParameter(this HttpRequestMessage httpRequestMessage, string key, DateTimeOffset? value, DateTimeFormatting formatting, InclusionRule inclusionRule)
+            => httpRequestMessage.WithUriQueryParameter(key, DateTimeFormattingHelper.Format(value, formatting), inclusionRule);
+
+        public static HttpRequestMessage WithUriQueryParameter(this HttpRequestMessage httpRequestMessage, string key, DateTimeOffset value, DateTimeFormatting formatting)
+            => httpRequestMessage.WithUriQueryParameter(key, value, formatting, InclusionRule.IncludeAlways);
+
+        public static HttpRequestMessage WithUriQueryParameter(this HttpRequestMessage httpRequestMessage, string key, DateTimeOffset value, DateTimeFormatting formatting, InclusionRule inclusionRule)
+            => httpRequestMessage.WithUriQueryParameter(key, DateTimeFormattingHelper.Format(value, formatting), inclusionRule);
 
         public static HttpRequestMessage WithJsonContent(this HttpRequestMessage httpRequestMessage, string json)
         {
@@ -425,6 +550,16 @@ namespace jaytwo.FluentHttp
         {
             var urlEncodedFormData = QueryString.Serialize(data);
             return httpRequestMessage.WithUrlEncodedFormContent(urlEncodedFormData);
+        }
+
+        public static HttpRequestMessage WithUrlEncodedFormContent(this HttpRequestMessage httpRequestMessage, FormUrlEncodedContent content)
+            => httpRequestMessage.WithContent(content);
+
+        public static HttpRequestMessage WithUrlEncodedFormContent(this HttpRequestMessage httpRequestMessage, Action<List<KeyValuePair<string, string>>> contentBuilder)
+        {
+            var content = new List<KeyValuePair<string, string>>();
+            contentBuilder.Invoke(content);
+            return httpRequestMessage.WithContent(new FormUrlEncodedContent(content));
         }
 
         public static HttpRequestMessage WithMultipartFormDataContent(this HttpRequestMessage httpRequestMessage, Action<MultipartFormDataContent> contentBuilder)

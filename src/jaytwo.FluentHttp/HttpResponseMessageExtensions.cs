@@ -122,12 +122,12 @@ namespace jaytwo.FluentHttp
             var contentType = httpResponse?.Content?.Headers?.ContentType;
 
             var asString = default(string);
-            if (ContentTypeEvaluator.IsJsonContentType(contentType))
+            if (ContentTypeEvaluator.IsJsonMediaType(contentType))
             {
                 isJson = true;
                 asString = await httpResponse.AsStringAsync();
             }
-            else if (!ContentTypeEvaluator.IsBinaryContent(contentType))
+            else if (!ContentTypeEvaluator.IsBinaryMediaType(contentType))
             {
                 asString = await httpResponse.AsStringAsync();
 

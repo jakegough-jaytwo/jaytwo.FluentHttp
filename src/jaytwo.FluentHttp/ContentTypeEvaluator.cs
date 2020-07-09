@@ -7,16 +7,26 @@ namespace jaytwo.FluentHttp
 {
     internal static class ContentTypeEvaluator
     {
-        public static bool IsJsonContent(string mediaType)
-            => IsJsonContentType(MediaTypeHeaderValue.Parse(mediaType));
-
-        public static bool IsJsonContentType(MediaTypeHeaderValue mediaTypeHeader)
+        public static bool IsJsonMediaType(string mediaType)
         {
-            if (mediaTypeHeader?.MediaType == "application/json"
-                || mediaTypeHeader.MediaType.EndsWith("/json")
-                || mediaTypeHeader.MediaType.EndsWith("+json"))
+            if (!string.IsNullOrEmpty(mediaType))
             {
-                return true;
+                return IsJsonMediaType(MediaTypeHeaderValue.Parse(mediaType));
+            }
+
+            return false;
+        }
+
+        public static bool IsJsonMediaType(MediaTypeHeaderValue mediaTypeHeader)
+        {
+            if (mediaTypeHeader != null)
+            {
+                if (mediaTypeHeader.MediaType == "application/json"
+                    || mediaTypeHeader.MediaType.EndsWith("/json")
+                    || mediaTypeHeader.MediaType.EndsWith("+json"))
+                {
+                    return true;
+                }
             }
 
             return false;
@@ -34,13 +44,17 @@ namespace jaytwo.FluentHttp
             return false;
         }
 
-        public static bool IsBinaryContent(MediaTypeHeaderValue mediaTypeHeader)
+        public static bool IsBinaryMediaType(string mediaType)
         {
-            var mediaType = mediaTypeHeader?.MediaType ?? string.Empty;
-            return IsBinaryMediaType(mediaType);
+            if (!string.IsNullOrEmpty(mediaType))
+            {
+                return IsBinaryMediaType(MediaTypeHeaderValue.Parse(mediaType));
+            }
+
+            return false;
         }
 
-        public static bool IsBinaryMediaType(string mediaType)
+        public static bool IsBinaryMediaType(MediaTypeHeaderValue mediaTypeHeader)
         {
             var knownBinaryMediaTypes = new[]
             {
@@ -61,15 +75,21 @@ namespace jaytwo.FluentHttp
             {
                 "/zip",
                 "/pdf",
+                "/x-pdf",
                 "-compressed",
             };
 
-            var isKnownBinaryMediaType = knownBinaryMediaTypes.Contains(mediaType);
-            var hasBinaryMediaTypePrefix = binaryMediaTypePrefixes.Any(x => mediaType.StartsWith(x));
-            var hasBinaryMediaTypeSuffix = binaryMediaTypeSuffixes.Any(x => mediaType.EndsWith(x));
+            if (mediaTypeHeader != null)
+            {
+                var isKnownBinaryMediaType = knownBinaryMediaTypes.Contains(mediaTypeHeader.MediaType);
+                var hasBinaryMediaTypePrefix = binaryMediaTypePrefixes.Any(x => mediaTypeHeader.MediaType.StartsWith(x));
+                var hasBinaryMediaTypeSuffix = binaryMediaTypeSuffixes.Any(x => mediaTypeHeader.MediaType.EndsWith(x));
 
-            var result = isKnownBinaryMediaType || hasBinaryMediaTypePrefix || hasBinaryMediaTypeSuffix;
-            return result;
+                var result = isKnownBinaryMediaType || hasBinaryMediaTypePrefix || hasBinaryMediaTypeSuffix;
+                return result;
+            }
+
+            return false;
         }
     }
 }
