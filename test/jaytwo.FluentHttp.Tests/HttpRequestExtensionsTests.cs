@@ -1,15 +1,999 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net;
 using System.Net.Http;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using jaytwo.UrlHelper;
+using Newtonsoft.Json;
 using Xunit;
 
 namespace jaytwo.FluentHttp.Tests
 {
     public class HttpRequestExtensionsTests
     {
+        [Theory]
+        [InlineData("GET")]
+        [InlineData("PUT")]
+        [InlineData("FOO")]
+        public void WithMethod(string methodString)
+        {
+            // arrange
+            var request = new HttpRequestMessage();
+            var method = new HttpMethod(methodString);
+
+            // act
+            request.WithMethod(method);
+
+            // assert
+            Assert.Equal(methodString, request.Method.Method);
+        }
+
+        [Theory]
+        [InlineData("GET")]
+        [InlineData("PUT")]
+        [InlineData("FOO")]
+        public void WithMethod_string(string methodString)
+        {
+            // arrange
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithMethod(methodString);
+
+            // assert
+            Assert.Equal(methodString, request.Method.Method);
+        }
+
+        [Fact]
+        public void WithBaseUri_string_without_existing_uri()
+        {
+            // arrange
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithBaseUri("http://www.google.com/");
+
+            // assert
+            Assert.Equal("http://www.google.com/", request.RequestUri.AbsoluteUri);
+        }
+
+        [Fact]
+        public void WithBaseUri_string_with_existing_uri()
+        {
+            // arrange
+            var request = new HttpRequestMessage();
+            request.RequestUri = new Uri("/foo/bar", UriKind.Relative);
+
+            // act
+            request.WithBaseUri("http://www.google.com/");
+
+            // assert
+            Assert.Equal("http://www.google.com/foo/bar", request.RequestUri.AbsoluteUri);
+        }
+
+        [Fact]
+        public void WithBaseUri_uri_without_existing_uri()
+        {
+            // arrange
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithBaseUri(new Uri("http://www.google.com/"));
+
+            // assert
+            Assert.Equal("http://www.google.com/", request.RequestUri.AbsoluteUri);
+        }
+
+        [Fact]
+        public void WithBaseUri_uri_with_existing_uri()
+        {
+            // arrange
+            var request = new HttpRequestMessage();
+            request.RequestUri = new Uri("/foo/bar", UriKind.Relative);
+
+            // act
+            request.WithBaseUri(new Uri("http://www.google.com/"));
+
+            // assert
+            Assert.Equal("http://www.google.com/foo/bar", request.RequestUri.AbsoluteUri);
+        }
+
+        [Fact]
+        public void WithUri_string_without_existing_uri()
+        {
+            // arrange
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithUri("http://www.google.com/");
+
+            // assert
+            Assert.Equal("http://www.google.com/", request.RequestUri.AbsoluteUri);
+        }
+
+        [Fact]
+        public void WithUri_string_with_existing_uri()
+        {
+            // arrange
+            var request = new HttpRequestMessage();
+            request.RequestUri = new Uri("/foo/bar", UriKind.Relative);
+
+            // act
+            request.WithUri("http://www.google.com/");
+
+            // assert
+            Assert.Equal("http://www.google.com/", request.RequestUri.AbsoluteUri);
+        }
+
+        [Fact]
+        public void WithUri_uri_without_existing_uri()
+        {
+            // arrange
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithUri(new Uri("http://www.google.com/"));
+
+            // assert
+            Assert.Equal("http://www.google.com/", request.RequestUri.AbsoluteUri);
+        }
+
+        [Fact]
+        public void WithUri_uri_with_existing_uri()
+        {
+            // arrange
+            var request = new HttpRequestMessage();
+            request.RequestUri = new Uri("/foo/bar", UriKind.Relative);
+
+            // act
+            request.WithUri(new Uri("http://www.google.com/"));
+
+            // assert
+            Assert.Equal("http://www.google.com/", request.RequestUri.AbsoluteUri);
+        }
+
+        [Fact]
+        public void WithUri_format()
+        {
+            // arrange
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithUri("http://www.google.com/{0}/{1}/{2}", "*", 1, "foo");
+
+            // assert
+            Assert.Equal("http://www.google.com/%2A/1/foo", request.RequestUri.AbsoluteUri);
+        }
+
+        [Theory]
+        [InlineData(null, "a/b/c", "a/b/c")]
+        [InlineData("http://www.google.com/", "a/b/c", "http://www.google.com/a/b/c")]
+        [InlineData("http://www.google.com/a/b/c", "d/e/f", "http://www.google.com/a/b/c/d/e/f")]
+        [InlineData("http://www.google.com/a/b/c", "./d/e/f", "http://www.google.com/a/b/c/d/e/f")]
+        [InlineData("http://www.google.com/a/b/c", "../d/e/f", "http://www.google.com/a/b/d/e/f")]
+        [InlineData("http://www.google.com/a/b/c", "../../d/e/f", "http://www.google.com/a/d/e/f")]
+        [InlineData("http://www.google.com/a/b/c", "/d/e/f", "http://www.google.com/d/e/f")]
+        public void WithUriPath(string startingUrl, string path, string expected)
+        {
+            // arrange
+            var request = new HttpRequestMessage();
+            if (startingUrl != null)
+            {
+                request.RequestUri = new Uri(startingUrl);
+            }
+
+            // act
+            request.WithUriPath(path);
+
+            // assert
+            Assert.Equal(expected, request.RequestUri.ToString());
+        }
+
+        [Fact]
+        public void WithUriPath_format()
+        {
+            // arrange
+            var request = new HttpRequestMessage();
+            request.RequestUri = new Uri("http://www.google.com/");
+
+            // act
+            request.WithUriPath("{0}/{1}/{2}", "*", 1, "foo");
+
+            // assert
+            Assert.Equal("http://www.google.com/%2A/1/foo", request.RequestUri.AbsoluteUri);
+        }
+
+        // TODO: WithUriQuery
+        // TODO: GetHeaderValue
+
+        [Fact]
+        public void WithHttpVersion_Version11()
+        {
+            // arrange
+            Version version = HttpVersion.Version11;
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithHttpVersion(version);
+
+            // assert
+            Assert.Equal(version, request.Version);
+        }
+
+        [Fact]
+        public void WithHttpVersion_Version20()
+        {
+            // arrange
+            Version version = HttpVersion.Version20;
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithHttpVersion(version);
+
+            // assert
+            Assert.Equal(version, request.Version);
+        }
+
+        [Fact]
+        public void WithHeader_string()
+        {
+            // arrange
+            var name = "somename";
+            var value = "somevalue";
+            var expected = value;
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithHeader(name, value);
+
+            // assert
+            Assert.Equal(expected, request.GetHeaderValue(name));
+        }
+
+        [Fact]
+        public void WithHeader_object()
+        {
+            // arrange
+            var name = "somename";
+            var value = 123;
+            var expected = "123";
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithHeader(name, value);
+
+            // assert
+            Assert.Equal(expected, request.GetHeaderValue(name));
+        }
+
+        [Theory]
+        [InlineData(null, InclusionRule.IncludeAlways, "")]
+        [InlineData("", InclusionRule.IncludeAlways, "")]
+        [InlineData("abc", InclusionRule.IncludeAlways, "abc")]
+        [InlineData(null, InclusionRule.ExcludeIfNull, null)]
+        [InlineData("", InclusionRule.ExcludeIfNull, "")]
+        [InlineData("abc", InclusionRule.ExcludeIfNull, "abc")]
+        [InlineData(null, InclusionRule.ExcludeIfNullOrEmpty, null)]
+        [InlineData("", InclusionRule.ExcludeIfNullOrEmpty, null)]
+        [InlineData("abc", InclusionRule.ExcludeIfNullOrEmpty, "abc")]
+        public void WithHeader_string_InclusionRule(string value, InclusionRule inclusionRule, string expected)
+        {
+            // arrange
+            var name = "somename";
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithHeader(name, value, inclusionRule);
+
+            // assert
+            Assert.Equal(expected, request.GetHeaderValue(name));
+        }
+
+        [Theory]
+        [InlineData(null, InclusionRule.IncludeAlways, "")]
+        [InlineData("", InclusionRule.IncludeAlways, "")]
+        [InlineData("abc", InclusionRule.IncludeAlways, "abc")]
+        [InlineData(123, InclusionRule.IncludeAlways, "123")]
+        [InlineData(null, InclusionRule.ExcludeIfNull, null)]
+        [InlineData("", InclusionRule.ExcludeIfNull, "")]
+        [InlineData("abc", InclusionRule.ExcludeIfNull, "abc")]
+        [InlineData(123, InclusionRule.ExcludeIfNull, "123")]
+        [InlineData(null, InclusionRule.ExcludeIfNullOrEmpty, null)]
+        [InlineData("", InclusionRule.ExcludeIfNullOrEmpty, null)]
+        [InlineData("abc", InclusionRule.ExcludeIfNullOrEmpty, "abc")]
+        [InlineData(123, InclusionRule.ExcludeIfNullOrEmpty, "123")]
+        public void WithHeader_object_InclusionRule(object value, InclusionRule inclusionRule, string expected)
+        {
+            // arrange
+            var name = "somename";
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithHeader(name, value, inclusionRule);
+
+            // assert
+            Assert.Equal(expected, request.GetHeaderValue(name));
+        }
+
+        [Theory]
+        [InlineData("#{0}", null, "#")]
+        [InlineData("#{0}", "", "#")]
+        [InlineData("#{0}", "abc", "#abc")]
+        [InlineData("#{0}", 123, "#123")]
+        public void WithHeader_format_object(string format, object value, string expected)
+        {
+            // arrange
+            var name = "somename";
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithHeader(name, format, value);
+
+            // assert
+            Assert.Equal(expected, request.GetHeaderValue(name));
+        }
+
+        [Theory]
+        [InlineData("#{0}", null, InclusionRule.IncludeAlways, "#")]
+        [InlineData("#{0}", "", InclusionRule.IncludeAlways, "#")]
+        [InlineData("#{0}", "abc", InclusionRule.IncludeAlways, "#abc")]
+        [InlineData("#{0}", 123, InclusionRule.IncludeAlways, "#123")]
+        [InlineData("#{0}", null, InclusionRule.ExcludeIfNull, null)]
+        [InlineData("#{0}", "", InclusionRule.ExcludeIfNull, "#")]
+        [InlineData("#{0}", "abc", InclusionRule.ExcludeIfNull, "#abc")]
+        [InlineData("#{0}", 123, InclusionRule.ExcludeIfNull, "#123")]
+        [InlineData("#{0}", null, InclusionRule.ExcludeIfNullOrEmpty, null)]
+        [InlineData("#{0}", "", InclusionRule.ExcludeIfNullOrEmpty, null)]
+        [InlineData("#{0}", "abc", InclusionRule.ExcludeIfNullOrEmpty, "#abc")]
+        [InlineData("#{0}", 123, InclusionRule.ExcludeIfNullOrEmpty, "#123")]
+        public void WithHeader_format_object_InclusionRule(string format, object value, InclusionRule inclusionRule, string expected)
+        {
+            // arrange
+            var name = "somename";
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithHeader(name, format, value, inclusionRule);
+
+            // assert
+            Assert.Equal(expected, request.GetHeaderValue(name));
+        }
+
+        [Theory]
+        [InlineData("#{0}.{1}", 123, 456, InclusionRule.IncludeAlways, "#123.456")]
+        [InlineData("#{0}.{1}", 123, 456, InclusionRule.ExcludeIfNull, "#123.456")]
+        [InlineData("#{0}.{1}", 123, 456, InclusionRule.ExcludeIfNullOrEmpty, "#123.456")]
+        public void WithHeader_format_object_array_InclusionRule(string format, object value1, object value2, InclusionRule inclusionRule, string expected)
+        {
+            // arrange
+            var value = new[] { value1, value2 };
+            var name = "somename";
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithHeader(name, format, value, inclusionRule);
+
+            // assert
+            Assert.Equal(expected, request.GetHeaderValue(name));
+        }
+
+        [Theory]
+        [InlineData("foo", InclusionRule.IncludeAlways, "foo")]
+        [InlineData("foo", InclusionRule.ExcludeIfNull, "foo")]
+        [InlineData("foo", InclusionRule.ExcludeIfNullOrEmpty, null)]
+        public void WithHeader_format_empty_object_array_InclusionRule(string format, InclusionRule inclusionRule, string expected)
+        {
+            // arrange
+            var value = new object[] { };
+            var name = "somename";
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithHeader(name, format, value, inclusionRule);
+
+            // assert
+            Assert.Equal(expected, request.GetHeaderValue(name));
+        }
+
+        [Theory]
+        [InlineData("foo", InclusionRule.IncludeAlways, "foo")]
+        [InlineData("foo", InclusionRule.ExcludeIfNull, null)]
+        [InlineData("foo", InclusionRule.ExcludeIfNullOrEmpty, null)]
+        public void WithHeader_format_null_object_array_InclusionRule(string format, InclusionRule inclusionRule, string expected)
+        {
+            // arrange
+            object[] value = null;
+            var name = "somename";
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithHeader(name, format, value, inclusionRule);
+
+            // assert
+            Assert.Equal(expected, request.GetHeaderValue(name));
+        }
+
+        [Fact]
+        public void WithHeader_format_object_array()
+        {
+            // arrange
+            var format = "#{0}.{1}";
+            var value = new object[] { 123, 456 };
+            var name = "somename";
+            var expected = "#123.456";
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithHeader(name, format, value);
+
+            // assert
+            Assert.Equal(expected, request.GetHeaderValue(name));
+        }
+
+        [Fact]
+        public void WithHeader_format_empty_object_array()
+        {
+            // arrange
+            var format = "foo";
+            var value = new object[] { };
+            var name = "somename";
+            var expected = "foo";
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithHeader(name, format, value);
+
+            // assert
+            Assert.Equal(expected, request.GetHeaderValue(name));
+        }
+
+        [Fact]
+        public void WithHeader_format_null_object_array()
+        {
+            // arrange
+            var format = "foo";
+            object[] value = null;
+            var name = "somename";
+            var expected = "foo";
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithHeader(name, format, value);
+
+            // assert
+            Assert.Equal(expected, request.GetHeaderValue(name));
+        }
+
+        [Fact]
+        public void WithHeaderAccept()
+        {
+            // arrange
+            var mediaType = "foo/bar";
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithHeaderAccept(mediaType);
+
+            // assert
+            Assert.Equal(mediaType, request.Headers.Accept.Single().ToString());
+        }
+
+        [Fact]
+        public void WithHeaderAccept_multiple()
+        {
+            // arrange
+            var mediaType1 = "foo/bar";
+            var mediaType2 = "fizz/buzz";
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithHeaderAccept(mediaType1).WithHeaderAccept(mediaType2);
+
+            // assert
+            Assert.Equal(mediaType1, request.Headers.Accept.First().ToString());
+            Assert.Equal(mediaType2, request.Headers.Accept.Last().ToString());
+        }
+
+        [Fact]
+        public void WithHeaderAcceptApplicationJson()
+        {
+            // arrange
+            var mediaType = "application/json";
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithHeaderAcceptApplicationJson();
+
+            // assert
+            Assert.Equal(mediaType, request.Headers.Accept.Single().ToString());
+        }
+
+        [Fact]
+        public void WithHeaderAcceptTextXml()
+        {
+            // arrange
+            var mediaType = "text/xml";
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithHeaderAcceptTextXml();
+
+            // assert
+            Assert.Equal(mediaType, request.Headers.Accept.Single().ToString());
+        }
+
+        [Fact]
+        public void WithHeaderAcceptCharset()
+        {
+            // arrange
+            var charset = "foo-bar";
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithHeaderAcceptCharset(charset);
+
+            // assert
+            Assert.Equal(charset, request.Headers.AcceptCharset.Single().ToString());
+        }
+
+        [Fact]
+        public void WithHeaderAcceptCharset_multiple()
+        {
+            // arrange
+            var mediaType1 = "foo-bar";
+            var mediaType2 = "fizz-buzz";
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithHeaderAcceptCharset(mediaType1).WithHeaderAcceptCharset(mediaType2);
+
+            // assert
+            Assert.Equal(mediaType1, request.Headers.AcceptCharset.First().ToString());
+            Assert.Equal(mediaType2, request.Headers.AcceptCharset.Last().ToString());
+        }
+
+        [Fact]
+        public void WithHeaderAcceptEncoding()
+        {
+            // arrange
+            var charset = "foo-bar";
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithHeaderAcceptEncoding(charset);
+
+            // assert
+            Assert.Equal(charset, request.Headers.AcceptEncoding.Single().ToString());
+        }
+
+        [Fact]
+        public void WithHeaderAcceptEncoding_multiple()
+        {
+            // arrange
+            var mediaType1 = "foo-bar";
+            var mediaType2 = "fizz-buzz";
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithHeaderAcceptEncoding(mediaType1).WithHeaderAcceptEncoding(mediaType2);
+
+            // assert
+            Assert.Equal(mediaType1, request.Headers.AcceptEncoding.First().ToString());
+            Assert.Equal(mediaType2, request.Headers.AcceptEncoding.Last().ToString());
+        }
+
+        [Fact]
+        public void WithHeaderAcceptLanguage()
+        {
+            // arrange
+            var charset = "foo-bar";
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithHeaderAcceptLanguage(charset);
+
+            // assert
+            Assert.Equal(charset, request.Headers.AcceptLanguage.Single().ToString());
+        }
+
+        [Fact]
+        public void WithHeaderAcceptLanguage_multiple()
+        {
+            // arrange
+            var mediaType1 = "foo-bar";
+            var mediaType2 = "fizz-buzz";
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithHeaderAcceptLanguage(mediaType1).WithHeaderAcceptLanguage(mediaType2);
+
+            // assert
+            Assert.Equal(mediaType1, request.Headers.AcceptLanguage.First().ToString());
+            Assert.Equal(mediaType2, request.Headers.AcceptLanguage.Last().ToString());
+        }
+
+        [Fact]
+        public void WithHeaderAuthorization_scheme_only()
+        {
+            // arrange
+            var scheme = "foo";
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithHeaderAuthorization(scheme);
+
+            // assert
+            Assert.Equal(scheme, request.Headers.Authorization.ToString());
+        }
+
+        [Fact]
+        public void WithHeaderAuthorization()
+        {
+            // arrange
+            var scheme = "foo";
+            var value = "myvalue";
+            var expected = $"{scheme} {value}";
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithHeaderAuthorization(scheme, value);
+
+            // assert
+            Assert.Equal(expected, request.Headers.Authorization.ToString());
+        }
+
+        [Fact]
+        public void WithHeaderCacheControl()
+        {
+            // arrange
+            var cacheControl = "foo-bar";
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithHeaderCacheControl(cacheControl);
+
+            // assert
+            Assert.Equal(cacheControl, request.Headers.CacheControl.ToString());
+        }
+
+        [Fact]
+        public void WithHeaderCacheControlNoCache()
+        {
+            // arrange
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithHeaderCacheControlNoCache();
+
+            // assert
+            Assert.Equal("no-cache", request.Headers.CacheControl.ToString());
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void WithHeaderConnectionClose(bool? value)
+        {
+            // arrange
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithHeaderConnectionClose(value);
+
+            // assert
+            Assert.Equal(value, request.Headers.ConnectionClose);
+        }
+
+        [Fact]
+        public void WithHeaderDate()
+        {
+            // arrange
+            var value = DateTimeOffset.Now;
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithHeaderDate(value);
+
+            // assert
+            Assert.Equal(value, request.Headers.Date);
+        }
+
+        [Fact]
+        public void WithHeaderIfMatch()
+        {
+            // arrange
+            var value = "\"foo\"";
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithHeaderIfMatch(value);
+
+            // assert
+            Assert.Equal(value, request.Headers.IfMatch.Single().Tag);
+        }
+
+        [Theory]
+        [InlineData("\"foo\"", true)]
+        [InlineData("\"foo\"", false)]
+        public void WithHeaderIfMatch_isweak(string value, bool isWeak)
+        {
+            // arrange
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithHeaderIfMatch(value, isWeak);
+
+            // assert
+            Assert.Equal(value, request.Headers.IfMatch.Single().Tag);
+            Assert.Equal(isWeak, request.Headers.IfMatch.Single().IsWeak);
+        }
+
+        [Fact]
+        public void WithHeaderIfMatch_multiple()
+        {
+            // arrange
+            var value1 = "\"foo\"";
+            var value2 = "\"bar\"";
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithHeaderIfMatch(value1).WithHeaderIfMatch(value2);
+
+            // assert
+            Assert.Equal(value1, request.Headers.IfMatch.First().Tag);
+            Assert.Equal(value2, request.Headers.IfMatch.Last().Tag);
+        }
+
+        [Fact]
+        public void WithHeaderIfNoneMatch()
+        {
+            // arrange
+            var value = "\"foo\"";
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithHeaderIfNoneMatch(value);
+
+            // assert
+            Assert.Equal(value, request.Headers.IfNoneMatch.Single().Tag);
+        }
+
+        [Theory]
+        [InlineData("\"foo\"", true)]
+        [InlineData("\"foo\"", false)]
+        public void WithHeaderIfNoneMatch_isweak(string value, bool isWeak)
+        {
+            // arrange
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithHeaderIfNoneMatch(value, isWeak);
+
+            // assert
+            Assert.Equal(value, request.Headers.IfNoneMatch.Single().Tag);
+            Assert.Equal(isWeak, request.Headers.IfNoneMatch.Single().IsWeak);
+        }
+
+        [Fact]
+        public void WithHeaderIfNoneMatch_multiple()
+        {
+            // arrange
+            var value1 = "\"foo\"";
+            var value2 = "\"bar\"";
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithHeaderIfNoneMatch(value1).WithHeaderIfNoneMatch(value2);
+
+            // assert
+            Assert.Equal(value1, request.Headers.IfNoneMatch.First().Tag);
+            Assert.Equal(value2, request.Headers.IfNoneMatch.Last().Tag);
+        }
+
+        [Fact]
+        public void WithHeaderIfRange_date()
+        {
+            // arrange
+            var lastModified = DateTimeOffset.Now;
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithHeaderIfRange(lastModified);
+
+            // assert
+            Assert.Equal(lastModified, request.Headers.IfRange.Date);
+        }
+
+        [Theory]
+        [InlineData("\"foo\"", "\"foo\"")]
+        [InlineData("foo", "\"foo\"")]
+        public void WithHeaderIfRange_entityTag(string entityTag, string expected)
+        {
+            // arrange
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithHeaderIfRange(entityTag);
+
+            // assert
+            Assert.Equal(expected, request.Headers.IfRange.EntityTag.ToString());
+        }
+
+        [Theory]
+        [InlineData("\"foo\"", true, "W/\"foo\"")]
+        [InlineData("\"foo\"", false, "\"foo\"")]
+        [InlineData("foo", true, "W/\"foo\"")]
+        [InlineData("foo", false, "\"foo\"")]
+        public void WithHeaderIfRange_entityTag_isweak(string entityTag, bool isWeak, string expected)
+        {
+            // arrange
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithHeaderIfRange(entityTag, isWeak);
+
+            // assert
+            Assert.Equal(expected, request.Headers.IfRange.EntityTag.ToString());
+        }
+
+        [Fact]
+        public void WithHeaderIfUnmodifiedSince()
+        {
+            // arrange
+            var lastModified = DateTimeOffset.Now;
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithHeaderIfUnmodifiedSince(lastModified);
+
+            // assert
+            Assert.Equal(lastModified, request.Headers.IfUnmodifiedSince);
+        }
+
+        [Fact]
+        public void WithHeaderIfModifiedSince()
+        {
+            // arrange
+            var lastModified = DateTimeOffset.Now;
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithHeaderIfModifiedSince(lastModified);
+
+            // assert
+            Assert.Equal(lastModified, request.Headers.IfModifiedSince);
+        }
+
+        [Fact]
+        public void WithHeaderPragma()
+        {
+            // arrange
+            var pragma = "foo-bar";
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithHeaderPragma(pragma);
+
+            // assert
+            Assert.Equal(pragma, request.Headers.Pragma.ToString());
+        }
+
+        [Fact]
+        public void WithHeaderPragma_multiple()
+        {
+            // arrange
+            var pragma1 = "foo-bar";
+            var pragma2 = "foo-bar";
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithHeaderPragma(pragma1).WithHeaderPragma(pragma2);
+
+            // assert
+            Assert.Equal(pragma1, request.Headers.Pragma.First().Name);
+            Assert.Equal(pragma2, request.Headers.Pragma.Last().Name);
+        }
+
+        [Fact]
+        public void WithHeaderPragma_name_value()
+        {
+            // arrange
+            var pragmaName = "foo-bar";
+            var pragmaValue = "fizz-buzz";
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithHeaderPragma(pragmaName, pragmaValue);
+
+            // assert
+            Assert.Equal(pragmaName, request.Headers.Pragma.Single().Name);
+            Assert.Equal(pragmaValue, request.Headers.Pragma.Single().Value);
+        }
+
+        [Fact]
+        public void WithHeaderPragmaNoCache()
+        {
+            // arrange
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithHeaderPragmaNoCache();
+
+            // assert
+            Assert.Equal("no-cache", request.Headers.Pragma.ToString());
+        }
+
+        [Theory]
+        [InlineData(null, 2)]
+        [InlineData(2, null)]
+        [InlineData(1, 2)]
+        [InlineData(3, long.MaxValue)]
+        public void WithHeaderRange(long? from, long? to)
+        {
+            // arrange
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithHeaderRange(from, to);
+
+            // assert
+            Assert.Equal(from, request.Headers.Range.Ranges.Single().From);
+            Assert.Equal(to, request.Headers.Range.Ranges.Single().To);
+        }
+
+        [Theory]
+        [InlineData("foo")]
+        [InlineData("product/version (comment)")]
+        [InlineData("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36")]
+        public void WithHeaderUserAgent(string userAgent)
+        {
+            // arrange
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithHeaderUserAgent(userAgent);
+
+            // assert
+            Assert.Equal(userAgent, request.Headers.UserAgent.ToString());
+        }
+
+        [Theory]
+        [InlineData("foo", "bar", "foo/bar")]
+        [InlineData("Mozilla", "5.0", "Mozilla/5.0")]
+        public void WithHeaderUserAgent_product_version(string product, string version, string expected)
+        {
+            // arrange
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithHeaderUserAgent(product, version);
+
+            // assert
+            Assert.Equal(expected, request.Headers.UserAgent.ToString());
+        }
+
+        [Theory]
+        [InlineData("foo", "bar", "comment", "foo/bar (comment)")]
+        [InlineData("foo", "bar", "(comment)", "foo/bar (comment)")]
+        [InlineData("foo", "bar", null, "foo/bar")]
+        [InlineData("Mozilla", "5.0", "X11; Linux x86_64", "Mozilla/5.0 (X11; Linux x86_64)")]
+        public void WithHeaderUserAgent_product_version_comment(string product, string version, string comment, string expected)
+        {
+            // arrange
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithHeaderUserAgent(product, version, comment);
+
+            // assert
+            Assert.Equal(expected, request.Headers.UserAgent.ToString());
+        }
+
         [Theory]
         [InlineData("/foo", "http://google.com", "http://google.com/foo")]
         [InlineData("foo", "http://google.com/", "http://google.com/foo")]
@@ -500,7 +1484,7 @@ namespace jaytwo.FluentHttp.Tests
         [InlineData(null, "")]
         [InlineData(true, "True")]
         [InlineData(false, "False")]
-        public void WithValue_nullable_bool(bool? value, string expected)
+        public void WithUriQueryParameter_nullable_bool(bool? value, string expected)
         {
             // arrange
             var name = "hello";
@@ -684,7 +1668,7 @@ namespace jaytwo.FluentHttp.Tests
         [Theory]
         [InlineData(2020, 7, 4, "2020-07-04")]
         [InlineData(null, null, null, "")]
-        public void WithValue_nullable_DateTime(int? year, int? month, int? day, string expected)
+        public void WithUriQueryParameter_nullable_DateTime(int? year, int? month, int? day, string expected)
         {
             // arrange
             var value = (year != null)
@@ -887,7 +1871,7 @@ namespace jaytwo.FluentHttp.Tests
         [Theory]
         [InlineData(2020, 7, 4, 0, "2020-07-04")]
         [InlineData(null, null, null, null, "")]
-        public void WithValue_nullable_DateTimeOffset(int? year, int? month, int? day, int? offset, string expected)
+        public void WithUriQueryParameter_nullable_DateTimeOffset(int? year, int? month, int? day, int? offset, string expected)
         {
             // arrange
             var value = (year != null)
@@ -1068,6 +2052,287 @@ namespace jaytwo.FluentHttp.Tests
                 var queryParameterValue = Url.GetQueryValue(request.RequestUri.OriginalString, name);
                 Assert.Equal(expected, queryParameterValue);
             }
+        }
+
+        [Fact]
+        public async Task WithJsonContent_object()
+        {
+            // arrange
+            string someValue = "myvalue";
+            var value = new { mykey = someValue };
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithJsonContent(value);
+
+            // assert
+            var content = Assert.IsType<StringContent>(request.Content);
+            var contentAsString = await content.ReadAsStringAsync();
+            var anonymousPrototype = new { mykey = default(string) };
+            var deserialized = JsonConvert.DeserializeAnonymousType(contentAsString, anonymousPrototype);
+            Assert.Equal(someValue, deserialized.mykey);
+        }
+
+        [Fact]
+        public async Task WithJsonContent_string()
+        {
+            // arrange
+            string someValue = "myvalue";
+            var value = "{\"mykey\":\"myvalue\"}";
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithJsonContent(value);
+
+            // assert
+            var content = Assert.IsType<StringContent>(request.Content);
+            var contentAsString = await content.ReadAsStringAsync();
+            var anonymousPrototype = new { mykey = default(string) };
+            var deserialized = JsonConvert.DeserializeAnonymousType(contentAsString, anonymousPrototype);
+            Assert.Equal(someValue, deserialized.mykey);
+        }
+
+        [Fact]
+        public async Task WithUrlEncodedFormContent_builder()
+        {
+            // arrange
+            string someName = "mykey";
+            string someValue = "myvalue";
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithUrlEncodedFormContent(content =>
+            {
+                content.WithValue(someName, someValue);
+            });
+
+            // assert
+            var content = Assert.IsType<FormUrlEncodedContent>(request.Content);
+            var contentAsString = await content.ReadAsStringAsync();
+            var contentAsDictionary = QueryString.Deserialize(contentAsString);
+            Assert.Equal(someValue, contentAsDictionary[someName].Single());
+        }
+
+        [Fact]
+        public async Task WithUrlEncodedFormContent_object()
+        {
+            // arrange
+            string someName = "mykey";
+            string someValue = "myvalue";
+            var value = new { mykey = someValue };
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithUrlEncodedFormContent(value);
+
+            // assert
+            var content = Assert.IsType<StringContent>(request.Content);
+            var contentAsString = await content.ReadAsStringAsync();
+            var contentAsDictionary = QueryString.Deserialize(contentAsString);
+            Assert.Equal(someValue, contentAsDictionary[someName].Single());
+        }
+
+        [Fact]
+        public async Task WithUrlEncodedFormContent_string()
+        {
+            // arrange
+            string someName = "mykey";
+            string someValue = "myvalue";
+            var value = QueryString.Serialize(new { mykey = someValue });
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithUrlEncodedFormContent(value);
+
+            // assert
+            var content = Assert.IsType<StringContent>(request.Content);
+            var contentAsString = await content.ReadAsStringAsync();
+            var contentAsDictionary = QueryString.Deserialize(contentAsString);
+            Assert.Equal(someValue, contentAsDictionary[someName].Single());
+        }
+
+        [Fact]
+        public async Task WithUrlEncodedFormContent_FormUrlEncodedContent()
+        {
+            // arrange
+            string someName = "mykey";
+            string someValue = "myvalue";
+            var value = new FormUrlEncodedContent(new[] { new KeyValuePair<string, string>(someName, someValue) });
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithUrlEncodedFormContent(value);
+
+            // assert
+            var content = Assert.IsType<FormUrlEncodedContent>(request.Content);
+            var contentAsString = await content.ReadAsStringAsync();
+            var contentAsDictionary = QueryString.Deserialize(contentAsString);
+            Assert.Equal(someValue, contentAsDictionary[someName].Single());
+        }
+
+        [Fact]
+        public async Task WithStringContent_with_media_type()
+        {
+            // arrange
+            string mediaType = "my/mediatype";
+            var value = "hello world";
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithStringContent(value, mediaType);
+
+            // assert
+            var content = Assert.IsType<StringContent>(request.Content);
+            Assert.Equal(content.Headers.ContentType.MediaType, mediaType);
+
+            var contentAsString = await content.ReadAsStringAsync();
+            Assert.Equal(contentAsString, value);
+        }
+
+        [Fact]
+        public async Task WithStringContent()
+        {
+            // arrange
+            var value = "hello world";
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithStringContent(value);
+
+            // assert
+            var content = Assert.IsType<StringContent>(request.Content);
+            Assert.Equal("text/plain", content.Headers.ContentType.MediaType);
+
+            var contentAsString = await content.ReadAsStringAsync();
+            Assert.Equal(contentAsString, value);
+        }
+
+        [Fact]
+        public async Task WithByteArrayContent_with_media_type()
+        {
+            // arrange
+            string mediaType = "my/mediatype";
+            var value = "hello world";
+            var bytes = Encoding.UTF8.GetBytes(value);
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithByteArrayContent(bytes, mediaType);
+
+            // assert
+            var content = Assert.IsType<ByteArrayContent>(request.Content);
+            Assert.Equal(content.Headers.ContentType.MediaType, mediaType);
+
+            var contentAsString = await content.ReadAsStringAsync();
+            Assert.Equal(contentAsString, value);
+        }
+
+        [Fact]
+        public async Task WithByteArrayContent()
+        {
+            // arrange
+            var value = "hello world";
+            var bytes = Encoding.UTF8.GetBytes(value);
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithByteArrayContent(bytes);
+
+            // assert
+            var content = Assert.IsType<ByteArrayContent>(request.Content);
+            Assert.Null(content.Headers.ContentType);
+
+            var contentAsString = await content.ReadAsStringAsync();
+            Assert.Equal(contentAsString, value);
+        }
+
+        [Fact]
+        public async Task WithStreamContent_with_media_type()
+        {
+            // arrange
+            string mediaType = "my/mediatype";
+            var value = "hello world";
+            var bytes = Encoding.UTF8.GetBytes(value);
+            using (var memoryStream = new MemoryStream(bytes))
+            {
+                var request = new HttpRequestMessage();
+
+                // act
+                request.WithStreamContent(memoryStream, mediaType);
+
+                // assert
+                var content = Assert.IsType<StreamContent>(request.Content);
+                Assert.Equal(content.Headers.ContentType.MediaType, mediaType);
+
+                var contentAsString = await content.ReadAsStringAsync();
+                Assert.Equal(contentAsString, value);
+            }
+        }
+
+        [Fact]
+        public async Task WithStreamContent()
+        {
+            // arrange
+            var value = "hello world";
+            var bytes = Encoding.UTF8.GetBytes(value);
+            var request = new HttpRequestMessage();
+            using (var memoryStream = new MemoryStream(bytes))
+            {
+                // act
+                request.WithStreamContent(memoryStream);
+
+                // assert
+                var content = Assert.IsType<StreamContent>(request.Content);
+                Assert.Null(content.Headers.ContentType);
+
+                var contentAsString = await content.ReadAsStringAsync();
+                Assert.Equal(contentAsString, value);
+            }
+        }
+
+        [Fact]
+        public async Task WithMultipartFormDataContent_builder()
+        {
+            // arrange
+            string someName = "mykey";
+            string someValue = "myvalue";
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithMultipartFormDataContent(content =>
+            {
+                content.WithTextContent(someName, someValue);
+            });
+
+            // assert
+            var content = Assert.IsType<MultipartFormDataContent>(request.Content);
+            var stringContent = content.Single();
+            var stringContentName = stringContent.Headers.ContentDisposition.Name;
+            Assert.Equal(someName, stringContentName);
+
+            var contentAsString = await stringContent.ReadAsStringAsync();
+            Assert.Equal(someValue, contentAsString);
+        }
+
+        [Fact]
+        public async Task WithMultipartFormDataContent()
+        {
+            // arrange
+            string someName = "mykey";
+            string someValue = "myvalue";
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithMultipartFormDataContent(new MultipartFormDataContent().WithTextContent(someName, someValue));
+
+            // assert
+            var content = Assert.IsType<MultipartFormDataContent>(request.Content);
+            var stringContent = content.Single();
+            var stringContentName = stringContent.Headers.ContentDisposition.Name;
+            Assert.Equal(someName, stringContentName);
+
+            var contentAsString = await stringContent.ReadAsStringAsync();
+            Assert.Equal(someValue, contentAsString);
         }
     }
 }

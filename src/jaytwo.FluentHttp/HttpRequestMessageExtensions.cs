@@ -76,7 +76,7 @@ namespace jaytwo.FluentHttp
         {
             if (InclusionRuleHelper.IncludeContent(values, inclusionRule))
             {
-                httpRequestMessage.WithHeader(name, string.Format(format, values), inclusionRule);
+                httpRequestMessage.WithHeader(name, string.Format(format, values ?? new object[] { }), inclusionRule);
             }
 
             return httpRequestMessage;
@@ -98,21 +98,9 @@ namespace jaytwo.FluentHttp
             return httpRequestMessage.WithHeaderAccept("text/xml");
         }
 
-        public static HttpRequestMessage WithHeaderAccept(this HttpRequestMessage httpRequestMessage, string mediaType, double quality)
-        {
-            httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(mediaType, quality));
-            return httpRequestMessage;
-        }
-
         public static HttpRequestMessage WithHeaderAcceptCharset(this HttpRequestMessage httpRequestMessage, string value)
         {
             httpRequestMessage.Headers.AcceptCharset.Add(new StringWithQualityHeaderValue(value));
-            return httpRequestMessage;
-        }
-
-        public static HttpRequestMessage WithHeaderAcceptCharset(this HttpRequestMessage httpRequestMessage, string value, double quality)
-        {
-            httpRequestMessage.Headers.AcceptCharset.Add(new StringWithQualityHeaderValue(value, quality));
             return httpRequestMessage;
         }
 
@@ -122,21 +110,9 @@ namespace jaytwo.FluentHttp
             return httpRequestMessage;
         }
 
-        public static HttpRequestMessage WithHeaderAcceptEncoding(this HttpRequestMessage httpRequestMessage, string value, double quality)
-        {
-            httpRequestMessage.Headers.AcceptEncoding.Add(new StringWithQualityHeaderValue(value, quality));
-            return httpRequestMessage;
-        }
-
         public static HttpRequestMessage WithHeaderAcceptLanguage(this HttpRequestMessage httpRequestMessage, string value)
         {
             httpRequestMessage.Headers.AcceptLanguage.Add(new StringWithQualityHeaderValue(value));
-            return httpRequestMessage;
-        }
-
-        public static HttpRequestMessage WithHeaderAcceptLanguage(this HttpRequestMessage httpRequestMessage, string value, double quality)
-        {
-            httpRequestMessage.Headers.AcceptLanguage.Add(new StringWithQualityHeaderValue(value, quality));
             return httpRequestMessage;
         }
 
@@ -177,13 +153,13 @@ namespace jaytwo.FluentHttp
 
         public static HttpRequestMessage WithHeaderIfMatch(this HttpRequestMessage httpRequestMessage, string tag)
         {
-            httpRequestMessage.Headers.IfMatch.Add(new EntityTagHeaderValue(tag));
+            httpRequestMessage.Headers.IfMatch.Add(new EntityTagHeaderValue(ApplyQuotesIfMissing(tag)));
             return httpRequestMessage;
         }
 
         public static HttpRequestMessage WithHeaderIfMatch(this HttpRequestMessage httpRequestMessage, string tag, bool isWeak)
         {
-            httpRequestMessage.Headers.IfMatch.Add(new EntityTagHeaderValue(tag, isWeak));
+            httpRequestMessage.Headers.IfMatch.Add(new EntityTagHeaderValue(ApplyQuotesIfMissing(tag), isWeak));
             return httpRequestMessage;
         }
 
@@ -205,21 +181,21 @@ namespace jaytwo.FluentHttp
             return httpRequestMessage;
         }
 
-        public static HttpRequestMessage WithHeaderIfRange(this HttpRequestMessage httpRequestMessage, DateTimeOffset value)
+        public static HttpRequestMessage WithHeaderIfRange(this HttpRequestMessage httpRequestMessage, DateTimeOffset lastModified)
         {
-            httpRequestMessage.Headers.IfRange = new RangeConditionHeaderValue(value);
+            httpRequestMessage.Headers.IfRange = new RangeConditionHeaderValue(lastModified);
             return httpRequestMessage;
         }
 
         public static HttpRequestMessage WithHeaderIfRange(this HttpRequestMessage httpRequestMessage, string entityTag)
         {
-            httpRequestMessage.Headers.IfRange = new RangeConditionHeaderValue(entityTag);
+            httpRequestMessage.Headers.IfRange = new RangeConditionHeaderValue(ApplyQuotesIfMissing(entityTag));
             return httpRequestMessage;
         }
 
-        public static HttpRequestMessage WithHeaderIfRange(this HttpRequestMessage httpRequestMessage, string tag, bool isWeak)
+        public static HttpRequestMessage WithHeaderIfRange(this HttpRequestMessage httpRequestMessage, string entityTag, bool isWeak)
         {
-            httpRequestMessage.Headers.IfRange = new RangeConditionHeaderValue(new EntityTagHeaderValue(tag, isWeak));
+            httpRequestMessage.Headers.IfRange = new RangeConditionHeaderValue(new EntityTagHeaderValue(ApplyQuotesIfMissing(entityTag), isWeak));
             return httpRequestMessage;
         }
 
@@ -252,15 +228,27 @@ namespace jaytwo.FluentHttp
             return httpRequestMessage;
         }
 
-        public static HttpRequestMessage WithHeaderUserAgent(this HttpRequestMessage httpRequestMessage, string comment)
+        public static HttpRequestMessage WithHeaderUserAgent(this HttpRequestMessage httpRequestMessage, string userAgent)
         {
-            httpRequestMessage.Headers.UserAgent.Add(new ProductInfoHeaderValue(comment));
+            httpRequestMessage.Headers.TryAddWithoutValidation("User-Agent", userAgent);
             return httpRequestMessage;
         }
 
         public static HttpRequestMessage WithHeaderUserAgent(this HttpRequestMessage httpRequestMessage, string productName, string productVersion)
         {
             httpRequestMessage.Headers.UserAgent.Add(new ProductInfoHeaderValue(productName, productVersion));
+            return httpRequestMessage;
+        }
+
+        public static HttpRequestMessage WithHeaderUserAgent(this HttpRequestMessage httpRequestMessage, string productName, string productVersion, string comment)
+        {
+            httpRequestMessage.Headers.UserAgent.Add(new ProductInfoHeaderValue(productName, productVersion));
+
+            if (comment != null)
+            {
+                httpRequestMessage.Headers.UserAgent.Add(new ProductInfoHeaderValue(ApplyParenthesesIfMissing(comment)));
+            }
+
             return httpRequestMessage;
         }
 
@@ -294,11 +282,6 @@ namespace jaytwo.FluentHttp
             return httpRequestMessage.WithUri(new Uri(pathOrUri, UriKind.RelativeOrAbsolute));
         }
 
-        public static HttpRequestMessage WithUri(this HttpRequestMessage httpRequestMessage, string pathFormat, params string[] formatArgs)
-        {
-            return httpRequestMessage.WithUri(Url.Format(pathFormat, formatArgs));
-        }
-
         public static HttpRequestMessage WithUri(this HttpRequestMessage httpRequestMessage, string pathFormat, params object[] formatArgs)
         {
             return httpRequestMessage.WithUri(Url.Format(pathFormat, formatArgs));
@@ -314,11 +297,6 @@ namespace jaytwo.FluentHttp
             {
                 return httpRequestMessage.WithUri(path);
             }
-        }
-
-        public static HttpRequestMessage WithUriPath(this HttpRequestMessage httpRequestMessage, string pathFormat, params string[] formatArgs)
-        {
-            return httpRequestMessage.WithUriPath(Url.Format(pathFormat, formatArgs));
         }
 
         public static HttpRequestMessage WithUriPath(this HttpRequestMessage httpRequestMessage, string pathFormat, params object[] formatArgs)
@@ -632,6 +610,26 @@ namespace jaytwo.FluentHttp
         public static string GetHeaderValue(this HttpRequestMessage httpRequestMessage, string key, StringComparison stringComparison)
         {
             return httpRequestMessage.Headers?.GetHeaderValue(key, stringComparison) ?? httpRequestMessage?.Content?.Headers?.GetHeaderValue(key, stringComparison);
+        }
+
+        private static string ApplyParenthesesIfMissing(string input)
+        {
+            if (input != null && !input.StartsWith("(") && !input.EndsWith(")"))
+            {
+                input = $"({input})";
+            }
+
+            return input;
+        }
+
+        private static string ApplyQuotesIfMissing(string input)
+        {
+            if (input != null && !input.StartsWith("\"") && !input.EndsWith("\""))
+            {
+                input = $"\"{input}\"";
+            }
+
+            return input;
         }
     }
 }
