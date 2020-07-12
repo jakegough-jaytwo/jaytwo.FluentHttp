@@ -10,7 +10,11 @@ namespace jaytwo.FluentHttp
     {
         public static string GetString(object value)
         {
-            if (value is string)
+            if (value == null)
+            {
+                return null;
+            }
+            else if (value is string)
             {
                 return (string)value;
             }
@@ -18,29 +22,17 @@ namespace jaytwo.FluentHttp
             {
                 return DateTimeFormattingHelper.Format((DateTime)value, DateTimeFormatting.Default);
             }
-            else if (value is DateTime?)
-            {
-                return DateTimeFormattingHelper.Format((DateTime?)value, DateTimeFormatting.Default);
-            }
             else if (value is DateTimeOffset)
             {
                 return DateTimeFormattingHelper.Format((DateTimeOffset)value, DateTimeFormatting.Default);
-            }
-            else if (value is DateTimeOffset?)
-            {
-                return DateTimeFormattingHelper.Format((DateTimeOffset?)value, DateTimeFormatting.Default);
             }
             else if (value is bool)
             {
                 return BooleanFormattingHelper.Format((bool)value, BooleanFormatting.Default);
             }
-            else if (value is bool?)
-            {
-                return BooleanFormattingHelper.Format((bool?)value, BooleanFormatting.Default);
-            }
             else
             {
-                return value?.ToString();
+                return value.ToString();
             }
         }
     }

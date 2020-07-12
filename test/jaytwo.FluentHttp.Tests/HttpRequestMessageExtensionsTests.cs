@@ -1462,11 +1462,86 @@ namespace jaytwo.FluentHttp.Tests
         }
 
         [Fact]
+        public void WithUriQueryParameter_objectarray_null()
+        {
+            // arrange
+            var name = "hello";
+            object[] values = null;
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithUriQueryParameter(name, values);
+
+            // assert
+            Assert.Equal("?hello=", request.RequestUri.OriginalString);
+        }
+
+        [Fact]
+        public void WithUriQueryParameter_IEnumerableObject_null()
+        {
+            // arrange
+            var name = "hello";
+            IEnumerable<object> values = null;
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithUriQueryParameter(name, values);
+
+            // assert
+            Assert.Equal("?hello=", request.RequestUri.OriginalString);
+        }
+
+        [Fact]
+        public void WithUriQueryParameter_stringarray_null()
+        {
+            // arrange
+            var name = "hello";
+            string[] values = null;
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithUriQueryParameter(name, values);
+
+            // assert
+            Assert.Equal("?hello=", request.RequestUri.OriginalString);
+        }
+
+        [Fact]
+        public void WithUriQueryParameter_IEnumerableString_null()
+        {
+            // arrange
+            var name = "hello";
+            IEnumerable<string> values = null;
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithUriQueryParameter(name, values);
+
+            // assert
+            Assert.Equal("?hello=", request.RequestUri.OriginalString);
+        }
+
+        [Fact]
         public void WithUriQueryParameter_stringarray_without_RequestUri()
         {
             // arrange
             var name = "hello";
             var values = new string[] { "fizz", "buzz" };
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithUriQueryParameter(name, values);
+
+            // assert
+            Assert.Equal("?hello=fizz&hello=buzz", request.RequestUri.OriginalString);
+        }
+
+        [Fact]
+        public void WithUriQueryParameter_IEnumerableString_without_RequestUri()
+        {
+            // arrange
+            var name = "hello";
+            IEnumerable<string> values = new string[] { "fizz", "buzz" };
             var request = new HttpRequestMessage();
 
             // act
@@ -1492,11 +1567,41 @@ namespace jaytwo.FluentHttp.Tests
         }
 
         [Fact]
+        public void WithUriQueryParameter_IEnumerableObject_without_RequestUri()
+        {
+            // arrange
+            var name = "hello";
+            IEnumerable<object> values = new object[] { 123, 456 };
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithUriQueryParameter(name, values);
+
+            // assert
+            Assert.Equal("?hello=123&hello=456", request.RequestUri.OriginalString);
+        }
+
+        [Fact]
         public void WithUriQueryParameter_stringarray_ExcludeIfNull()
         {
             // arrange
             var name = "hello";
             string[] values = null;
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithUriQueryParameter(name, values, InclusionRule.ExcludeIfNull);
+
+            // assert
+            Assert.Null(request.RequestUri);
+        }
+
+        [Fact]
+        public void WithUriQueryParameter_IEnumerableString_ExcludeIfNull()
+        {
+            // arrange
+            var name = "hello";
+            IEnumerable<string> values = null;
             var request = new HttpRequestMessage();
 
             // act
@@ -1522,11 +1627,41 @@ namespace jaytwo.FluentHttp.Tests
         }
 
         [Fact]
+        public void WithUriQueryParameter_IEnumerableString_with_RequestUri()
+        {
+            // arrange
+            var name = "hello";
+            IEnumerable<string> values = new string[] { "fizz", "buzz" };
+            var request = new HttpRequestMessage().WithUri("http://example.com");
+
+            // act
+            request.WithUriQueryParameter(name, values);
+
+            // assert
+            Assert.Equal("http://example.com/?hello=fizz&hello=buzz", request.RequestUri.AbsoluteUri);
+        }
+
+        [Fact]
         public void WithUriQueryParameter_objectarray_with_RequestUri()
         {
             // arrange
             var name = "hello";
             var values = new object[] { 123, 456 };
+            var request = new HttpRequestMessage().WithUri("http://example.com");
+
+            // act
+            request.WithUriQueryParameter(name, values);
+
+            // assert
+            Assert.Equal("http://example.com/?hello=123&hello=456", request.RequestUri.AbsoluteUri);
+        }
+
+        [Fact]
+        public void WithUriQueryParameter_IEnumerableObject_with_RequestUri()
+        {
+            // arrange
+            var name = "hello";
+            IEnumerable<object> values = new object[] { 123, 456 };
             var request = new HttpRequestMessage().WithUri("http://example.com");
 
             // act
@@ -1551,6 +1686,21 @@ namespace jaytwo.FluentHttp.Tests
             Assert.Null(request.RequestUri);
         }
 
+        [Fact]
+        public void WithUriQueryParameter_IEnumerableObject_ExcludeIfNull()
+        {
+            // arrange
+            var name = "hello";
+            IEnumerable<object> values = null;
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithUriQueryParameter(name, values, InclusionRule.ExcludeIfNull);
+
+            // assert
+            Assert.Null(request.RequestUri);
+        }
+
         [Theory]
         [InlineData(null, null, InclusionRule.ExcludeIfNull, null)]
         [InlineData(null, null, InclusionRule.IncludeAlways, "?hello=")]
@@ -1562,6 +1712,29 @@ namespace jaytwo.FluentHttp.Tests
             var name = "hello";
 
             object[] values = (value1 == null)
+                ? null
+                : new[] { value1, value2 };
+
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithUriQueryParameter(name, values, inclusionRule);
+
+            // assert
+            Assert.Equal(expected, request.RequestUri?.OriginalString);
+        }
+
+        [Theory]
+        [InlineData(null, null, InclusionRule.ExcludeIfNull, null)]
+        [InlineData(null, null, InclusionRule.IncludeAlways, "?hello=")]
+        [InlineData(123, 456, InclusionRule.ExcludeIfNull, "?hello=123&hello=456")]
+        [InlineData(123, 456, InclusionRule.IncludeAlways, "?hello=123&hello=456")]
+        public void WithUriQueryParameter_IEnumerableObject_InclusionRule(object value1, object value2, InclusionRule inclusionRule, string expected)
+        {
+            // arrange
+            var name = "hello";
+
+            IEnumerable<object> values = (value1 == null)
                 ? null
                 : new[] { value1, value2 };
 
