@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using jaytwo.UrlHelper;
@@ -13,7 +12,7 @@ using Xunit;
 
 namespace jaytwo.FluentHttp.Tests
 {
-    public class HttpRequestExtensionsTests
+    public class HttpRequestMessageExtensionsTests
     {
         [Theory]
         [InlineData("GET")]
@@ -207,8 +206,249 @@ namespace jaytwo.FluentHttp.Tests
             Assert.Equal("http://www.google.com/%2A/1/foo", request.RequestUri.AbsoluteUri);
         }
 
-        // TODO: WithUriQuery
-        // TODO: GetHeaderValue
+        [Fact]
+        public void WithUriQuery_without_RequestUri()
+        {
+            // arrange
+            var obj = new
+            {
+                hello = "world",
+                foo = "bar",
+            };
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithUriQuery(obj);
+
+            // assert
+            Assert.Equal("?hello=world&foo=bar", request.RequestUri.OriginalString);
+        }
+
+        [Fact]
+        public void WithUriQuery_with_RequestUri()
+        {
+            // arrange
+            var obj = new
+            {
+                hello = "world",
+                foo = "bar",
+            };
+            var request = new HttpRequestMessage().WithUri("http://www.example.com/");
+
+            // act
+            request.WithUriQuery(obj);
+
+            // assert
+            Assert.Equal("http://www.example.com/?hello=world&foo=bar", request.RequestUri.AbsoluteUri);
+        }
+
+        [Fact]
+        public void WithUriQuery_object()
+        {
+            // arrange
+            var obj = new
+            {
+                hello = "world",
+                foo = "bar",
+            };
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithUriQuery(obj);
+
+            // assert
+            Assert.Equal("?hello=world&foo=bar", request.RequestUri.OriginalString);
+        }
+
+        [Fact]
+        public void WithUriQuery_dictionary_string_string()
+        {
+            // arrange
+            var dictionary = new Dictionary<string, string>()
+            {
+                { "hello", "world" },
+                { "foo", "bar" },
+            };
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithUriQuery(dictionary);
+
+            // assert
+            Assert.Equal("?hello=world&foo=bar", request.RequestUri.OriginalString);
+        }
+
+        [Fact]
+        public void WithUriQuery_dictionary_string_stringarray()
+        {
+            // arrange
+            var dictionary = new Dictionary<string, string[]>()
+            {
+                { "hello", new[] { "world", "team" } },
+                { "foo", new[] { "bar" } },
+            };
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithUriQuery(dictionary);
+
+            // assert
+            Assert.Equal("?hello=world&hello=team&foo=bar", request.RequestUri.OriginalString);
+        }
+
+        [Fact]
+        public void WithUriQuery_dictionary_string_object()
+        {
+            // arrange
+            var dictionary = new Dictionary<string, object>()
+            {
+                { "hello", "world" },
+                { "foo", 123 },
+            };
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithUriQuery(dictionary);
+
+            // assert
+            Assert.Equal("?hello=world&foo=123", request.RequestUri.OriginalString);
+        }
+
+        [Fact]
+        public void WithUriQuery_dictionary_string_objectarray()
+        {
+            // arrange
+            var dictionary = new Dictionary<string, object[]>()
+            {
+                { "hello", new object[] { "world", 123 } },
+                { "foo", new object[] { "bar", 456 } },
+            };
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithUriQuery(dictionary);
+
+            // assert
+            Assert.Equal("?hello=world&hello=123&foo=bar&foo=456", request.RequestUri.OriginalString);
+        }
+
+        [Fact]
+        public void GetHeaderValue_from_request()
+        {
+            // arrange
+            var request = new HttpRequestMessage().WithHeader("foo", "bar");
+
+            // act
+            var actual = request.GetHeaderValue("foo");
+
+            // assert
+            Assert.Equal("bar", actual);
+        }
+
+        [Fact]
+        public void GetHeaderValue_from_content()
+        {
+            // arrange
+            var request = new HttpRequestMessage();
+            request.Content = new StringContent("hello world");
+            request.Content.Headers.TryAddWithoutValidation("foo", "bar");
+
+            // act
+            var actual = request.GetHeaderValue("foo");
+
+            // assert
+            Assert.Equal("bar", actual);
+        }
+
+        [Theory]
+        [InlineData("foo", StringComparison.OrdinalIgnoreCase, "bar")]
+        [InlineData("Foo", StringComparison.OrdinalIgnoreCase, "bar")]
+        [InlineData("foo", StringComparison.Ordinal, "bar")]
+        [InlineData("Foo", StringComparison.Ordinal, null)]
+        public void GetHeaderValue_ignore_case_from_request(string key, StringComparison stringComparison, string expected)
+        {
+            // arrange
+            var request = new HttpRequestMessage().WithHeader("foo", "bar");
+
+            // act
+            var actual = request.GetHeaderValue(key, stringComparison);
+
+            // assert
+            Assert.Equal(expected, actual);
+        }
+
+        [Theory]
+        [InlineData("foo", StringComparison.OrdinalIgnoreCase, "bar")]
+        [InlineData("Foo", StringComparison.OrdinalIgnoreCase, "bar")]
+        [InlineData("foo", StringComparison.Ordinal, "bar")]
+        [InlineData("Foo", StringComparison.Ordinal, null)]
+        public void GetHeaderValue_ignore_case_from_content(string key, StringComparison stringComparison, string expected)
+        {
+            // arrange
+            var request = new HttpRequestMessage();
+            request.Content = new StringContent("hello world");
+            request.Content.Headers.TryAddWithoutValidation("foo", "bar");
+
+            // act
+            var actual = request.GetHeaderValue(key, stringComparison);
+
+            // assert
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
+        public void GetHeaderValue_with_content_header_does_not_exist()
+        {
+            // arrange
+            var request = new HttpRequestMessage();
+            request.Content = new StringContent("hello world");
+
+            // act
+            var actual = request.GetHeaderValue("foo");
+
+            // assert
+            Assert.Null(actual);
+        }
+
+        [Fact]
+        public void GetHeaderValue_header_does_not_exist()
+        {
+            // arrange
+            var request = new HttpRequestMessage();
+
+            // act
+            var actual = request.GetHeaderValue("foo");
+
+            // assert
+            Assert.Null(actual);
+        }
+
+        [Fact]
+        public void GetHeaderValue_StringComparison_with_content_header_does_not_exist()
+        {
+            // arrange
+            var request = new HttpRequestMessage();
+            request.Content = new StringContent("hello world");
+
+            // act
+            var actual = request.GetHeaderValue("foo", StringComparison.OrdinalIgnoreCase);
+
+            // assert
+            Assert.Null(actual);
+        }
+
+        [Fact]
+        public void GetHeaderValue_StringComparison_header_does_not_exist()
+        {
+            // arrange
+            var request = new HttpRequestMessage();
+
+            // act
+            var actual = request.GetHeaderValue("foo", StringComparison.OrdinalIgnoreCase);
+
+            // assert
+            Assert.Null(actual);
+        }
 
         [Fact]
         public void WithHttpVersion_Version11()
@@ -1055,6 +1295,66 @@ namespace jaytwo.FluentHttp.Tests
         }
 
         [Fact]
+        public void WithUriQueryParameter_string_without_RequestUri()
+        {
+            // arrange
+            var name = "hello";
+            var value = "world";
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithUriQueryParameter(name, value);
+
+            // assert
+            Assert.Equal("?hello=world", request.RequestUri.OriginalString);
+        }
+
+        [Fact]
+        public void WithUriQueryParameter_string_with_RequestUri()
+        {
+            // arrange
+            var name = "hello";
+            var value = "world";
+            var request = new HttpRequestMessage().WithUri("http://example.com");
+
+            // act
+            request.WithUriQueryParameter(name, value);
+
+            // assert
+            Assert.Equal("http://example.com/?hello=world", request.RequestUri.AbsoluteUri);
+        }
+
+        [Fact]
+        public void WithUriQueryParameter_object_without_RequestUri()
+        {
+            // arrange
+            var name = "hello";
+            object value = 123;
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithUriQueryParameter(name, value);
+
+            // assert
+            Assert.Equal("?hello=123", request.RequestUri.OriginalString);
+        }
+
+        [Fact]
+        public void WithUriQueryParameter_object_with_RequestUri()
+        {
+            // arrange
+            var name = "hello";
+            object value = 123;
+            var request = new HttpRequestMessage().WithUri("http://example.com");
+
+            // act
+            request.WithUriQueryParameter(name, value);
+
+            // assert
+            Assert.Equal("http://example.com/?hello=123", request.RequestUri.AbsoluteUri);
+        }
+
+        [Fact]
         public void WithUriQueryParameter_string()
         {
             // arrange
@@ -1070,6 +1370,205 @@ namespace jaytwo.FluentHttp.Tests
             var queryParameterValue = Url.GetQueryValue(request.RequestUri.OriginalString, name);
             Assert.Equal(value, queryParameterValue);
         }
+
+        [Fact]
+        public void WithUriQueryParameter_format_object()
+        {
+            // arrange
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithUriQueryParameter("hello", "wo{0}", "rld");
+
+            // assert
+            Assert.Equal("?hello=world", request.RequestUri.OriginalString);
+        }
+
+        [Theory]
+        [InlineData("wor{0}", null, InclusionRule.ExcludeIfNull, null)]
+        [InlineData("wor{0}", null, InclusionRule.IncludeAlways, "?hello=wor")]
+        [InlineData("wor{0}", "ld", InclusionRule.ExcludeIfNull, "?hello=world")]
+        [InlineData("wor{0}", "ld", InclusionRule.IncludeAlways, "?hello=world")]
+        public void WithUriQueryParameter_format_object_InclusionRule(string format, object value, InclusionRule inclusionRule, string expected)
+        {
+            // arrange
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithUriQueryParameter("hello", format, value, inclusionRule);
+
+            // assert
+            Assert.Equal(expected, request.RequestUri?.OriginalString);
+        }
+
+        [Fact]
+        public void WithUriQueryParameter_format_objectarray()
+        {
+            // arrange
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithUriQueryParameter("hello", "wo{0}{1}", new object[] { "rld", 1 });
+
+            // assert
+            Assert.Equal("?hello=world1", request.RequestUri.OriginalString);
+        }
+
+        [Fact]
+        public void WithUriQueryParameter_format_objectarray_ExcludeIfNull()
+        {
+            // arrange
+            object[] values = null;
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithUriQueryParameter("hello", "wor{0}", values, InclusionRule.ExcludeIfNull);
+
+            // assert
+            Assert.Null(request.RequestUri);
+        }
+
+        [Fact]
+        public void WithUriQueryParameter_object()
+        {
+            // arrange
+            var name = "hello";
+            object value = 123;
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithUriQueryParameter(name, value);
+
+            // assert
+            Assert.Equal("?hello=123", request.RequestUri.OriginalString);
+        }
+
+        [Theory]
+        [InlineData(null, InclusionRule.ExcludeIfNull, null)]
+        [InlineData(null, InclusionRule.IncludeAlways, "?hello=")]
+        [InlineData("world", InclusionRule.ExcludeIfNull, "?hello=world")]
+        [InlineData("world", InclusionRule.IncludeAlways, "?hello=world")]
+        public void WithUriQueryParameter_object_InclusionRule(object value, InclusionRule inclusionRule, string expected)
+        {
+            // arrange
+            var name = "hello";
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithUriQueryParameter(name, value, inclusionRule);
+
+            // assert
+            Assert.Equal(expected, request.RequestUri?.OriginalString);
+        }
+
+        [Fact]
+        public void WithUriQueryParameter_stringarray_without_RequestUri()
+        {
+            // arrange
+            var name = "hello";
+            var values = new string[] { "fizz", "buzz" };
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithUriQueryParameter(name, values);
+
+            // assert
+            Assert.Equal("?hello=fizz&hello=buzz", request.RequestUri.OriginalString);
+        }
+
+        [Fact]
+        public void WithUriQueryParameter_objectarray_without_RequestUri()
+        {
+            // arrange
+            var name = "hello";
+            var values = new object[] { 123, 456 };
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithUriQueryParameter(name, values);
+
+            // assert
+            Assert.Equal("?hello=123&hello=456", request.RequestUri.OriginalString);
+        }
+
+        [Fact]
+        public void WithUriQueryParameter_stringarray_ExcludeIfNull()
+        {
+            // arrange
+            var name = "hello";
+            string[] values = null;
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithUriQueryParameter(name, values, InclusionRule.ExcludeIfNull);
+
+            // assert
+            Assert.Null(request.RequestUri);
+        }
+
+        [Fact]
+        public void WithUriQueryParameter_stringarray_with_RequestUri()
+        {
+            // arrange
+            var name = "hello";
+            var values = new string[] { "fizz", "buzz" };
+            var request = new HttpRequestMessage().WithUri("http://example.com");
+
+            // act
+            request.WithUriQueryParameter(name, values);
+
+            // assert
+            Assert.Equal("http://example.com/?hello=fizz&hello=buzz", request.RequestUri.AbsoluteUri);
+        }
+
+        [Fact]
+        public void WithUriQueryParameter_objectarray_with_RequestUri()
+        {
+            // arrange
+            var name = "hello";
+            var values = new object[] { 123, 456 };
+            var request = new HttpRequestMessage().WithUri("http://example.com");
+
+            // act
+            request.WithUriQueryParameter(name, values);
+
+            // assert
+            Assert.Equal("http://example.com/?hello=123&hello=456", request.RequestUri.AbsoluteUri);
+        }
+
+        [Fact]
+        public void WithUriQueryParameter_objectarray_ExcludeIfNull()
+        {
+            // arrange
+            var name = "hello";
+            object[] values = null;
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithUriQueryParameter(name, values, InclusionRule.ExcludeIfNull);
+
+            // assert
+            Assert.Null(request.RequestUri);
+        }
+
+        //[Theory]
+        //[InlineData(null, InclusionRule.ExcludeIfNull, null)]
+        //[InlineData(null, InclusionRule.IncludeAlways, "?hello=")]
+        //[InlineData("world", InclusionRule.ExcludeIfNull, "?hello=world")]
+        //[InlineData("world", InclusionRule.IncludeAlways, "?hello=world")]
+        //public void WithUriQueryParameter_objectarray_InclusionRule(object value1, object , InclusionRule inclusionRule, string expected)
+        //{
+        //    // arrange
+        //    var name = "hello";
+        //    var values = new object[] { 123, 456 };
+        //    var request = new HttpRequestMessage();
+
+        //    // act
+        //    request.WithUriQueryParameter(name, value, inclusionRule);
+
+        //    // assert
+        //    Assert.Equal(expected, request.RequestUri?.OriginalString);
+        //}
 
         [Fact]
         public void WithUriQueryParameter_null_string_IncludeAlways()

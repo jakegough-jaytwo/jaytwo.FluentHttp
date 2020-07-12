@@ -43,7 +43,7 @@ namespace jaytwo.FluentHttp.Tests
                 headers = default(Dictionary<string, string>),
             };
 
-            var expected = response.AsAnonymousType(prototype);
+            var expected = await response.AsAnonymousTypeAsync(prototype);
             Assert.Equal("bar", expected.headers["Foo"]); // don't ask me why, header keys get capitalized
             Assert.Equal("buzz", expected.headers["Fizz"]); // don't ask me why, header keys get capitalized
         }
@@ -173,7 +173,7 @@ namespace jaytwo.FluentHttp.Tests
                     args = default(Dictionary<string, string>),
                 };
 
-                var expected = response.AsAnonymousType(prototype);
+                var expected = await response.AsAnonymousTypeAsync(prototype);
                 Assert.Equal("world", expected.args["hello"]);
             }
         }
@@ -274,7 +274,7 @@ namespace jaytwo.FluentHttp.Tests
                     json = default(Dictionary<string, string>),
                 };
 
-                var expected = response.AsAnonymousType(prototype);
+                var expected = await response.AsAnonymousTypeAsync(prototype);
                 Assert.Equal("world", expected.args["hello"]);
                 Assert.Equal("banana", expected.json["fruit"]);
             }
@@ -303,7 +303,7 @@ namespace jaytwo.FluentHttp.Tests
                     json = default(Dictionary<string, string>),
                 };
 
-                var expected = response.AsAnonymousType(prototype);
+                var expected = await response.AsAnonymousTypeAsync(prototype);
                 Assert.Equal("world", expected.args["hello"]);
                 Assert.Equal("banana", expected.json["fruit"]);
             }
@@ -332,7 +332,7 @@ namespace jaytwo.FluentHttp.Tests
                     json = default(Dictionary<string, string>),
                 };
 
-                var expected = response.AsAnonymousType(prototype);
+                var expected = await response.AsAnonymousTypeAsync(prototype);
                 Assert.Equal("world", expected.args["hello"]);
                 Assert.Equal("banana", expected.json["fruit"]);
             }
@@ -361,7 +361,7 @@ namespace jaytwo.FluentHttp.Tests
                     json = default(Dictionary<string, string>),
                 };
 
-                var expected = response.AsAnonymousType(prototype);
+                var expected = await response.AsAnonymousTypeAsync(prototype);
                 Assert.Equal("world", expected.args["hello"]);
                 Assert.Equal("banana", expected.json["fruit"]);
             }
@@ -392,7 +392,7 @@ namespace jaytwo.FluentHttp.Tests
                     },
                 };
 
-                var actual = response.AsAnonymousType(prototype);
+                var actual = await response.AsAnonymousTypeAsync(prototype);
                 Assert.NotEmpty(actual.slideshow.slides);
                 Assert.NotEmpty(actual.slideshow.slides.First().title);
             }

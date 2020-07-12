@@ -14,18 +14,6 @@ namespace jaytwo.FluentHttp
 {
     public static class HttpRequestMessageExtensions
     {
-        public static HttpRequestMessage Invoke(this HttpRequestMessage httpRequestMessage, Action<HttpRequestMessage> callback)
-        {
-            callback.Invoke(httpRequestMessage);
-            return httpRequestMessage;
-        }
-
-        public static async Task<HttpRequestMessage> Invoke(this HttpRequestMessage httpRequestMessage, Func<HttpRequestMessage, Task> callback)
-        {
-            await callback.Invoke(httpRequestMessage);
-            return httpRequestMessage;
-        }
-
         public static HttpRequestMessage WithMethod(this HttpRequestMessage httpRequestMessage, HttpMethod method)
         {
             httpRequestMessage.Method = method;
@@ -331,6 +319,11 @@ namespace jaytwo.FluentHttp
             return httpRequestMessage.WithUriQuery(QueryString.Serialize(data));
         }
 
+        public static HttpRequestMessage WithUriQuery(this HttpRequestMessage httpRequestMessage, IDictionary<string, object[]> data)
+        {
+            return httpRequestMessage.WithUriQuery(QueryString.Serialize(data));
+        }
+
         public static HttpRequestMessage WithUriQuery(this HttpRequestMessage httpRequestMessage, IDictionary<string, string> data)
         {
             return httpRequestMessage.WithUriQuery(QueryString.Serialize(data));
@@ -409,6 +402,9 @@ namespace jaytwo.FluentHttp
             return httpRequestMessage;
         }
 
+        public static HttpRequestMessage WithUriQueryParameter(this HttpRequestMessage httpRequestMessage, string key, object[] values)
+            => httpRequestMessage.WithUriQueryParameter(key, values, InclusionRule.IncludeAlways);
+
         public static HttpRequestMessage WithUriQueryParameter(this HttpRequestMessage httpRequestMessage, string key, object[] values, InclusionRule inclusionRule)
         {
             if (InclusionRuleHelper.IncludeContent(values, inclusionRule))
@@ -425,9 +421,6 @@ namespace jaytwo.FluentHttp
 
             return httpRequestMessage;
         }
-
-        public static HttpRequestMessage WithUriQueryParameter(this HttpRequestMessage httpRequestMessage, string key, object[] values)
-            => httpRequestMessage.WithUriQueryParameter(key, values, InclusionRule.IncludeAlways);
 
         public static HttpRequestMessage WithUriQueryParameter(this HttpRequestMessage httpRequestMessage, string key, string format, object[] values)
             => httpRequestMessage.WithUriQueryParameter(key, format, values, InclusionRule.IncludeAlways);
@@ -604,12 +597,12 @@ namespace jaytwo.FluentHttp
 
         public static string GetHeaderValue(this HttpRequestMessage httpRequestMessage, string key)
         {
-            return httpRequestMessage.Headers?.GetHeaderValue(key) ?? httpRequestMessage?.Content?.Headers?.GetHeaderValue(key);
+            return httpRequestMessage.Headers.GetHeaderValue(key) ?? httpRequestMessage.Content?.Headers.GetHeaderValue(key);
         }
 
         public static string GetHeaderValue(this HttpRequestMessage httpRequestMessage, string key, StringComparison stringComparison)
         {
-            return httpRequestMessage.Headers?.GetHeaderValue(key, stringComparison) ?? httpRequestMessage?.Content?.Headers?.GetHeaderValue(key, stringComparison);
+            return httpRequestMessage.Headers.GetHeaderValue(key, stringComparison) ?? httpRequestMessage.Content?.Headers.GetHeaderValue(key, stringComparison);
         }
 
         private static string ApplyParenthesesIfMissing(string input)

@@ -12,7 +12,7 @@ namespace jaytwo.FluentHttp
 {
     public static class HttpResponseMessageExtensions
     {
-        public static async Task<HttpResponseMessage> EnsureSuccessStatusCode(this Task<HttpResponseMessage> responseTask)
+        public static async Task<HttpResponseMessage> EnsureSuccessStatusCodeAsync(this Task<HttpResponseMessage> responseTask)
         {
             var httpResponse = await responseTask;
             httpResponse.EnsureSuccessStatusCode();
@@ -35,12 +35,14 @@ namespace jaytwo.FluentHttp
             response.EnsureExpectedStatusCode(statusCodes);
         }
 
-        public static T AsAnonymousType<T>(this HttpResponseMessage httpResponse, T anonymousTypeObject)
+        public static async Task<T> AsAnonymousTypeAsync<T>(this Task<HttpResponseMessage> httpResponseTask, T anonymousPrototype)
         {
-            return httpResponse.As<T>();
+            var httpResponse = await httpResponseTask;
+            var result = await httpResponse.AsAnonymousTypeAsync(anonymousPrototype);
+            return result;
         }
 
-        public static Task<T> AsAnonymousTypeAsync<T>(this HttpResponseMessage httpResponse, T anonymousTypeObject)
+        public static Task<T> AsAnonymousTypeAsync<T>(this HttpResponseMessage httpResponse, T anonymousPrototype)
         {
             return httpResponse.AsAsync<T>();
         }
@@ -60,11 +62,6 @@ namespace jaytwo.FluentHttp
             }
         }
 
-        public static byte[] AsByteArray(this HttpResponseMessage httpResponse)
-        {
-            return httpResponse.AsByteArrayAsync().AwaitSynchronously();
-        }
-
         public static async Task<Stream> AsStreamAsync(this Task<HttpResponseMessage> httpResponseTask)
         {
             var httpResponse = await httpResponseTask;
@@ -74,15 +71,8 @@ namespace jaytwo.FluentHttp
 
         public static async Task<Stream> AsStreamAsync(this HttpResponseMessage httpResponse)
         {
-            using (httpResponse)
-            {
-                return await httpResponse.Content?.ReadAsStreamAsync();
-            }
-        }
-
-        public static Stream AsStream(this HttpResponseMessage httpResponse)
-        {
-            return httpResponse.AsStreamAsync().AwaitSynchronously();
+            // not disposing httpResponse because that only disposes the stream anyway
+            return await httpResponse.Content?.ReadAsStreamAsync();
         }
 
         public static async Task<string> AsStringAsync(this Task<HttpResponseMessage> httpResponseTask)
@@ -98,22 +88,6 @@ namespace jaytwo.FluentHttp
             {
                 return await httpResponse.Content?.ReadAsStringAsync();
             }
-        }
-
-        public static string AsString(this HttpResponseMessage httpResponse)
-        {
-            return httpResponse.AsStringAsync().AwaitSynchronously();
-        }
-
-        public static async Task<T> AsAnonymousType<T>(this Task<HttpResponseMessage> httpResponseTask, T anonymousTypeObject)
-        {
-            var httpResponse = await httpResponseTask;
-            return httpResponse.AsAnonymousType<T>(anonymousTypeObject);
-        }
-
-        public static T As<T>(this HttpResponseMessage httpResponse)
-        {
-            return AsAsync<T>(httpResponse).AwaitSynchronously();
         }
 
         public static async Task<T> AsAsync<T>(this HttpResponseMessage httpResponse)
@@ -165,19 +139,14 @@ namespace jaytwo.FluentHttp
             return result;
         }
 
-        public static T ParseWith<T>(this HttpResponseMessage httpResponse, Func<string, T> parseDelegate)
-        {
-            return httpResponse.ParseWithAsync<T>(parseDelegate).AwaitSynchronously();
-        }
-
         public static string GetHeaderValue(this HttpResponseMessage httpResponseMessage, string key)
         {
-            return httpResponseMessage.Headers?.GetHeaderValue(key) ?? httpResponseMessage.Content.Headers.GetHeaderValue(key);
+            return httpResponseMessage.Headers.GetHeaderValue(key) ?? httpResponseMessage.Content?.Headers.GetHeaderValue(key);
         }
 
         public static string GetHeaderValue(this HttpResponseMessage httpResponseMessage, string key, StringComparison stringComparison)
         {
-            return httpResponseMessage.Headers?.GetHeaderValue(key, stringComparison) ?? httpResponseMessage.Content.Headers.GetHeaderValue(key, stringComparison);
+            return httpResponseMessage.Headers.GetHeaderValue(key, stringComparison) ?? httpResponseMessage.Content?.Headers.GetHeaderValue(key, stringComparison);
         }
     }
 }
