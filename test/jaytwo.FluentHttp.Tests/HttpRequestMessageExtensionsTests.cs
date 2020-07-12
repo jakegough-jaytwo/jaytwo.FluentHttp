@@ -1551,24 +1551,28 @@ namespace jaytwo.FluentHttp.Tests
             Assert.Null(request.RequestUri);
         }
 
-        //[Theory]
-        //[InlineData(null, InclusionRule.ExcludeIfNull, null)]
-        //[InlineData(null, InclusionRule.IncludeAlways, "?hello=")]
-        //[InlineData("world", InclusionRule.ExcludeIfNull, "?hello=world")]
-        //[InlineData("world", InclusionRule.IncludeAlways, "?hello=world")]
-        //public void WithUriQueryParameter_objectarray_InclusionRule(object value1, object , InclusionRule inclusionRule, string expected)
-        //{
-        //    // arrange
-        //    var name = "hello";
-        //    var values = new object[] { 123, 456 };
-        //    var request = new HttpRequestMessage();
+        [Theory]
+        [InlineData(null, null, InclusionRule.ExcludeIfNull, null)]
+        [InlineData(null, null, InclusionRule.IncludeAlways, "?hello=")]
+        [InlineData(123, 456, InclusionRule.ExcludeIfNull, "?hello=123&hello=456")]
+        [InlineData(123, 456, InclusionRule.IncludeAlways, "?hello=123&hello=456")]
+        public void WithUriQueryParameter_objectarray_InclusionRule(object value1, object value2, InclusionRule inclusionRule, string expected)
+        {
+            // arrange
+            var name = "hello";
 
-        //    // act
-        //    request.WithUriQueryParameter(name, value, inclusionRule);
+            object[] values = (value1 == null)
+                ? null
+                : new[] { value1, value2 };
 
-        //    // assert
-        //    Assert.Equal(expected, request.RequestUri?.OriginalString);
-        //}
+            var request = new HttpRequestMessage();
+
+            // act
+            request.WithUriQueryParameter(name, values, inclusionRule);
+
+            // assert
+            Assert.Equal(expected, request.RequestUri?.OriginalString);
+        }
 
         [Fact]
         public void WithUriQueryParameter_null_string_IncludeAlways()

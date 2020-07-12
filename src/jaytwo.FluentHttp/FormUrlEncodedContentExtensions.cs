@@ -19,10 +19,10 @@ namespace jaytwo.FluentHttp
         }
 
         public static List<KeyValuePair<string, string>> WithValue(this List<KeyValuePair<string, string>> data, string key, object value)
-            => data.WithValue(key, value, InclusionRule.IncludeAlways);
+            => data.WithValue(key, ObjectToStringHelper.GetString(value));
 
         public static List<KeyValuePair<string, string>> WithValue(this List<KeyValuePair<string, string>> data, string key, object value, InclusionRule inclusionRule)
-            => data.WithValue(key, "{0}", value, inclusionRule);
+            => data.WithValue(key, ObjectToStringHelper.GetString(value), inclusionRule);
 
         public static List<KeyValuePair<string, string>> WithValue(this List<KeyValuePair<string, string>> data, string key, string format, object value)
             => data.WithValue(key, format, value, InclusionRule.IncludeAlways);

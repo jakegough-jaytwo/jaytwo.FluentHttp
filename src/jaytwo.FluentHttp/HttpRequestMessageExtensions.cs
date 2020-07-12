@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Runtime.Serialization;
@@ -39,10 +40,10 @@ namespace jaytwo.FluentHttp
         }
 
         public static HttpRequestMessage WithHeader(this HttpRequestMessage httpRequestMessage, string name, object value)
-            => httpRequestMessage.WithHeader(name, value, InclusionRule.IncludeAlways);
+            => httpRequestMessage.WithHeader(name, ObjectToStringHelper.GetString(value));
 
         public static HttpRequestMessage WithHeader(this HttpRequestMessage httpRequestMessage, string name, object value, InclusionRule inclusionRule)
-            => httpRequestMessage.WithHeader(name, "{0}", value, inclusionRule);
+            => httpRequestMessage.WithHeader(name, ObjectToStringHelper.GetString(value), inclusionRule);
 
         public static HttpRequestMessage WithHeader(this HttpRequestMessage httpRequestMessage, string name, string format, object value)
             => httpRequestMessage.WithHeader(name, format, value, InclusionRule.IncludeAlways);
@@ -363,24 +364,16 @@ namespace jaytwo.FluentHttp
         }
 
         public static HttpRequestMessage WithUriQueryParameter(this HttpRequestMessage httpRequestMessage, string key, object value)
-            => httpRequestMessage.WithUriQueryParameter(key, value, InclusionRule.IncludeAlways);
+            => httpRequestMessage.WithUriQueryParameter(key, ObjectToStringHelper.GetString(value));
 
         public static HttpRequestMessage WithUriQueryParameter(this HttpRequestMessage httpRequestMessage, string key, object value, InclusionRule inclusionRule)
-        {
-            if (InclusionRuleHelper.IncludeContent(value, inclusionRule))
-            {
-                if (httpRequestMessage.RequestUri != null)
-                {
-                    return httpRequestMessage.WithUri(httpRequestMessage.RequestUri.WithQueryParameter(key, value));
-                }
-                else
-                {
-                    return httpRequestMessage.WithUriQuery(new Dictionary<string, object>() { { key, value } });
-                }
-            }
+            => httpRequestMessage.WithUriQueryParameter(key, ObjectToStringHelper.GetString(value), inclusionRule);
 
-            return httpRequestMessage;
-        }
+        public static HttpRequestMessage WithUriQueryParameter(this HttpRequestMessage httpRequestMessage, string key, IEnumerable<string> values)
+            => httpRequestMessage.WithUriQueryParameter(key, values?.ToArray(), InclusionRule.IncludeAlways);
+
+        public static HttpRequestMessage WithUriQueryParameter(this HttpRequestMessage httpRequestMessage, string key, IEnumerable<string> values, InclusionRule inclusionRule)
+            => httpRequestMessage.WithUriQueryParameter(key, values?.ToArray(), inclusionRule);
 
         public static HttpRequestMessage WithUriQueryParameter(this HttpRequestMessage httpRequestMessage, string key, string[] values)
             => httpRequestMessage.WithUriQueryParameter(key, values, InclusionRule.IncludeAlways);
@@ -402,25 +395,17 @@ namespace jaytwo.FluentHttp
             return httpRequestMessage;
         }
 
+        public static HttpRequestMessage WithUriQueryParameter(this HttpRequestMessage httpRequestMessage, string key, IEnumerable<object> values)
+            => httpRequestMessage.WithUriQueryParameter(key, values?.Select(ObjectToStringHelper.GetString));
+
+        public static HttpRequestMessage WithUriQueryParameter(this HttpRequestMessage httpRequestMessage, string key, IEnumerable<object> values, InclusionRule inclusionRule)
+            => httpRequestMessage.WithUriQueryParameter(key, values?.Select(ObjectToStringHelper.GetString), inclusionRule);
+
         public static HttpRequestMessage WithUriQueryParameter(this HttpRequestMessage httpRequestMessage, string key, object[] values)
-            => httpRequestMessage.WithUriQueryParameter(key, values, InclusionRule.IncludeAlways);
+            => httpRequestMessage.WithUriQueryParameter(key, values?.Select(ObjectToStringHelper.GetString));
 
         public static HttpRequestMessage WithUriQueryParameter(this HttpRequestMessage httpRequestMessage, string key, object[] values, InclusionRule inclusionRule)
-        {
-            if (InclusionRuleHelper.IncludeContent(values, inclusionRule))
-            {
-                if (httpRequestMessage.RequestUri != null)
-                {
-                    return httpRequestMessage.WithUri(httpRequestMessage.RequestUri.WithQueryParameter(key, values));
-                }
-                else
-                {
-                    return httpRequestMessage.WithUriQuery(new Dictionary<string, object[]>() { { key, values } });
-                }
-            }
-
-            return httpRequestMessage;
-        }
+            => httpRequestMessage.WithUriQueryParameter(key, values?.Select(ObjectToStringHelper.GetString), inclusionRule);
 
         public static HttpRequestMessage WithUriQueryParameter(this HttpRequestMessage httpRequestMessage, string key, string format, object[] values)
             => httpRequestMessage.WithUriQueryParameter(key, format, values, InclusionRule.IncludeAlways);

@@ -23,10 +23,10 @@ namespace jaytwo.FluentHttp
         }
 
         public static MultipartFormDataContent WithTextContent(this MultipartFormDataContent multipartFormDataContent, string name, object value)
-            => WithTextContent(multipartFormDataContent, name, value, InclusionRule.IncludeAlways);
+            => WithTextContent(multipartFormDataContent, name, ObjectToStringHelper.GetString(value));
 
         public static MultipartFormDataContent WithTextContent(this MultipartFormDataContent multipartFormDataContent, string name, object value, InclusionRule inclusionRule)
-            => WithTextContent(multipartFormDataContent, name, "{0}", value, inclusionRule);
+            => WithTextContent(multipartFormDataContent, name, ObjectToStringHelper.GetString(value), inclusionRule);
 
         public static MultipartFormDataContent WithTextContent(this MultipartFormDataContent multipartFormDataContent, string name, string format, object value)
             => WithTextContent(multipartFormDataContent, name, format, value, InclusionRule.IncludeAlways);
