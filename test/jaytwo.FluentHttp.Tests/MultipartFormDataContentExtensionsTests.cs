@@ -881,7 +881,7 @@ namespace jaytwo.FluentHttp.Tests
         }
 
         [Theory]
-        [InlineData(2020, 7, 4, 0, "2020-07-04")]
+        [InlineData(2020, 7, 4, 0, "2020-07-04T00:00:00.0000000+00:00")]
         public async Task WithTextContent_DateTimeOffset(int year, int month, int day, int offset, string expected)
         {
             // arrange
@@ -905,7 +905,7 @@ namespace jaytwo.FluentHttp.Tests
         }
 
         [Theory]
-        [InlineData(2020, 7, 4, 0, "2020-07-04")]
+        [InlineData(2020, 7, 4, 0, "2020-07-04T00:00:00.0000000+00:00")]
         [InlineData(null, null, null, null, "")]
         public async Task WithTextContent_nullable_DateTimeOffset(int? year, int? month, int? day, int? offset, string expected)
         {
@@ -940,7 +940,7 @@ namespace jaytwo.FluentHttp.Tests
         }
 
         [Theory]
-        [InlineData(2020, 7, 4, 0, DateTimeFormatting.Default, "2020-07-04")]
+        [InlineData(2020, 7, 4, 0, DateTimeFormatting.Default, "2020-07-04T00:00:00.0000000+00:00")]
         [InlineData(2020, 7, 4, 0, DateTimeFormatting.YYYYMMDD, "20200704")]
         [InlineData(2020, 7, 5, 0, DateTimeFormatting.YYYYMMDD, "20200705")]
         public async Task WithTextContent_DateTimeOffset_DateTimeFormatting(int year, int month, int day, int offset, DateTimeFormatting formatting, string expected)
@@ -967,7 +967,7 @@ namespace jaytwo.FluentHttp.Tests
 
         [Theory]
         [InlineData(null, null, null, null, DateTimeFormatting.Default, "")]
-        [InlineData(2020, 7, 4, 0, DateTimeFormatting.Default, "2020-07-04")]
+        [InlineData(2020, 7, 4, 0, DateTimeFormatting.Default, "2020-07-04T00:00:00.0000000+00:00")]
         [InlineData(2020, 7, 4, 0, DateTimeFormatting.YYYYMMDD, "20200704")]
         [InlineData(2020, 7, 5, 0, DateTimeFormatting.YYYYMMDD, "20200705")]
         public async Task WithTextContent_nullable_DateTimeOffset_DateTimeFormatting(int? year, int? month, int? day, int? offset, DateTimeFormatting formatting, string expected)
@@ -1003,9 +1003,9 @@ namespace jaytwo.FluentHttp.Tests
         }
 
         [Theory]
-        [InlineData(2020, 7, 4, 0, InclusionRule.IncludeAlways, "2020-07-04")]
-        [InlineData(2020, 7, 4, 0, InclusionRule.ExcludeIfNull, "2020-07-04")]
-        [InlineData(2020, 7, 4, 0, InclusionRule.ExcludeIfNullOrEmpty, "2020-07-04")]
+        [InlineData(2020, 7, 4, 0, InclusionRule.IncludeAlways, "2020-07-04T00:00:00.0000000+00:00")]
+        [InlineData(2020, 7, 4, 0, InclusionRule.ExcludeIfNull, "2020-07-04T00:00:00.0000000+00:00")]
+        [InlineData(2020, 7, 4, 0, InclusionRule.ExcludeIfNullOrEmpty, "2020-07-04T00:00:00.0000000+00:00")]
         public async Task WithTextContent_DateTimeOffset_InclusionRule(int year, int month, int day, int offset, InclusionRule inclusionRule, string expected)
         {
             // arrange
@@ -1029,11 +1029,11 @@ namespace jaytwo.FluentHttp.Tests
         }
 
         [Theory]
-        [InlineData(2020, 7, 4, 0, InclusionRule.IncludeAlways, "2020-07-04")]
+        [InlineData(2020, 7, 4, 0, InclusionRule.IncludeAlways, "2020-07-04T00:00:00.0000000+00:00")]
         [InlineData(null, null, null, null, InclusionRule.IncludeAlways, "")]
-        [InlineData(2020, 7, 4, 0, InclusionRule.ExcludeIfNull, "2020-07-04")]
+        [InlineData(2020, 7, 4, 0, InclusionRule.ExcludeIfNull, "2020-07-04T00:00:00.0000000+00:00")]
         [InlineData(null, null, null, null, InclusionRule.ExcludeIfNull, null)]
-        [InlineData(2020, 7, 4, 0, InclusionRule.ExcludeIfNullOrEmpty, "2020-07-04")]
+        [InlineData(2020, 7, 4, 0, InclusionRule.ExcludeIfNullOrEmpty, "2020-07-04T00:00:00.0000000+00:00")]
         [InlineData(null, null, null, null, InclusionRule.ExcludeIfNullOrEmpty, null)]
         public async Task WithTextContent_nullable_DateTimeOffset_InclusionRule(int? year, int? month, int? day, int? offset, InclusionRule inclusionRule, string expected)
         {
@@ -1068,7 +1068,7 @@ namespace jaytwo.FluentHttp.Tests
         }
 
         [Theory]
-        [InlineData(2020, 7, 4, 0, DateTimeFormatting.Default, InclusionRule.IncludeAlways, "2020-07-04")]
+        [InlineData(2020, 7, 4, 0, DateTimeFormatting.Default, InclusionRule.IncludeAlways, "2020-07-04T00:00:00.0000000+00:00")]
         [InlineData(2020, 7, 4, 0, DateTimeFormatting.YYYYMMDD, InclusionRule.IncludeAlways, "20200704")]
         [InlineData(2020, 7, 5, 0, DateTimeFormatting.YYYYMMDD, InclusionRule.IncludeAlways, "20200705")]
         [InlineData(2020, 7, 4, 0, DateTimeFormatting.YYYYMMDD, InclusionRule.ExcludeIfNull, "20200704")]
@@ -1097,7 +1097,7 @@ namespace jaytwo.FluentHttp.Tests
 
         [Theory]
         [InlineData(null, null, null, null, DateTimeFormatting.Default, InclusionRule.IncludeAlways, "")]
-        [InlineData(2020, 7, 4, 0, DateTimeFormatting.Default, InclusionRule.IncludeAlways, "2020-07-04")]
+        [InlineData(2020, 7, 4, 0, DateTimeFormatting.Default, InclusionRule.IncludeAlways, "2020-07-04T00:00:00.0000000+00:00")]
         [InlineData(2020, 7, 4, 0, DateTimeFormatting.YYYYMMDD, InclusionRule.IncludeAlways, "20200704")]
         [InlineData(2020, 7, 5, 0, DateTimeFormatting.YYYYMMDD, InclusionRule.IncludeAlways, "20200705")]
         [InlineData(2020, 7, 4, 0, DateTimeFormatting.YYYYMMDD, InclusionRule.ExcludeIfNull, "20200704")]

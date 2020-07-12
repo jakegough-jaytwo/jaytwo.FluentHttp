@@ -3,6 +3,9 @@ namespace jaytwo.FluentHttp
     public enum DateTimeFormatting
     {
         Default = 0,
+        ISO,
+        UnixTime,
+        UnixTimeMilliseconds,
         YYYY_MM_DD,
         YYYYMMDD,
         YY_MM_DD,
@@ -11,7 +14,5 @@ namespace jaytwo.FluentHttp
         MMDDYYYY,
         MM_DD_YY,
         MMDDYY,
-        UnixTime,
-        ISO,
     }
 }
