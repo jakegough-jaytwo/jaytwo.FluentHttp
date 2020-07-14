@@ -117,16 +117,25 @@ namespace jaytwo.FluentHttp
             return httpRequestMessage;
         }
 
+        public static HttpRequestMessage WithHeaderCacheControl(this HttpRequestMessage httpRequestMessage, Action<CacheControlHeaderValue> builder)
+        {
+            var cacheControl = new CacheControlHeaderValue();
+            builder.Invoke(cacheControl);
+            httpRequestMessage.Headers.CacheControl = cacheControl;
+            return httpRequestMessage;
+        }
+
         public static HttpRequestMessage WithHeaderCacheControl(this HttpRequestMessage httpRequestMessage, string value)
         {
             httpRequestMessage.Headers.CacheControl = CacheControlHeaderValue.Parse(value);
             return httpRequestMessage;
         }
 
-        public static HttpRequestMessage WithHeaderCacheControlNoCache(this HttpRequestMessage httpRequestMessage)
-        {
-            return httpRequestMessage.WithHeaderCacheControl("no-cache");
-        }
+        public static HttpRequestMessage WithHeaderCacheControlNoCache(this HttpRequestMessage httpRequestMessage) =>
+            httpRequestMessage.WithHeaderCacheControl(header =>
+            {
+                header.NoCache = true;
+            });
 
         public static HttpRequestMessage WithHeaderConnectionClose(this HttpRequestMessage httpRequestMessage, bool? value)
         {
