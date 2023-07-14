@@ -1169,10 +1169,13 @@ namespace jaytwo.FluentHttp.Tests
         }
 
         [Theory]
-        [InlineData(null, 2)]
-        [InlineData(2, null)]
-        [InlineData(1, 2)]
-        [InlineData(3, long.MaxValue)]
+        [InlineData(0L, 2L)]
+        [InlineData(null, 2L)]
+        [InlineData(2L, null)]
+        [InlineData(1L, 2L)]
+        [InlineData(3L, (long)int.MaxValue)]
+        [InlineData(4L, long.MaxValue)]
+        [InlineData(((long)int.MaxValue) + 1, long.MaxValue)]
         public void WithHeaderRange(long? from, long? to)
         {
             // arrange
