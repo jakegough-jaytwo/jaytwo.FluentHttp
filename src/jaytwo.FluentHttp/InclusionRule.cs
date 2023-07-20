@@ -1,9 +1,8 @@
-﻿namespace jaytwo.FluentHttp
+namespace jaytwo.FluentHttp;
+
+public enum InclusionRule
 {
-    public enum InclusionRule
-    {
-        IncludeAlways = 0,
-        ExcludeIfNull = 1,
-        ExcludeIfNullOrEmpty = 2,
-    }
+    IncludeAlways = 0,
+    ExcludeIfNull = 1,
+    ExcludeIfNullOrEmpty = 2,
 }
