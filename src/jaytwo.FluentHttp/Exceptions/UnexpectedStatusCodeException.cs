@@ -6,24 +6,23 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace jaytwo.FluentHttp.Exceptions
+namespace jaytwo.FluentHttp.Exceptions;
+
+public class UnexpectedStatusCodeException : Exception
 {
-    public class UnexpectedStatusCodeException : Exception
+    public UnexpectedStatusCodeException(HttpStatusCode statusCode, HttpResponseMessage response)
+        : base(GetMessage(statusCode))
     {
-        public UnexpectedStatusCodeException(HttpStatusCode statusCode, HttpResponseMessage response)
-            : base(GetMessage(statusCode))
-        {
-            Response = response;
-            StatusCode = response.StatusCode;
-        }
+        Response = response;
+        StatusCode = response.StatusCode;
+    }
 
-        public HttpStatusCode StatusCode { get; }
+    public HttpStatusCode StatusCode { get; }
 
-        public HttpResponseMessage Response { get; }
+    public HttpResponseMessage Response { get; }
 
-        private static string GetMessage(HttpStatusCode statusCode)
-        {
-            return $"Unexpected status code: {(int)statusCode} ({statusCode})";
-        }
+    private static string GetMessage(HttpStatusCode statusCode)
+    {
+        return $"Unexpected status code: {(int)statusCode} ({statusCode})";
     }
 }

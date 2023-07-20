@@ -1,34 +1,23 @@
-//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Net.Http;
-//using System.Text;
-//using System.Threading;
-//using System.Threading.Tasks;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
-//namespace jaytwo.FluentHttp.HttpClientWrappers
-//{
-//    public class HttpCompletionOptionWrapper : HttpClientWrapper, IHttpClient
-//    {
-//        private readonly HttpCompletionOption _completionOption;
+namespace jaytwo.FluentHttp.HttpClientWrappers;
 
-//        public HttpCompletionOptionWrapper(HttpClient httpClient, HttpCompletionOption completionOption)
-//            : base(httpClient)
-//        {
-//            _completionOption = completionOption;
-//        }
+public class HttpCompletionOptionWrapper : DelegatingHttpClientWrapper, IHttpClient
+{
+    public HttpCompletionOptionWrapper(IHttpClient httpClient, HttpCompletionOption completionOption)
+        : base(httpClient)
+    {
+        CompletionOption = completionOption;
+    }
 
-//        public HttpCompletionOptionWrapper(IHttpClient httpClient, HttpCompletionOption completionOption)
-//            : base(httpClient)
-//        {
-//            _completionOption = completionOption;
-//        }
+    public HttpCompletionOption CompletionOption { get; private set; }
 
-//        public HttpCompletionOption CompletionOption => _completionOption;
-
-//        public override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationToken cancellationToken)
-//        {
-//            return base.SendAsync(request, _completionOption, cancellationToken);
-//        }
-//    }
-//}
+    public override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, HttpCompletionOption? completionOption = default, CancellationToken? cancellationToken = default)
+        => base.SendAsync(request, completionOption ?? CompletionOption, cancellationToken);
+}

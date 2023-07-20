@@ -1,36 +1,26 @@
-//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Net.Http;
-//using System.Text;
-//using System.Threading;
-//using System.Threading.Tasks;
-//using jaytwo.FluentHttp.Exceptions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
-//namespace jaytwo.FluentHttp.HttpClientWrappers
-//{
-//    public class BaseUriWrapper : HttpClientWrapper, IHttpClient
-//    {
-//        private readonly Uri _baseUri;
+namespace jaytwo.FluentHttp.HttpClientWrappers;
 
-//        public BaseUriWrapper(HttpClient httpClient, Uri baseUri)
-//            : base(httpClient)
-//        {
-//            _baseUri = baseUri;
-//        }
+public class BaseUriWrapper : DelegatingHttpClientWrapper, IHttpClient
+{
+    public BaseUriWrapper(IHttpClient httpClient, Uri baseUri)
+        : base(httpClient)
+    {
+        BaseUri = baseUri;
+    }
 
-//        public BaseUriWrapper(IHttpClient httpClient, Uri baseUri)
-//            : base(httpClient)
-//        {
-//            _baseUri = baseUri;
-//        }
+    protected Uri BaseUri { get; private set; }
 
-//        public Uri BaseUri => _baseUri;
-
-//        public override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationToken cancellationToken)
-//        {
-//            request.WithBaseUri(_baseUri);
-//            return await base.SendAsync(request, completionOption, cancellationToken);
-//        }
-//    }
-//}
+    public override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, HttpCompletionOption? completionOption = null, CancellationToken? cancellationToken = null)
+    {
+        request.WithBaseUri(BaseUri);
+        return base.SendAsync(request, completionOption, cancellationToken);
+    }
+}

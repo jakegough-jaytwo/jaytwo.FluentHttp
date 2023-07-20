@@ -1,26 +1,25 @@
-//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Net;
-//using System.Net.Http;
-//using System.Text;
-//using System.Threading.Tasks;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
 
-//namespace jaytwo.FluentHttp.Exceptions
-//{
-//    public class RequestTimeoutException : Exception
-//    {
-//        public RequestTimeoutException(HttpRequestMessage request, Exception innerException)
-//            : base(GetMessage(request), innerException)
-//        {
-//            Request = request;
-//        }
+namespace jaytwo.FluentHttp.Exceptions;
 
-//        public HttpRequestMessage Request { get; }
+public class RequestTimeoutException : Exception
+{
+    public RequestTimeoutException(HttpRequestMessage request, Exception innerException)
+        : base(GetMessage(request), innerException)
+    {
+        Request = request;
+    }
 
-//        private static string GetMessage(HttpRequestMessage request)
-//        {
-//            return $"Request timed out";
-//        }
-//    }
-//}
+    public HttpRequestMessage Request { get; }
+
+    private static string GetMessage(HttpRequestMessage request)
+    {
+        return $"Request timed out";
+    }
+}

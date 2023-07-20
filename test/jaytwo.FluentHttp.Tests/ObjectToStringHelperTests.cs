@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using jaytwo.FluentHttp.Formatting;
 using Xunit;
 
 namespace jaytwo.FluentHttp.Tests
