@@ -17,8 +17,8 @@ internal class HttpClientWrapper : IHttpClient
         _httpClient = httpClient;
     }
 
-    public virtual Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, HttpCompletionOption? completionOption = default, CancellationToken? cancellationToken = default)
-       => _httpClient.SendAsync(
+    public virtual async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, HttpCompletionOption? completionOption = default, CancellationToken? cancellationToken = default)
+       => await _httpClient.SendAsync(
            request,
            completionOption ?? HttpCompletionOption.ResponseHeadersRead,
            cancellationToken ?? CancellationToken.None);

@@ -18,6 +18,6 @@ public class HttpCompletionOptionWrapper : DelegatingHttpClientWrapper, IHttpCli
 
     public HttpCompletionOption CompletionOption { get; private set; }
 
-    public override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, HttpCompletionOption? completionOption = default, CancellationToken? cancellationToken = default)
-        => base.SendAsync(request, completionOption ?? CompletionOption, cancellationToken);
+    public override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, HttpCompletionOption? completionOption = default, CancellationToken? cancellationToken = default)
+        => await base.SendAsync(request, completionOption ?? CompletionOption, cancellationToken);
 }

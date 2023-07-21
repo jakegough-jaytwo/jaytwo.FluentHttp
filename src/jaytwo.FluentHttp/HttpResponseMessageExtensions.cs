@@ -4,7 +4,6 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using jaytwo.AsyncHelper;
 using jaytwo.FluentHttp.Exceptions;
 using Newtonsoft.Json;
 
@@ -19,9 +18,9 @@ public static class HttpResponseMessageExtensions
         return httpResponse;
     }
 
-    public static HttpResponseMessage EnsureExpectedStatusCode(this HttpResponseMessage response, params HttpStatusCode[] statusCodes)
+    public static HttpResponseMessage EnsureExpectedStatusCode(this HttpResponseMessage response, HttpStatusCode statusCode)
     {
-        if (!statusCodes.Contains(response.StatusCode))
+        if (response.StatusCode != statusCode)
         {
             throw new UnexpectedStatusCodeException(response.StatusCode, response);
         }
@@ -29,10 +28,26 @@ public static class HttpResponseMessageExtensions
         return response;
     }
 
-    public static async Task EnsureExpectedStatusCodeAsync(this Task<HttpResponseMessage> responseTask, params HttpStatusCode[] statusCodes)
+    public static async Task EnsureExpectedStatusCodeAsync(this Task<HttpResponseMessage> responseTask, HttpStatusCode statusCode)
     {
         var response = await responseTask;
-        response.EnsureExpectedStatusCode(statusCodes);
+        response.EnsureExpectedStatusCode(statusCode);
+    }
+
+    public static HttpResponseMessage EnsureExpectedStatusCode(this HttpResponseMessage response, HttpStatusCode statusCode, params HttpStatusCode[] additionalStatusCodes)
+    {
+        if (response.StatusCode != statusCode && !additionalStatusCodes.Contains(response.StatusCode))
+        {
+            throw new UnexpectedStatusCodeException(response.StatusCode, response);
+        }
+
+        return response;
+    }
+
+    public static async Task EnsureExpectedStatusCodeAsync(this Task<HttpResponseMessage> responseTask, HttpStatusCode statusCode, params HttpStatusCode[] additionalStatusCodes)
+    {
+        var response = await responseTask;
+        response.EnsureExpectedStatusCode(statusCode, additionalStatusCodes);
     }
 
     public static async Task<T> AsAnonymousTypeAsync<T>(this Task<HttpResponseMessage> httpResponseTask, T anonymousPrototype)

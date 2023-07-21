@@ -18,9 +18,9 @@ public class BaseUriWrapper : DelegatingHttpClientWrapper, IHttpClient
 
     protected Uri BaseUri { get; private set; }
 
-    public override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, HttpCompletionOption? completionOption = null, CancellationToken? cancellationToken = null)
+    public override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, HttpCompletionOption? completionOption = null, CancellationToken? cancellationToken = null)
     {
         request.WithBaseUri(BaseUri);
-        return base.SendAsync(request, completionOption, cancellationToken);
+        return await base.SendAsync(request, completionOption, cancellationToken);
     }
 }

@@ -497,9 +497,7 @@ public static class HttpRequestMessageExtensions
         => httpRequestMessage.WithUriQueryParameter(key, DateTimeFormattingHelper.Format(value, formatting), inclusionRule);
 
     public static HttpRequestMessage WithJsonContent(this HttpRequestMessage httpRequestMessage, string json)
-    {
-        return httpRequestMessage.WithStringContent(json, "application/json");
-    }
+        => httpRequestMessage.WithStringContent(json, "application/json");
 
     public static HttpRequestMessage WithJsonContent(this HttpRequestMessage httpRequestMessage, object data)
     {
@@ -508,9 +506,7 @@ public static class HttpRequestMessageExtensions
     }
 
     public static HttpRequestMessage WithUrlEncodedFormContent(this HttpRequestMessage httpRequestMessage, string urlEncodedFormData)
-    {
-        return httpRequestMessage.WithStringContent(urlEncodedFormData, "application/x-www-form-urlencoded");
-    }
+        => httpRequestMessage.WithStringContent(urlEncodedFormData, "application/x-www-form-urlencoded");
 
     public static HttpRequestMessage WithUrlEncodedFormContent(this HttpRequestMessage httpRequestMessage, object data)
     {
@@ -591,14 +587,10 @@ public static class HttpRequestMessageExtensions
     }
 
     public static string GetHeaderValue(this HttpRequestMessage httpRequestMessage, string key)
-    {
-        return httpRequestMessage.Headers.GetHeaderValue(key) ?? httpRequestMessage.Content?.Headers.GetHeaderValue(key);
-    }
+        => httpRequestMessage.Headers.GetHeaderValue(key) ?? httpRequestMessage.Content?.Headers.GetHeaderValue(key);
 
     public static string GetHeaderValue(this HttpRequestMessage httpRequestMessage, string key, StringComparison stringComparison)
-    {
-        return httpRequestMessage.Headers.GetHeaderValue(key, stringComparison) ?? httpRequestMessage.Content?.Headers.GetHeaderValue(key, stringComparison);
-    }
+        => httpRequestMessage.Headers.GetHeaderValue(key, stringComparison) ?? httpRequestMessage.Content?.Headers.GetHeaderValue(key, stringComparison);
 
     private static string ApplyParenthesesIfMissing(string input)
     {
