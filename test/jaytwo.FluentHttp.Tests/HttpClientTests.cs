@@ -13,13 +13,15 @@ namespace jaytwo.FluentHttp.Tests
 {
     public class HttpClientTests
     {
+        public const string HttpBinUrl = "http://httpbin.jaytwo.com/";
+
         private readonly HttpClient _httpClient;
         private readonly ITestOutputHelper _output;
 
         public HttpClientTests(ITestOutputHelper output)
         {
             _output = output;
-            _httpClient = new HttpClient().WithBaseAddress("http://httpbin.org");
+            _httpClient = new HttpClient().WithBaseAddress(HttpBinUrl);
         }
 
         [Fact]
@@ -195,7 +197,7 @@ namespace jaytwo.FluentHttp.Tests
                     request
                         .WithMethod(HttpMethod.Get)
                         .WithUriPath("/get?hello=world")
-                        .WithBaseUri("http://httpbin.org");
+                        .WithBaseUri(HttpBinUrl);
                 });
 
                 // assert
@@ -218,7 +220,7 @@ namespace jaytwo.FluentHttp.Tests
                     {
                         request
                             .WithMethod(HttpMethod.Get)
-                            .WithBaseUri("http://httpbin.org")
+                            .WithBaseUri(HttpBinUrl)
                             .WithUriPath("/get")
                             .WithUriQuery("hello=world");
                     });
