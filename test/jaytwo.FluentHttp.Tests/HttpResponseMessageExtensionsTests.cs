@@ -56,7 +56,7 @@ namespace jaytwo.FluentHttp.Tests
         }
 
         [Fact]
-        public void EnsureExpectedStatusCode_multiple()
+        public void EnsureExpectedStatusCode_multiple_a()
         {
             // arrange
             var response = new HttpResponseMessage();
@@ -64,6 +64,20 @@ namespace jaytwo.FluentHttp.Tests
 
             // act
             response.EnsureExpectedStatusCode(HttpStatusCode.NotFound, HttpStatusCode.BadGateway);
+
+            // assert (that it doesn't throw an exception)
+            Assert.NotNull(response);
+        }
+
+        [Fact]
+        public void EnsureExpectedStatusCode_multiple_b()
+        {
+            // arrange
+            var response = new HttpResponseMessage();
+            response.StatusCode = HttpStatusCode.NotFound;
+
+            // act
+            response.EnsureExpectedStatusCode(HttpStatusCode.BadGateway, HttpStatusCode.NotFound);
 
             // assert (that it doesn't throw an exception)
             Assert.NotNull(response);

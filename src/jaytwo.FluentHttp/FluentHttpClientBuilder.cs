@@ -7,7 +7,6 @@ using System.Net.Security;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using jaytwo.FluentHttp.Handlers;
 using Microsoft.Extensions.Logging;
 
 namespace jaytwo.FluentHttp;
@@ -87,9 +86,6 @@ public class FluentHttpClientBuilder
         AutomaticDecompression = automaticDecompression;
         return this;
     }
-
-    public FluentHttpClientBuilder WithLogger(ILogger logger)
-        => WithHandler(x => new LoggingHttpMessageHandler(x, logger));
 
     public FluentHttpClientBuilder WithHandler(Func<HttpMessageHandler, DelegatingHandler> handlerBuilder)
     {
