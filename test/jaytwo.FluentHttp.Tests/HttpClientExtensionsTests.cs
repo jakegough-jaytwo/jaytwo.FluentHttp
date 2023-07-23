@@ -1,9 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Net.Http;
-using System.Net.Sockets;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,7 +13,7 @@ namespace jaytwo.FluentHttp.Tests
         public void WithBaseAddress_uri()
         {
             // arrange
-            var httpClient = new HttpClient();
+            using var httpClient = new HttpClient();
             var url = "http://www.example.com/";
 
             // act
@@ -31,7 +27,7 @@ namespace jaytwo.FluentHttp.Tests
         public void WithBaseAddress_string()
         {
             // arrange
-            var httpClient = new HttpClient();
+            using var httpClient = new HttpClient();
             var url = "http://www.example.com/";
 
             // act
@@ -45,7 +41,7 @@ namespace jaytwo.FluentHttp.Tests
         public void WithTimeout()
         {
             // arrange
-            var httpClient = new HttpClient();
+            using var httpClient = new HttpClient();
             var timeout = TimeSpan.FromHours(1);
 
             // act
@@ -59,53 +55,50 @@ namespace jaytwo.FluentHttp.Tests
         public async Task SendAsync_action_HttpRequestMessage()
         {
             // arrange
-            var httpClient = new HttpClient();
+            using var httpClient = new HttpClient();
 
             // act
-            var response = await httpClient.SendAsync(request =>
+            using var response = await httpClient.SendAsync(request =>
             {
                 request.WithUri("http://www.google.com");
             });
 
             // assert
-            using (response)
-            {
-                response.EnsureSuccessStatusCode();
-            }
+            response.EnsureSuccessStatusCode();
         }
 
         [Fact]
         public async Task SendAsync_func_HttpRequestMessage_Task()
         {
             // arrange
-            var httpClient = new HttpClient();
+            using var httpClient = new HttpClient();
 
             // act
-            var response = await httpClient.SendAsync(async request =>
+            using var response = await httpClient.SendAsync(async request =>
             {
                 request.WithUri("http://www.google.com");
                 await Task.Delay(0);
             });
 
             // assert
-            using (response)
-            {
-                response.EnsureSuccessStatusCode();
-            }
+            response.EnsureSuccessStatusCode();
         }
 
         [Fact]
         public async Task SendAsync_CancellationToken_action_HttpRequestMessage()
         {
             // arrange
-            var httpClient = new HttpClient();
+            using var httpClient = new HttpClient();
             var cancellationTokenSource = new CancellationTokenSource(1);
 
             // act
-            await Assert.ThrowsAsync<TaskCanceledException>(() => httpClient.SendAsync(cancellationTokenSource.Token, request =>
-            {
-                request.WithUri("http://www.google.com");
-            }));
+            await Assert.ThrowsAsync<TaskCanceledException>(
+                () => httpClient.SendAsync(
+                    request =>
+                    {
+                        request.WithUri("http://www.google.com");
+                    },
+                    cancellationTokenSource.Token));
 
             // assert
             Assert.True(cancellationTokenSource.IsCancellationRequested);
@@ -115,15 +108,18 @@ namespace jaytwo.FluentHttp.Tests
         public async Task SendAsync_CancellationToken_func_HttpRequestMessage_Task()
         {
             // arrange
-            var httpClient = new HttpClient();
+            using var httpClient = new HttpClient();
             var cancellationTokenSource = new CancellationTokenSource(1);
 
             // act
-            await Assert.ThrowsAsync<TaskCanceledException>(async () => await httpClient.SendAsync(cancellationTokenSource.Token, async request =>
-            {
-                request.WithUri("http://www.google.com");
-                await Task.Delay(0);
-            }));
+            await Assert.ThrowsAsync<TaskCanceledException>(
+                async () => await httpClient.SendAsync(
+                    async request =>
+                    {
+                        request.WithUri("http://www.google.com");
+                        await Task.Delay(0);
+                    },
+                    cancellationTokenSource.Token));
 
             // assert
             Assert.True(cancellationTokenSource.IsCancellationRequested);
@@ -135,21 +131,20 @@ namespace jaytwo.FluentHttp.Tests
         public async Task SendAsync_HttpCompletionOption_action_HttpRequestMessage(HttpCompletionOption httpCompletionOption, bool expectedResultCanSeek)
         {
             // arrange
-            var httpClient = new HttpClient();
+            using var httpClient = new HttpClient();
 
             // act
-            var response = await httpClient.SendAsync(httpCompletionOption, request =>
-            {
-                request.WithUri("http://www.google.com");
-            });
+            using var response = await httpClient.SendAsync(
+                request =>
+                {
+                    request.WithUri("http://www.google.com");
+                },
+                completionOption: httpCompletionOption);
 
             // assert
-            using (response)
-            {
-                response.EnsureSuccessStatusCode();
-                var stream = await response.Content.ReadAsStreamAsync();
-                Assert.Equal(expectedResultCanSeek, stream.CanSeek);
-            }
+            response.EnsureSuccessStatusCode();
+            var stream = await response.Content.ReadAsStreamAsync();
+            Assert.Equal(expectedResultCanSeek, stream.CanSeek);
         }
 
         [Theory]
@@ -158,22 +153,21 @@ namespace jaytwo.FluentHttp.Tests
         public async Task SendAsync_HttpCompletionOption_func_HttpRequestMessage_Task(HttpCompletionOption httpCompletionOption, bool expectedResultCanSeek)
         {
             // arrange
-            var httpClient = new HttpClient();
+            using var httpClient = new HttpClient();
 
             // act
-            var response = await httpClient.SendAsync(httpCompletionOption, async request =>
-            {
-                request.WithUri("http://www.google.com");
-                await Task.Delay(0);
-            });
+            using var response = await httpClient.SendAsync(
+                async request =>
+                {
+                    request.WithUri("http://www.google.com");
+                    await Task.Delay(0);
+                },
+                completionOption: httpCompletionOption);
 
             // assert
-            using (response)
-            {
-                response.EnsureSuccessStatusCode();
-                var stream = await response.Content.ReadAsStreamAsync();
-                Assert.Equal(expectedResultCanSeek, stream.CanSeek);
-            }
+            response.EnsureSuccessStatusCode();
+            var stream = await response.Content.ReadAsStreamAsync();
+            Assert.Equal(expectedResultCanSeek, stream.CanSeek);
         }
 
         [Theory]
@@ -182,21 +176,20 @@ namespace jaytwo.FluentHttp.Tests
         public async Task SendAsync_HttpCompletionOption_CancellationToken_action_HttpRequestMessage__stream_is_expected_type(HttpCompletionOption httpCompletionOption, bool expectedResultCanSeek)
         {
             // arrange
-            var httpClient = new HttpClient();
+            using var httpClient = new HttpClient();
 
             // act
-            var response = await httpClient.SendAsync(httpCompletionOption, CancellationToken.None, request =>
-            {
-                request.WithUri("http://www.google.com");
-            });
+            using var response = await httpClient.SendAsync(
+                request =>
+                {
+                    request.WithUri("http://www.google.com");
+                },
+                completionOption: httpCompletionOption);
 
             // assert
-            using (response)
-            {
-                response.EnsureSuccessStatusCode();
-                var stream = await response.Content.ReadAsStreamAsync();
-                Assert.Equal(expectedResultCanSeek, stream.CanSeek);
-            }
+            response.EnsureSuccessStatusCode();
+            var stream = await response.Content.ReadAsStreamAsync();
+            Assert.Equal(expectedResultCanSeek, stream.CanSeek);
         }
 
         [Theory]
@@ -205,14 +198,16 @@ namespace jaytwo.FluentHttp.Tests
         public async Task SendAsync_HttpCompletionOption_CancellationToken_func_HttpRequestMessage_Task__stream_is_expected_type(HttpCompletionOption httpCompletionOption, bool expectedResultCanSeek)
         {
             // arrange
-            var httpClient = new HttpClient();
+            using var httpClient = new HttpClient();
 
             // act
-            var response = await httpClient.SendAsync(httpCompletionOption, CancellationToken.None, async request =>
-            {
-                request.WithUri("http://www.google.com");
-                await Task.Delay(0);
-            });
+            var response = await httpClient.SendAsync(
+                async request =>
+                {
+                    request.WithUri("http://www.google.com");
+                    await Task.Delay(0);
+                },
+                completionOption: httpCompletionOption);
 
             // assert
             using (response)
@@ -227,29 +222,37 @@ namespace jaytwo.FluentHttp.Tests
         public async Task SendAsync_HttpCompletionOption_CancellationToken_action_HttpRequestMessage__CancellationToken_works()
         {
             // arrange
-            var httpClient = new HttpClient();
+            using var httpClient = new HttpClient();
             var cancellationTokenSource = new CancellationTokenSource(1);
 
             // act & assert
-            await Assert.ThrowsAsync<TaskCanceledException>(() => httpClient.SendAsync(HttpCompletionOption.ResponseHeadersRead, cancellationTokenSource.Token, request =>
-            {
-                request.WithUri("http://www.google.com");
-            }));
+            await Assert.ThrowsAsync<TaskCanceledException>(
+                () => httpClient.SendAsync(
+                    request =>
+                    {
+                        request.WithUri("http://www.google.com");
+                    },
+                    cancellationTokenSource.Token,
+                    HttpCompletionOption.ResponseHeadersRead));
         }
 
         [Fact]
         public async Task SendAsync_HttpCompletionOption_CancellationToken_func_HttpRequestMessage__CancellationToken_works()
         {
             // arrange
-            var httpClient = new HttpClient();
+            using var httpClient = new HttpClient();
             var cancellationTokenSource = new CancellationTokenSource(1);
 
             // act & assert
-            await Assert.ThrowsAsync<TaskCanceledException>(() => httpClient.SendAsync(HttpCompletionOption.ResponseHeadersRead, cancellationTokenSource.Token, async request =>
-            {
-                request.WithUri("http://www.google.com");
-                await Task.Delay(0);
-            }));
+            await Assert.ThrowsAsync<TaskCanceledException>(
+                () => httpClient.SendAsync(
+                    async request =>
+                    {
+                        request.WithUri("http://www.google.com");
+                        await Task.Delay(0);
+                    },
+                    cancellationTokenSource.Token,
+                    HttpCompletionOption.ResponseHeadersRead));
         }
     }
 }

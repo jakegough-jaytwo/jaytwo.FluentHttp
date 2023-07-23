@@ -45,6 +45,8 @@ namespace jaytwo.FluentHttp.Tests
                 headers = default(Dictionary<string, string>),
             };
 
+            response.EnsureSuccessStatusCode();
+
             var expected = await response.AsAnonymousTypeAsync(prototype);
             Assert.Equal("bar", expected.headers["Foo"]); // don't ask me why, header keys get capitalized
             Assert.Equal("buzz", expected.headers["Fizz"]); // don't ask me why, header keys get capitalized
@@ -61,6 +63,7 @@ namespace jaytwo.FluentHttp.Tests
             using (response)
             {
                 // assert
+                response.EnsureSuccessStatusCode();
                 Assert.Equal("bar", response.Headers.GetHeaderValue("foo"));
             }
         }
@@ -139,6 +142,7 @@ namespace jaytwo.FluentHttp.Tests
             // assert
             using (response)
             {
+                response.EnsureSuccessStatusCode();
                 Assert.Equal(MediaType.image_jpeg, response.Content.Headers.ContentType.MediaType);
             }
         }
@@ -155,7 +159,6 @@ namespace jaytwo.FluentHttp.Tests
             using (response)
             {
                 response.EnsureSuccessStatusCode();
-
                 Assert.NotEqual(0, response.Content.Headers.ContentLength);
                 Assert.NotEqual("0", response.GetHeaderValue("Content-Length"));
             }
@@ -196,7 +199,8 @@ namespace jaytwo.FluentHttp.Tests
                 {
                     request
                         .WithMethod(HttpMethod.Get)
-                        .WithUriPath("/get?hello=world")
+                        .WithUriPath("/get")
+                        .WithUriQueryParameter("hello", "world")
                         .WithBaseUri(HttpBinUrl);
                 });
 
@@ -222,7 +226,7 @@ namespace jaytwo.FluentHttp.Tests
                             .WithMethod(HttpMethod.Get)
                             .WithBaseUri(HttpBinUrl)
                             .WithUriPath("/get")
-                            .WithUriQuery("hello=world");
+                            .WithUriQueryParameter("hello", "world");
                     });
 
                 // assert
@@ -268,7 +272,8 @@ namespace jaytwo.FluentHttp.Tests
             {
                 request
                     .WithMethod("PATCH")
-                    .WithUri("/patch?hello=world")
+                    .WithUriPath("/patch")
+                    .WithUriQueryParameter("hello", "world")
                     .WithJsonContent(new { fruit = "banana" });
             });
 
@@ -300,7 +305,8 @@ namespace jaytwo.FluentHttp.Tests
             {
                 request
                     .WithMethod(HttpMethod.Post)
-                    .WithUri("/post?hello=world")
+                    .WithUriPath("/post")
+                    .WithUriQueryParameter("hello", "world")
                     .WithJsonContent(new { fruit = "banana" });
             });
 
@@ -332,7 +338,8 @@ namespace jaytwo.FluentHttp.Tests
             {
                 request
                     .WithMethod(HttpMethod.Put)
-                    .WithUri("/put?hello=world")
+                    .WithUriPath("/put")
+                    .WithUriQueryParameter("hello", "world")
                     .WithJsonContent(new { fruit = "banana" });
             });
 
@@ -364,7 +371,8 @@ namespace jaytwo.FluentHttp.Tests
             {
                 request
                     .WithMethod(HttpMethod.Delete)
-                    .WithUri("/delete?hello=world")
+                    .WithUriPath("/delete")
+                    .WithUriQueryParameter("hello", "world")
                     .WithJsonContent(new { fruit = "banana" });
             });
 
