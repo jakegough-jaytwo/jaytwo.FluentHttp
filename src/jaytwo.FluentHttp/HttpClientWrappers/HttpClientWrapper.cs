@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using jaytwo.Http;
 
 namespace jaytwo.FluentHttp.HttpClientWrappers;
 
@@ -20,7 +21,7 @@ internal class HttpClientWrapper : IHttpClient
     public virtual async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, HttpCompletionOption? completionOption = default, CancellationToken? cancellationToken = default)
        => await _httpClient.SendAsync(
            request,
-           completionOption ?? HttpCompletionOption.ResponseHeadersRead,
+           completionOption ?? HttpCompletionOption.ResponseContentRead,
            cancellationToken ?? CancellationToken.None);
 
     public virtual void Dispose()

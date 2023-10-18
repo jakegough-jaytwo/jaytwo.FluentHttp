@@ -3,9 +3,9 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 using jaytwo.FluentHttp.Exceptions;
-using Newtonsoft.Json;
 
 namespace jaytwo.FluentHttp;
 
@@ -128,7 +128,7 @@ public static class HttpResponseMessageExtensions
 
         if (isJson)
         {
-            return JsonConvert.DeserializeObject<T>(asString);
+            return JsonSerializer.Deserialize<T>(asString);
         }
 
         throw new InvalidOperationException("Data must be JSON to automatically deserialize.");

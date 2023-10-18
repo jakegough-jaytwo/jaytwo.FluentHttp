@@ -1,28 +1,42 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using jaytwo.FluentHttp.HttpClientWrappers;
-using jaytwo.Http.Authentication;
+using Microsoft.Extensions.Logging;
 
-namespace jaytwo.FluentHttp;
+namespace jaytwo.Http;
 
 public static class IHttpClientExtensions
 {
-    public static IHttpClient WithAuthentication(this IHttpClient httpClient, IAuthenticationProvider authenticationProvider)
-        => new AuthenticationWrapper(httpClient, authenticationProvider);
+    public static IHttpClient WithBaseUri(this IHttpClient httpClient, string baseUri, UriKind uriKind = UriKind.RelativeOrAbsolute)
+        => new BaseUriWrapper(httpClient, new Uri(baseUri, uriKind));
 
-    public static IHttpClient WithBasicAuthentication(this IHttpClient httpClient, string user, string pass)
-        => httpClient.WithAuthentication(new BasicAuthenticationProvider(user, pass));
+    public static IHttpClient WithBaseUri(this IHttpClient httpClient, Uri baseUri)
+        => new BaseUriWrapper(httpClient, baseUri);
 
-    public static IHttpClient WithTokenAuthentication(this IHttpClient httpClient, string token)
-        => httpClient.WithAuthentication(new TokenAuthenticationProvider(token));
+    public static IHttpClient WithCancellationToken(this IHttpClient httpClient, CancellationToken cancellationToken)
+        => new CancellationTokenWrapper(httpClient, cancellationToken);
 
-    public static IHttpClient WithTokenAuthentication(this IHttpClient httpClient, Func<string> tokenDelegate)
-        => httpClient.WithAuthentication(new TokenAuthenticationProvider(tokenDelegate));
+    public static IHttpClient WithCompletionOption(this IHttpClient httpClient, HttpCompletionOption completionOption)
+        => new HttpCompletionOptionWrapper(httpClient, completionOption);
 
-    public static IHttpClient WithTokenAuthentication(this IHttpClient httpClient, ITokenProvider tokenProvider)
-       => httpClient.WithAuthentication(new TokenAuthenticationProvider(tokenProvider));
+    public static IHttpClient WithLogger(this IHttpClient httpClient, ILogger logger)
+        => new LoggingWrapper(httpClient, logger);
+
+    public static IHttpClient WithTimeout(this IHttpClient httpClient, TimeSpan timeout)
+        => new TimeoutWrapper(httpClient, timeout);
+
+    public static IHttpClient WithRequestHeaders(this IHttpClient httpClient, Func<Task<IDictionary<string, string>>> headersFactory)
+        => new RequestHeaderWrapper(httpClient, headersFactory);
+
+    public static IHttpClient WithRequestHeaders(this IHttpClient httpClient, Func<IDictionary<string, string>> headersFactory)
+        => WithRequestHeaders(httpClient, () => Task.FromResult(headersFactory.Invoke()));
+
+    public static IHttpClient WithRequestHeaders(this IHttpClient httpClient, IDictionary<string, string> headers)
+        => WithRequestHeaders(httpClient, () => headers);
 
     public static Task<HttpResponseMessage> SendAsync(this IHttpClient httpClient, HttpRequestMessage request)
         => SendAsync(httpClient, request, completionOption: default, cancellationToken: default);

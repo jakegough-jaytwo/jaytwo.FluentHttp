@@ -6,6 +6,8 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using jaytwo.Http;
+using jaytwo.Http.Wrappers;
 using Microsoft.Extensions.Logging;
 
 namespace jaytwo.FluentHttp.HttpClientWrappers;
@@ -22,6 +24,8 @@ public class LoggingWrapper : DelegatingHttpClientWrapper, IHttpClient
 
     public override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, HttpCompletionOption? completionOption = default, CancellationToken? cancellationToken = default)
     {
+        // TODO: some kind of abstracted logging formatter
+
         var requestId = Guid.NewGuid().ToString();
         var loggerScopeValues = new Dictionary<string, object> { { "RequestId", requestId } };
         using var loggerScope = Logger?.BeginScope(loggerScopeValues);

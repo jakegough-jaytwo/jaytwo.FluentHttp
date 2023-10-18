@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using jaytwo.FluentHttp.Exceptions;
+using jaytwo.Http;
 using jaytwo.MimeHelper;
 using Xunit;
 using Xunit.Abstractions;
@@ -15,13 +16,13 @@ namespace jaytwo.FluentHttp.Tests
     {
         public const string HttpBinUrl = "http://httpbin.jaytwo.com/";
 
-        private readonly HttpClient _httpClient;
+        private readonly IHttpClient _httpClient;
         private readonly ITestOutputHelper _output;
 
         public HttpClientTests(ITestOutputHelper output)
         {
             _output = output;
-            _httpClient = new HttpClient().WithBaseAddress(HttpBinUrl);
+            _httpClient = new HttpClient().Wrap().WithBaseUri(HttpBinUrl);
         }
 
         [Fact]
@@ -58,14 +59,11 @@ namespace jaytwo.FluentHttp.Tests
             // arrange
 
             // act
-            var response = await _httpClient.GetAsync("/response-headers?foo=bar");
+            using var response = await _httpClient.SendAsync(request => request.WithUriPath("/response-headers?foo=bar"));
 
-            using (response)
-            {
-                // assert
-                response.EnsureSuccessStatusCode();
-                Assert.Equal("bar", response.Headers.GetHeaderValue("foo"));
-            }
+            // assert
+            response.EnsureSuccessStatusCode();
+            Assert.Equal("bar", response.Headers.GetHeaderValue("foo"));
         }
 
         [Fact]
@@ -137,14 +135,11 @@ namespace jaytwo.FluentHttp.Tests
             // arrange
 
             // act
-            var response = await _httpClient.GetAsync("/image/jpeg");
+            using var response = await _httpClient.SendAsync(request => request.WithUriPath("/image/jpeg"));
 
             // assert
-            using (response)
-            {
-                response.EnsureSuccessStatusCode();
-                Assert.Equal(MediaType.image_jpeg, response.Content.Headers.ContentType.MediaType);
-            }
+            response.EnsureSuccessStatusCode();
+            Assert.Equal(MediaType.image_jpeg, response.Content.Headers.ContentType.MediaType);
         }
 
         [Fact]
@@ -153,15 +148,12 @@ namespace jaytwo.FluentHttp.Tests
             // arrange
 
             // act
-            var response = await _httpClient.GetAsync("/image/jpeg");
+            using var response = await _httpClient.SendAsync(request => request.WithUriPath("/image/jpeg"));
 
             // assert
-            using (response)
-            {
-                response.EnsureSuccessStatusCode();
-                Assert.NotEqual(0, response.Content.Headers.ContentLength);
-                Assert.NotEqual("0", response.GetHeaderValue("Content-Length"));
-            }
+            response.EnsureSuccessStatusCode();
+            Assert.NotEqual(0, response.Content.Headers.ContentLength);
+            Assert.NotEqual("0", response.GetHeaderValue("Content-Length"));
         }
 
         [Fact]
@@ -170,96 +162,96 @@ namespace jaytwo.FluentHttp.Tests
             // arrange
 
             // act
-            var response = await _httpClient.GetAsync("/get?hello=world");
+            using var response = await _httpClient.SendAsync(request => request.WithUriPath("/get?hello=world"));
 
             // assert
-            using (response)
+            var prototype = new
             {
-                var prototype = new
-                {
-                    args = default(Dictionary<string, string>),
-                };
+                args = default(Dictionary<string, string>),
+            };
 
-                var actual = await response
-                    .EnsureSuccessStatusCode()
-                    .AsAnonymousTypeAsync(prototype);
+            var actual = await response
+                .EnsureSuccessStatusCode()
+                .AsAnonymousTypeAsync(prototype);
 
-                Assert.Equal("world", actual.args["hello"]);
-            }
+            Assert.Equal("world", actual.args["hello"]);
         }
 
         [Fact]
         public async Task WithPath_before_WithBaseUri()
         {
             // arrange
-            using (var client = new HttpClient())
-            {
-                // act
-                var response = await client.SendAsync(request =>
-                {
-                    request
-                        .WithMethod(HttpMethod.Get)
-                        .WithUriPath("/get")
-                        .WithUriQueryParameter("hello", "world")
-                        .WithBaseUri(HttpBinUrl);
-                });
+            using var client = new HttpClient().Wrap();
 
-                // assert
-                using (response)
-                {
-                    Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-                }
-            }
+            // act
+            using var response = await client.SendAsync(request =>
+            {
+                request
+                    .WithMethod(HttpMethod.Get)
+                    .WithUriPath("/get")
+                    .WithUriQueryParameter("hello", "world")
+                    .WithBaseUri(HttpBinUrl);
+            });
+
+            // assert
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         }
 
         [Fact]
         public async Task WithBaseUri_before_WithPath()
         {
             // arrange
-            using (var client = new HttpClient())
-            {
-                // act
-                var response = await client
-                    .SendAsync(request =>
-                    {
-                        request
-                            .WithMethod(HttpMethod.Get)
-                            .WithBaseUri(HttpBinUrl)
-                            .WithUriPath("/get")
-                            .WithUriQueryParameter("hello", "world");
-                    });
+            using var client = new HttpClient().Wrap();
 
-                // assert
-                Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            }
+            // act
+            using var response = await client
+                .SendAsync(request =>
+                {
+                    request
+                        .WithMethod(HttpMethod.Get)
+                        .WithBaseUri(HttpBinUrl)
+                        .WithUriPath("/get")
+                        .WithUriQueryParameter("hello", "world");
+                });
+
+            // assert
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         }
 
         [Fact]
         public async Task Unexpected_MethodNotAllowed_Throws_UnexpectedStatusCodeException()
         {
             // arrange
-            using (var response = await _httpClient.DeleteAsync("/get"))
+            using var response = await _httpClient.SendAsync(request =>
             {
-                // act & assert
-                var exception = Assert.Throws<UnexpectedStatusCodeException>(() => response.EnsureExpectedStatusCode(HttpStatusCode.OK));
+                request
+                    .WithMethod(HttpMethod.Delete)
+                    .WithUriPath("/get");
+            });
 
-                // assert some more
-                Assert.Equal(HttpStatusCode.MethodNotAllowed, exception.StatusCode);
-            }
+            // act & assert
+            var exception = Assert.Throws<UnexpectedStatusCodeException>(() => response.EnsureExpectedStatusCode(HttpStatusCode.OK));
+
+            // assert some more
+            Assert.Equal(HttpStatusCode.MethodNotAllowed, exception.StatusCode);
         }
 
         [Fact]
         public async Task Expected_MethodNotAllowed_DoesNotThrow_UnexpectedStatusCodeException()
         {
             // arrange
-            using (var response = await _httpClient.DeleteAsync("/get"))
+            using var response = await _httpClient.SendAsync(request =>
             {
-                // act
-                response.EnsureExpectedStatusCode(HttpStatusCode.MethodNotAllowed);
+                request
+                    .WithMethod(HttpMethod.Delete)
+                    .WithUriPath("/get");
+            });
 
-                // assert
-                Assert.Equal(HttpStatusCode.MethodNotAllowed, response.StatusCode);
-            }
+            // act
+            response.EnsureExpectedStatusCode(HttpStatusCode.MethodNotAllowed);
+
+            // assert
+            Assert.Equal(HttpStatusCode.MethodNotAllowed, response.StatusCode);
         }
 
         [Fact]
@@ -400,32 +392,29 @@ namespace jaytwo.FluentHttp.Tests
             // arrange
 
             // act
-            var response = await _httpClient.GetAsync("/json");
+            using var response = await _httpClient.SendAsync(request => request.WithUriPath("/json"));
 
-            using (response)
+            // assert
+            var prototype = new
             {
-                // assert
-                var prototype = new
+                slideshow = new
                 {
-                    slideshow = new
+                    slides = new[]
                     {
-                        slides = new[]
+                        new
                         {
-                            new
-                            {
-                                title = default(string),
-                            },
+                            title = default(string),
                         },
                     },
-                };
+                },
+            };
 
-                var actual = await response
-                    .EnsureSuccessStatusCode()
-                    .AsAnonymousTypeAsync(prototype);
+            var actual = await response
+                .EnsureSuccessStatusCode()
+                .AsAnonymousTypeAsync(prototype);
 
-                Assert.NotEmpty(actual.slideshow.slides);
-                Assert.NotEmpty(actual.slideshow.slides.First().title);
-            }
+            Assert.NotEmpty(actual.slideshow.slides);
+            Assert.NotEmpty(actual.slideshow.slides.First().title);
         }
     }
 }

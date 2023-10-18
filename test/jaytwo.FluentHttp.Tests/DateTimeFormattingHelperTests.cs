@@ -17,12 +17,12 @@ namespace jaytwo.FluentHttp.Tests
         [InlineData(2020, 07, 04, 0, DateTimeFormatting.UnixTimeMilliseconds, "1593820800000")]
         [InlineData(2020, 07, 04, 0, DateTimeFormatting.MMDDYY, "070420")]
         [InlineData(2020, 07, 04, 0, DateTimeFormatting.MMDDYYYY, "07042020")]
-        [InlineData(2020, 07, 04, 0, DateTimeFormatting.MM_DD_YY, "07-04-20")]
-        [InlineData(2020, 07, 04, 0, DateTimeFormatting.MM_DD_YYYY, "07-04-2020")]
+        [InlineData(2020, 07, 04, 0, DateTimeFormatting.MM_DD_YY_Dashes, "07-04-20")]
+        [InlineData(2020, 07, 04, 0, DateTimeFormatting.MM_DD_YYYY_Dashes, "07-04-2020")]
         [InlineData(2020, 07, 04, 0, DateTimeFormatting.YYMMDD, "200704")]
         [InlineData(2020, 07, 04, 0, DateTimeFormatting.YYYYMMDD, "20200704")]
-        [InlineData(2020, 07, 04, 0, DateTimeFormatting.YYYY_MM_DD, "2020-07-04")]
-        [InlineData(2020, 07, 04, 0, DateTimeFormatting.YY_MM_DD, "20-07-04")]
+        [InlineData(2020, 07, 04, 0, DateTimeFormatting.YYYY_MM_DD_Dashes, "2020-07-04")]
+        [InlineData(2020, 07, 04, 0, DateTimeFormatting.YY_MM_DD_Dashes, "20-07-04")]
         public void Format_with_DateTime(int year, int month, int day, int hours, DateTimeFormatting formatting, string expected)
         {
             // arrange
@@ -39,8 +39,8 @@ namespace jaytwo.FluentHttp.Tests
         [InlineData(null, null, null, DateTimeFormatting.Default, null)]
         [InlineData(2020, 07, 04, DateTimeFormatting.Default, "2020-07-04")]
         [InlineData(2020, 07, 04, DateTimeFormatting.ISO, "2020-07-04T00:00:00.0000000")]
-        [InlineData(2020, 07, 04, DateTimeFormatting.YYYY_MM_DD, "2020-07-04")]
-        [InlineData(2020, 07, 04, DateTimeFormatting.YY_MM_DD, "20-07-04")]
+        [InlineData(2020, 07, 04, DateTimeFormatting.YYYY_MM_DD_Dashes, "2020-07-04")]
+        [InlineData(2020, 07, 04, DateTimeFormatting.YY_MM_DD_Dashes, "20-07-04")]
         public void Format_with_nullable_DateTime(int? year, int? month, int? day, DateTimeFormatting formatting, string expected)
         {
             // arrange
@@ -66,12 +66,12 @@ namespace jaytwo.FluentHttp.Tests
         [InlineData(2020, 07, 04, 0, DateTimeFormatting.UnixTimeMilliseconds, "1593820800000")]
         [InlineData(2020, 07, 04, 0, DateTimeFormatting.MMDDYY, "070420")]
         [InlineData(2020, 07, 04, 0, DateTimeFormatting.MMDDYYYY, "07042020")]
-        [InlineData(2020, 07, 04, 0, DateTimeFormatting.MM_DD_YY, "07-04-20")]
-        [InlineData(2020, 07, 04, 0, DateTimeFormatting.MM_DD_YYYY, "07-04-2020")]
+        [InlineData(2020, 07, 04, 0, DateTimeFormatting.MM_DD_YY_Dashes, "07-04-20")]
+        [InlineData(2020, 07, 04, 0, DateTimeFormatting.MM_DD_YYYY_Dashes, "07-04-2020")]
         [InlineData(2020, 07, 04, 0, DateTimeFormatting.YYMMDD, "200704")]
         [InlineData(2020, 07, 04, 0, DateTimeFormatting.YYYYMMDD, "20200704")]
-        [InlineData(2020, 07, 04, 0, DateTimeFormatting.YYYY_MM_DD, "2020-07-04")]
-        [InlineData(2020, 07, 04, 0, DateTimeFormatting.YY_MM_DD, "20-07-04")]
+        [InlineData(2020, 07, 04, 0, DateTimeFormatting.YYYY_MM_DD_Dashes, "2020-07-04")]
+        [InlineData(2020, 07, 04, 0, DateTimeFormatting.YY_MM_DD_Dashes, "20-07-04")]
         public void Format_with_DateTimeOffset(int year, int month, int day, int offset, DateTimeFormatting formatting, string expected)
         {
             // arrange
@@ -88,8 +88,8 @@ namespace jaytwo.FluentHttp.Tests
         [InlineData(null, null, null, null, DateTimeFormatting.Default, null)]
         [InlineData(2020, 07, 04, 0, DateTimeFormatting.Default, "2020-07-04T00:00:00.0000000+00:00")]
         [InlineData(2020, 07, 04, 0, DateTimeFormatting.ISO, "2020-07-04T00:00:00.0000000+00:00")]
-        [InlineData(2020, 07, 04, 0, DateTimeFormatting.YYYY_MM_DD, "2020-07-04")]
-        [InlineData(2020, 07, 04, 0, DateTimeFormatting.YY_MM_DD, "20-07-04")]
+        [InlineData(2020, 07, 04, 0, DateTimeFormatting.YYYY_MM_DD_Dashes, "2020-07-04")]
+        [InlineData(2020, 07, 04, 0, DateTimeFormatting.YY_MM_DD_Dashes, "20-07-04")]
         public void Format_with_nullable_DateTimeOffset(int? year, int? month, int? day, int? offset, DateTimeFormatting formatting, string expected)
         {
             // arrange
