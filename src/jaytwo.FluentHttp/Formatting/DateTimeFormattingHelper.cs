@@ -33,25 +33,25 @@ internal static class DateTimeFormattingHelper
             case DateTimeFormatting.MMDDYY:
                 return $"{value:MMddyy}";
 
-            case DateTimeFormatting.MM_DD_YY:
+            case DateTimeFormatting.MM_DD_YY_Dashes:
                 return $"{value:MM-dd-yy}";
 
             case DateTimeFormatting.MMDDYYYY:
                 return $"{value:MMddyyyy}";
 
-            case DateTimeFormatting.MM_DD_YYYY:
+            case DateTimeFormatting.MM_DD_YYYY_Dashes:
                 return $"{value:MM-dd-yyyy}";
 
             case DateTimeFormatting.YYMMDD:
                 return $"{value:yyMMdd}";
 
-            case DateTimeFormatting.YY_MM_DD:
+            case DateTimeFormatting.YY_MM_DD_Dashes:
                 return $"{value:yy-MM-dd}";
 
             case DateTimeFormatting.YYYYMMDD:
                 return $"{value:yyyyMMdd}";
 
-            case DateTimeFormatting.YYYY_MM_DD:
+            case DateTimeFormatting.YYYY_MM_DD_Dashes:
                 return $"{value:yyyy-MM-dd}";
 
             default:
@@ -97,25 +97,25 @@ internal static class DateTimeFormattingHelper
             case DateTimeFormatting.MMDDYY:
                 return $"{value:MMddyy}";
 
-            case DateTimeFormatting.MM_DD_YY:
+            case DateTimeFormatting.MM_DD_YY_Dashes:
                 return $"{value:MM-dd-yy}";
 
             case DateTimeFormatting.MMDDYYYY:
                 return $"{value:MMddyyyy}";
 
-            case DateTimeFormatting.MM_DD_YYYY:
+            case DateTimeFormatting.MM_DD_YYYY_Dashes:
                 return $"{value:MM-dd-yyyy}";
 
             case DateTimeFormatting.YYMMDD:
                 return $"{value:yyMMdd}";
 
-            case DateTimeFormatting.YY_MM_DD:
+            case DateTimeFormatting.YY_MM_DD_Dashes:
                 return $"{value:yy-MM-dd}";
 
             case DateTimeFormatting.YYYYMMDD:
                 return $"{value:yyyyMMdd}";
 
-            case DateTimeFormatting.YYYY_MM_DD:
+            case DateTimeFormatting.YYYY_MM_DD_Dashes:
                 return $"{value:yyyy-MM-dd}";
 
             default:

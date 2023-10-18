@@ -4,8 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Text.Json;
 using jaytwo.FluentHttp.Formatting;
-using Newtonsoft.Json;
 
 namespace jaytwo.FluentHttp;
 
@@ -23,16 +23,10 @@ public static class MultipartFormDataContentExtensions
         return multipartFormDataContent;
     }
 
-    public static MultipartFormDataContent WithTextContent(this MultipartFormDataContent multipartFormDataContent, string name, object value)
-        => WithTextContent(multipartFormDataContent, name, ObjectToStringHelper.GetString(value));
-
-    public static MultipartFormDataContent WithTextContent(this MultipartFormDataContent multipartFormDataContent, string name, object value, InclusionRule inclusionRule)
+    public static MultipartFormDataContent WithTextContent(this MultipartFormDataContent multipartFormDataContent, string name, object value, InclusionRule inclusionRule = InclusionRule.IncludeAlways)
         => WithTextContent(multipartFormDataContent, name, ObjectToStringHelper.GetString(value), inclusionRule);
 
-    public static MultipartFormDataContent WithTextContent(this MultipartFormDataContent multipartFormDataContent, string name, string format, object value)
-        => WithTextContent(multipartFormDataContent, name, format, value, InclusionRule.IncludeAlways);
-
-    public static MultipartFormDataContent WithTextContent(this MultipartFormDataContent multipartFormDataContent, string name, string format, object value, InclusionRule inclusionRule)
+    public static MultipartFormDataContent WithTextContent(this MultipartFormDataContent multipartFormDataContent, string name, string format, object value, InclusionRule inclusionRule = InclusionRule.IncludeAlways)
     {
         if (InclusionRuleHelper.IncludeContent(value, inclusionRule))
         {
@@ -42,10 +36,7 @@ public static class MultipartFormDataContentExtensions
         return multipartFormDataContent;
     }
 
-    public static MultipartFormDataContent WithTextContent(this MultipartFormDataContent multipartFormDataContent, string name, string format, object[] value)
-        => WithTextContent(multipartFormDataContent, name, format, value, InclusionRule.IncludeAlways);
-
-    public static MultipartFormDataContent WithTextContent(this MultipartFormDataContent multipartFormDataContent, string name, string format, object[] value, InclusionRule inclusionRule)
+    public static MultipartFormDataContent WithTextContent(this MultipartFormDataContent multipartFormDataContent, string name, string format, object[] value, InclusionRule inclusionRule = InclusionRule.IncludeAlways)
     {
         if (InclusionRuleHelper.IncludeContent(value, inclusionRule))
         {
@@ -55,12 +46,7 @@ public static class MultipartFormDataContentExtensions
         return multipartFormDataContent;
     }
 
-    public static MultipartFormDataContent WithTextContent(this MultipartFormDataContent multipartFormDataContent, string name, string value)
-    {
-        return multipartFormDataContent.WithTextContent(name, value, InclusionRule.IncludeAlways);
-    }
-
-    public static MultipartFormDataContent WithTextContent(this MultipartFormDataContent multipartFormDataContent, string name, string value, InclusionRule inclusionRule)
+    public static MultipartFormDataContent WithTextContent(this MultipartFormDataContent multipartFormDataContent, string name, string value, InclusionRule inclusionRule = InclusionRule.IncludeAlways)
     {
         if (InclusionRuleHelper.IncludeContent(value, inclusionRule))
         {
@@ -71,80 +57,44 @@ public static class MultipartFormDataContentExtensions
         return multipartFormDataContent;
     }
 
-    public static MultipartFormDataContent WithTextContent(this MultipartFormDataContent multipartFormDataContent, string key, bool? value)
-        => multipartFormDataContent.WithTextContent(key, value, InclusionRule.IncludeAlways);
-
-    public static MultipartFormDataContent WithTextContent(this MultipartFormDataContent multipartFormDataContent, string key, bool? value, InclusionRule inclusionRule)
+    public static MultipartFormDataContent WithTextContent(this MultipartFormDataContent multipartFormDataContent, string key, bool? value, InclusionRule inclusionRule = InclusionRule.IncludeAlways)
         => multipartFormDataContent.WithTextContent(key, value, BooleanFormatting.Default, inclusionRule);
 
-    public static MultipartFormDataContent WithTextContent(this MultipartFormDataContent multipartFormDataContent, string key, bool value)
-        => multipartFormDataContent.WithTextContent(key, value, InclusionRule.IncludeAlways);
-
-    public static MultipartFormDataContent WithTextContent(this MultipartFormDataContent multipartFormDataContent, string key, bool value, InclusionRule inclusionRule)
+    public static MultipartFormDataContent WithTextContent(this MultipartFormDataContent multipartFormDataContent, string key, bool value, InclusionRule inclusionRule = InclusionRule.IncludeAlways)
         => multipartFormDataContent.WithTextContent(key, value, BooleanFormatting.Default, inclusionRule);
 
-    public static MultipartFormDataContent WithTextContent(this MultipartFormDataContent multipartFormDataContent, string key, bool? value, BooleanFormatting formatting)
-        => multipartFormDataContent.WithTextContent(key, value, formatting, InclusionRule.IncludeAlways);
-
-    public static MultipartFormDataContent WithTextContent(this MultipartFormDataContent multipartFormDataContent, string key, bool? value, BooleanFormatting formatting, InclusionRule inclusionRule)
+    public static MultipartFormDataContent WithTextContent(this MultipartFormDataContent multipartFormDataContent, string key, bool? value, BooleanFormatting formatting, InclusionRule inclusionRule = InclusionRule.IncludeAlways)
         => multipartFormDataContent.WithTextContent(key, BooleanFormattingHelper.Format(value, formatting), inclusionRule);
 
-    public static MultipartFormDataContent WithTextContent(this MultipartFormDataContent multipartFormDataContent, string key, bool value, BooleanFormatting formatting)
-        => multipartFormDataContent.WithTextContent(key, value, formatting, InclusionRule.IncludeAlways);
-
-    public static MultipartFormDataContent WithTextContent(this MultipartFormDataContent multipartFormDataContent, string key, bool value, BooleanFormatting formatting, InclusionRule inclusionRule)
+    public static MultipartFormDataContent WithTextContent(this MultipartFormDataContent multipartFormDataContent, string key, bool value, BooleanFormatting formatting, InclusionRule inclusionRule = InclusionRule.IncludeAlways)
         => multipartFormDataContent.WithTextContent(key, BooleanFormattingHelper.Format(value, formatting), inclusionRule);
 
-    public static MultipartFormDataContent WithTextContent(this MultipartFormDataContent multipartFormDataContent, string key, DateTime? value)
-        => multipartFormDataContent.WithTextContent(key, value, InclusionRule.IncludeAlways);
-
-    public static MultipartFormDataContent WithTextContent(this MultipartFormDataContent multipartFormDataContent, string key, DateTime? value, InclusionRule inclusionRule)
+    public static MultipartFormDataContent WithTextContent(this MultipartFormDataContent multipartFormDataContent, string key, DateTime? value, InclusionRule inclusionRule = InclusionRule.IncludeAlways)
         => multipartFormDataContent.WithTextContent(key, value, DateTimeFormatting.Default, inclusionRule);
 
-    public static MultipartFormDataContent WithTextContent(this MultipartFormDataContent multipartFormDataContent, string key, DateTime value)
-        => multipartFormDataContent.WithTextContent(key, value, InclusionRule.IncludeAlways);
-
-    public static MultipartFormDataContent WithTextContent(this MultipartFormDataContent multipartFormDataContent, string key, DateTime value, InclusionRule inclusionRule)
+    public static MultipartFormDataContent WithTextContent(this MultipartFormDataContent multipartFormDataContent, string key, DateTime value, InclusionRule inclusionRule = InclusionRule.IncludeAlways)
         => multipartFormDataContent.WithTextContent(key, value, DateTimeFormatting.Default, inclusionRule);
 
-    public static MultipartFormDataContent WithTextContent(this MultipartFormDataContent multipartFormDataContent, string key, DateTime? value, DateTimeFormatting formatting)
-        => multipartFormDataContent.WithTextContent(key, value, formatting, InclusionRule.IncludeAlways);
-
-    public static MultipartFormDataContent WithTextContent(this MultipartFormDataContent multipartFormDataContent, string key, DateTime? value, DateTimeFormatting formatting, InclusionRule inclusionRule)
+    public static MultipartFormDataContent WithTextContent(this MultipartFormDataContent multipartFormDataContent, string key, DateTime? value, DateTimeFormatting formatting, InclusionRule inclusionRule = InclusionRule.IncludeAlways)
         => multipartFormDataContent.WithTextContent(key, DateTimeFormattingHelper.Format(value, formatting), inclusionRule);
 
-    public static MultipartFormDataContent WithTextContent(this MultipartFormDataContent multipartFormDataContent, string key, DateTime value, DateTimeFormatting formatting)
-        => multipartFormDataContent.WithTextContent(key, value, formatting, InclusionRule.IncludeAlways);
-
-    public static MultipartFormDataContent WithTextContent(this MultipartFormDataContent multipartFormDataContent, string key, DateTime value, DateTimeFormatting formatting, InclusionRule inclusionRule)
+    public static MultipartFormDataContent WithTextContent(this MultipartFormDataContent multipartFormDataContent, string key, DateTime value, DateTimeFormatting formatting, InclusionRule inclusionRule = InclusionRule.IncludeAlways)
         => multipartFormDataContent.WithTextContent(key, DateTimeFormattingHelper.Format(value, formatting), inclusionRule);
 
-    public static MultipartFormDataContent WithTextContent(this MultipartFormDataContent multipartFormDataContent, string key, DateTimeOffset? value)
-        => multipartFormDataContent.WithTextContent(key, value, InclusionRule.IncludeAlways);
-
-    public static MultipartFormDataContent WithTextContent(this MultipartFormDataContent multipartFormDataContent, string key, DateTimeOffset? value, InclusionRule inclusionRule)
+    public static MultipartFormDataContent WithTextContent(this MultipartFormDataContent multipartFormDataContent, string key, DateTimeOffset? value, InclusionRule inclusionRule = InclusionRule.IncludeAlways)
         => multipartFormDataContent.WithTextContent(key, value, DateTimeFormatting.Default, inclusionRule);
 
-    public static MultipartFormDataContent WithTextContent(this MultipartFormDataContent multipartFormDataContent, string key, DateTimeOffset? value, DateTimeFormatting formatting)
-        => multipartFormDataContent.WithTextContent(key, value, formatting, InclusionRule.IncludeAlways);
-
-    public static MultipartFormDataContent WithTextContent(this MultipartFormDataContent multipartFormDataContent, string key, DateTimeOffset? value, DateTimeFormatting formatting, InclusionRule inclusionRule)
+    public static MultipartFormDataContent WithTextContent(this MultipartFormDataContent multipartFormDataContent, string key, DateTimeOffset? value, DateTimeFormatting formatting, InclusionRule inclusionRule = InclusionRule.IncludeAlways)
         => multipartFormDataContent.WithTextContent(key, DateTimeFormattingHelper.Format(value, formatting), inclusionRule);
 
-    public static MultipartFormDataContent WithTextContent(this MultipartFormDataContent multipartFormDataContent, string key, DateTimeOffset value, DateTimeFormatting formatting)
-        => multipartFormDataContent.WithTextContent(key, value, formatting, InclusionRule.IncludeAlways);
-
-    public static MultipartFormDataContent WithTextContent(this MultipartFormDataContent multipartFormDataContent, string key, DateTimeOffset value, DateTimeFormatting formatting, InclusionRule inclusionRule)
+    public static MultipartFormDataContent WithTextContent(this MultipartFormDataContent multipartFormDataContent, string key, DateTimeOffset value, DateTimeFormatting formatting, InclusionRule inclusionRule = InclusionRule.IncludeAlways)
         => multipartFormDataContent.WithTextContent(key, DateTimeFormattingHelper.Format(value, formatting), inclusionRule);
 
-    public static MultipartFormDataContent WithJsonContent(this MultipartFormDataContent multipartFormDataContent, string name, object value)
-        => multipartFormDataContent.WithJsonContent(name, value, InclusionRule.IncludeAlways);
-
-    public static MultipartFormDataContent WithJsonContent(this MultipartFormDataContent multipartFormDataContent, string name, object value, InclusionRule inclusionRule)
+    public static MultipartFormDataContent WithJsonContent(this MultipartFormDataContent multipartFormDataContent, string name, object value, InclusionRule inclusionRule = InclusionRule.IncludeAlways)
     {
         if (InclusionRuleHelper.IncludeContent(value, inclusionRule))
         {
-            var json = JsonConvert.SerializeObject(value);
+            var json = JsonSerializer.Serialize(value);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
             return multipartFormDataContent.WithContent(content, name);
         }
@@ -152,14 +102,11 @@ public static class MultipartFormDataContentExtensions
         return multipartFormDataContent;
     }
 
-    public static MultipartFormDataContent WithJsonContent(this MultipartFormDataContent multipartFormDataContent, string name, string fileName, object value)
-        => multipartFormDataContent.WithJsonContent(name, fileName, value, InclusionRule.IncludeAlways);
-
-    public static MultipartFormDataContent WithJsonContent(this MultipartFormDataContent multipartFormDataContent, string name, string fileName, object value, InclusionRule inclusionRule)
+    public static MultipartFormDataContent WithJsonContent(this MultipartFormDataContent multipartFormDataContent, string name, string fileName, object value, InclusionRule inclusionRule = InclusionRule.IncludeAlways)
     {
         if (InclusionRuleHelper.IncludeContent(value, inclusionRule))
         {
-            var json = JsonConvert.SerializeObject(value);
+            var json = JsonSerializer.Serialize(value);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
             return multipartFormDataContent.WithContent(content, name, fileName);
         }
@@ -179,12 +126,7 @@ public static class MultipartFormDataContentExtensions
         return multipartFormDataContent.WithContent(content, name, fileName);
     }
 
-    public static MultipartFormDataContent WithByteArrayContent(this MultipartFormDataContent multipartFormDataContent, string name, byte[] bytes)
-    {
-        return multipartFormDataContent.WithByteArrayContent(name, bytes, InclusionRule.IncludeAlways);
-    }
-
-    public static MultipartFormDataContent WithByteArrayContent(this MultipartFormDataContent multipartFormDataContent, string name, byte[] bytes, InclusionRule inclusionRule)
+    public static MultipartFormDataContent WithByteArrayContent(this MultipartFormDataContent multipartFormDataContent, string name, byte[] bytes, InclusionRule inclusionRule = InclusionRule.IncludeAlways)
     {
         if (InclusionRuleHelper.IncludeContent(bytes, inclusionRule))
         {
@@ -195,12 +137,7 @@ public static class MultipartFormDataContentExtensions
         return multipartFormDataContent;
     }
 
-    public static MultipartFormDataContent WithByteArrayContent(this MultipartFormDataContent multipartFormDataContent, string name, string fileName, byte[] bytes)
-    {
-        return multipartFormDataContent.WithByteArrayContent(name, fileName, bytes, InclusionRule.IncludeAlways);
-    }
-
-    public static MultipartFormDataContent WithByteArrayContent(this MultipartFormDataContent multipartFormDataContent, string name, string fileName, byte[] bytes, InclusionRule inclusionRule)
+    public static MultipartFormDataContent WithByteArrayContent(this MultipartFormDataContent multipartFormDataContent, string name, string fileName, byte[] bytes, InclusionRule inclusionRule = InclusionRule.IncludeAlways)
     {
         if (InclusionRuleHelper.IncludeContent(bytes, inclusionRule))
         {

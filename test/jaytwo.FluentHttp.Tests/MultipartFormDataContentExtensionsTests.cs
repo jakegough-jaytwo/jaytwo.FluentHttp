@@ -1177,7 +1177,7 @@ namespace jaytwo.FluentHttp.Tests
             // arrange
             var value = (json == null)
                 ? null
-                : JsonConvert.DeserializeObject(json);
+                : JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
 
             var name = "hello";
             var form = new MultipartFormDataContent();
@@ -1248,7 +1248,7 @@ namespace jaytwo.FluentHttp.Tests
             var fileName = "myfile";
             var value = (json == null)
                 ? null
-                : JsonConvert.DeserializeObject(json);
+                : JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
 
             var name = "hello";
             var form = new MultipartFormDataContent();
