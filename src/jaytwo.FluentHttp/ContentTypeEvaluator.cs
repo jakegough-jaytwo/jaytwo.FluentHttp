@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using System.Net.Http;
 using System.Net.Http.Headers;
 
 namespace jaytwo.FluentHttp;
@@ -17,9 +16,9 @@ internal static class ContentTypeEvaluator
         return false;
     }
 
-    public static bool IsJsonMediaType(MediaTypeHeaderValue mediaTypeHeader)
+    public static bool IsJsonMediaType(MediaTypeHeaderValue? mediaTypeHeader)
     {
-        if (mediaTypeHeader != null)
+        if (mediaTypeHeader?.MediaType != null)
         {
             if (mediaTypeHeader.MediaType == "application/json"
                 || mediaTypeHeader.MediaType.EndsWith("/json")
@@ -54,7 +53,7 @@ internal static class ContentTypeEvaluator
         return false;
     }
 
-    public static bool IsBinaryMediaType(MediaTypeHeaderValue mediaTypeHeader)
+    public static bool IsBinaryMediaType(MediaTypeHeaderValue? mediaTypeHeader)
     {
         var knownBinaryMediaTypes = new[]
         {
@@ -79,11 +78,11 @@ internal static class ContentTypeEvaluator
             "-compressed",
         };
 
-        if (mediaTypeHeader != null)
+        if (mediaTypeHeader?.MediaType != null)
         {
             var isKnownBinaryMediaType = knownBinaryMediaTypes.Contains(mediaTypeHeader.MediaType);
-            var hasBinaryMediaTypePrefix = binaryMediaTypePrefixes.Any(x => mediaTypeHeader.MediaType.StartsWith(x));
-            var hasBinaryMediaTypeSuffix = binaryMediaTypeSuffixes.Any(x => mediaTypeHeader.MediaType.EndsWith(x));
+            var hasBinaryMediaTypePrefix = binaryMediaTypePrefixes.Any(x => mediaTypeHeader.MediaType?.StartsWith(x) ?? false);
+            var hasBinaryMediaTypeSuffix = binaryMediaTypeSuffixes.Any(x => mediaTypeHeader.MediaType?.EndsWith(x) ?? false);
 
             var result = isKnownBinaryMediaType || hasBinaryMediaTypePrefix || hasBinaryMediaTypeSuffix;
             return result;

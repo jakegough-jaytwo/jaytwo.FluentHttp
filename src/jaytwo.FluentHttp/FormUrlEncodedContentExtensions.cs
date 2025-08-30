@@ -6,7 +6,7 @@ namespace jaytwo.FluentHttp;
 
 public static class FormUrlEncodedContentExtensions
 {
-    public static List<KeyValuePair<string, string>> WithValue(this List<KeyValuePair<string, string>> data, string key, string value, InclusionRule inclusionRule = InclusionRule.IncludeAlways)
+    public static List<KeyValuePair<string, string>> WithValue(this List<KeyValuePair<string, string>> data, string key, string? value, InclusionRule inclusionRule = InclusionRule.IncludeAlways)
     {
         if (InclusionRuleHelper.IncludeContent(value, inclusionRule))
         {

@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using jaytwo.Http;
@@ -14,13 +12,13 @@ namespace jaytwo.FluentHttp.HttpClientWrappers;
 
 public class LoggingWrapper : DelegatingHttpClientWrapper, IHttpClient
 {
-    public LoggingWrapper(IHttpClient httpClient, ILogger logger)
+    public LoggingWrapper(IHttpClient httpClient, ILogger? logger)
         : base(httpClient)
     {
         Logger = logger;
     }
 
-    public ILogger Logger { get; private set; }
+    public ILogger? Logger { get; private set; }
 
     public override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, HttpCompletionOption? completionOption = default, CancellationToken? cancellationToken = default)
     {
@@ -31,16 +29,16 @@ public class LoggingWrapper : DelegatingHttpClientWrapper, IHttpClient
         using var loggerScope = Logger?.BeginScope(loggerScopeValues);
 
         var shortRequestId = requestId.Substring(0, 7);
-        string requestLog = null;
-        string responseLog = null;
-        HttpResponseMessage response = null;
-        Exception exception = null;
+        string? requestLog = null;
+        string? responseLog = null;
+        HttpResponseMessage? response = null;
+        Exception? exception = null;
 
         var stopwatch = Stopwatch.StartNew();
         try
         {
             loggerScopeValues.Add("RequestMethod", request.Method);
-            loggerScopeValues.Add("RequestUri", request.RequestUri.OriginalString);
+            loggerScopeValues.Add("RequestUri", request.RequestUri?.OriginalString ?? string.Empty);
             // TODO: request body
 
             requestLog = string.Format(
@@ -126,11 +124,11 @@ public class LoggingWrapper : DelegatingHttpClientWrapper, IHttpClient
 
             if (exception != null)
             {
-                Logger.LogError(toLog);
+                Logger?.LogError(toLog);
             }
             else
             {
-                Logger.LogDebug(toLog);
+                Logger?.LogDebug(toLog);
             }
         }
     }

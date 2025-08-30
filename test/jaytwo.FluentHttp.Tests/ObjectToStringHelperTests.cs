@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using jaytwo.FluentHttp.Formatting;
 using Xunit;
 
@@ -12,8 +10,8 @@ namespace jaytwo.FluentHttp.Tests
         public void GetString_null()
         {
             // arrange
-            object value = null;
-            object expected = null;
+            object? value = null;
+            object? expected = null;
 
             // act
             var actual = ObjectToStringHelper.GetString(value);

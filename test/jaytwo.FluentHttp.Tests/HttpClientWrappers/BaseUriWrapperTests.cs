@@ -1,10 +1,6 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using jaytwo.FluentHttp.HttpClientWrappers;
 using jaytwo.Http;
 using Moq;
@@ -19,7 +15,7 @@ public class BaseUriWrapperTests
     {
         // arrange
         var url = "http://www.example.com/";
-        string urlFromCallback = null;
+        string? urlFromCallback = null;
         var mockRequest = new HttpRequestMessage() { RequestUri = default };
         var mockResponse = new HttpResponseMessage();
         var mockHttpClient = new Mock<IHttpClient>();
@@ -27,7 +23,7 @@ public class BaseUriWrapperTests
             .Setup(x => x.SendAsync(mockRequest, It.IsAny<HttpCompletionOption?>(), It.IsAny<CancellationToken?>()))
             .Callback<HttpRequestMessage, HttpCompletionOption?, CancellationToken?>((req, co, ct) =>
             {
-                urlFromCallback = req.RequestUri.AbsoluteUri;
+                urlFromCallback = req.RequestUri?.AbsoluteUri;
             })
             .ReturnsAsync(mockResponse);
 
@@ -38,6 +34,6 @@ public class BaseUriWrapperTests
 
         // assert
         Assert.Equal(url, urlFromCallback);
-        Assert.Equal(url, mockRequest.RequestUri.OriginalString);
+        Assert.Equal(url, mockRequest.RequestUri!.OriginalString);
     }
 }

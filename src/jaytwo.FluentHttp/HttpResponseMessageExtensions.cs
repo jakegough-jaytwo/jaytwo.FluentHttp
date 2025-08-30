@@ -73,7 +73,7 @@ public static class HttpResponseMessageExtensions
     {
         using (httpResponse)
         {
-            return await httpResponse.Content?.ReadAsByteArrayAsync();
+            return await httpResponse.Content.ReadAsByteArrayAsync();
         }
     }
 
@@ -87,7 +87,7 @@ public static class HttpResponseMessageExtensions
     public static async Task<Stream> AsStreamAsync(this HttpResponseMessage httpResponse)
     {
         // not disposing httpResponse because that only disposes the stream anyway
-        return await httpResponse.Content?.ReadAsStreamAsync();
+        return await httpResponse.Content.ReadAsStreamAsync();
     }
 
     public static async Task<string> AsStringAsync(this Task<HttpResponseMessage> httpResponseTask)
@@ -101,7 +101,7 @@ public static class HttpResponseMessageExtensions
     {
         using (httpResponse)
         {
-            return await httpResponse.Content?.ReadAsStringAsync();
+            return await httpResponse.Content.ReadAsStringAsync();
         }
     }
 

@@ -4,10 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Runtime.Serialization;
 using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 using jaytwo.FluentHttp.Formatting;
 using jaytwo.FluentUri;
 using jaytwo.UrlHelper;
@@ -27,7 +25,7 @@ public static class HttpRequestMessageExtensions
         return httpRequestMessage.WithMethod(new HttpMethod(method));
     }
 
-    public static HttpRequestMessage WithHeader(this HttpRequestMessage httpRequestMessage, string name, string value, InclusionRule inclusionRule = InclusionRule.IncludeAlways)
+    public static HttpRequestMessage WithHeader(this HttpRequestMessage httpRequestMessage, string name, string? value, InclusionRule inclusionRule = InclusionRule.IncludeAlways)
     {
         if (InclusionRuleHelper.IncludeContent(value, inclusionRule))
         {
@@ -328,7 +326,7 @@ public static class HttpRequestMessageExtensions
         return httpRequestMessage.WithUriQuery(QueryString.Serialize(data));
     }
 
-    public static HttpRequestMessage WithUriQueryParameter(this HttpRequestMessage httpRequestMessage, string key, string value, InclusionRule inclusionRule = InclusionRule.IncludeAlways)
+    public static HttpRequestMessage WithUriQueryParameter(this HttpRequestMessage httpRequestMessage, string key, string? value, InclusionRule inclusionRule = InclusionRule.IncludeAlways)
     {
         if (InclusionRuleHelper.IncludeContent(value, inclusionRule))
         {
@@ -345,7 +343,7 @@ public static class HttpRequestMessageExtensions
         return httpRequestMessage;
     }
 
-    public static HttpRequestMessage WithUriQueryParameter(this HttpRequestMessage httpRequestMessage, string key, string format, object value, InclusionRule inclusionRule = InclusionRule.IncludeAlways)
+    public static HttpRequestMessage WithUriQueryParameter(this HttpRequestMessage httpRequestMessage, string key, string format, object? value, InclusionRule inclusionRule = InclusionRule.IncludeAlways)
     {
         if (InclusionRuleHelper.IncludeContent(value, inclusionRule))
         {
@@ -355,7 +353,7 @@ public static class HttpRequestMessageExtensions
         return httpRequestMessage;
     }
 
-    public static HttpRequestMessage WithUriQueryParameter(this HttpRequestMessage httpRequestMessage, string key, object value, InclusionRule inclusionRule = InclusionRule.IncludeAlways)
+    public static HttpRequestMessage WithUriQueryParameter(this HttpRequestMessage httpRequestMessage, string key, object? value, InclusionRule inclusionRule = InclusionRule.IncludeAlways)
         => httpRequestMessage.WithUriQueryParameter(key, ObjectToStringHelper.GetString(value), inclusionRule);
 
     public static HttpRequestMessage WithUriQueryParameter(this HttpRequestMessage httpRequestMessage, string key, IEnumerable<string> values, InclusionRule inclusionRule = InclusionRule.IncludeAlways)
@@ -517,13 +515,13 @@ public static class HttpRequestMessageExtensions
         return httpRequestMessage;
     }
 
-    public static string GetHeaderValue(this HttpRequestMessage httpRequestMessage, string key)
+    public static string? GetHeaderValue(this HttpRequestMessage httpRequestMessage, string key)
         => httpRequestMessage.Headers.GetHeaderValue(key) ?? httpRequestMessage.Content?.Headers.GetHeaderValue(key);
 
-    public static string GetHeaderValue(this HttpRequestMessage httpRequestMessage, string key, StringComparison stringComparison)
+    public static string? GetHeaderValue(this HttpRequestMessage httpRequestMessage, string key, StringComparison stringComparison)
         => httpRequestMessage.Headers.GetHeaderValue(key, stringComparison) ?? httpRequestMessage.Content?.Headers.GetHeaderValue(key, stringComparison);
 
-    private static string ApplyParenthesesIfMissing(string input)
+    private static string? ApplyParenthesesIfMissing(string? input)
     {
         if (input != null && !input.StartsWith("(") && !input.EndsWith(")"))
         {
@@ -533,7 +531,7 @@ public static class HttpRequestMessageExtensions
         return input;
     }
 
-    private static string ApplyQuotesIfMissing(string input)
+    private static string? ApplyQuotesIfMissing(string? input)
     {
         if (input != null && !input.StartsWith("\"") && !input.EndsWith("\""))
         {

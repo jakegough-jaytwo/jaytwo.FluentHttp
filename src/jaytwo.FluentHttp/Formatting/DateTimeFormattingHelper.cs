@@ -6,7 +6,7 @@ internal static class DateTimeFormattingHelper
 {
     private static DateTime UnixTimeOrigin { get; } = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
-    public static string Format(DateTime? value, DateTimeFormatting formatting)
+    public static string? Format(DateTime? value, DateTimeFormatting formatting)
     {
         if (value.HasValue)
         {
@@ -65,7 +65,7 @@ internal static class DateTimeFormattingHelper
         }
     }
 
-    public static string Format(DateTimeOffset? value, DateTimeFormatting formatting)
+    public static string? Format(DateTimeOffset? value, DateTimeFormatting formatting)
     {
         if (value.HasValue)
         {

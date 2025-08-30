@@ -58,7 +58,7 @@ namespace jaytwo.FluentHttp.Tests
             request.WithBaseUri("http://www.google.com/");
 
             // assert
-            Assert.Equal("http://www.google.com/", request.RequestUri.AbsoluteUri);
+            Assert.Equal("http://www.google.com/", request.RequestUri?.AbsoluteUri);
         }
 
         [Fact]
@@ -85,7 +85,7 @@ namespace jaytwo.FluentHttp.Tests
             request.WithBaseUri(new Uri("http://www.google.com/"));
 
             // assert
-            Assert.Equal("http://www.google.com/", request.RequestUri.AbsoluteUri);
+            Assert.Equal("http://www.google.com/", request.RequestUri?.AbsoluteUri);
         }
 
         [Fact]
@@ -112,7 +112,7 @@ namespace jaytwo.FluentHttp.Tests
             request.WithUri("http://www.google.com/");
 
             // assert
-            Assert.Equal("http://www.google.com/", request.RequestUri.AbsoluteUri);
+            Assert.Equal("http://www.google.com/", request.RequestUri?.AbsoluteUri);
         }
 
         [Fact]
@@ -139,7 +139,7 @@ namespace jaytwo.FluentHttp.Tests
             request.WithUri(new Uri("http://www.google.com/"));
 
             // assert
-            Assert.Equal("http://www.google.com/", request.RequestUri.AbsoluteUri);
+            Assert.Equal("http://www.google.com/", request.RequestUri?.AbsoluteUri);
         }
 
         [Fact]
@@ -166,7 +166,7 @@ namespace jaytwo.FluentHttp.Tests
             request.WithUri("http://www.google.com/{0}/{1}/{2}", "*", 1, "foo");
 
             // assert
-            Assert.Equal("http://www.google.com/%2A/1/foo", request.RequestUri.AbsoluteUri);
+            Assert.Equal("http://www.google.com/%2A/1/foo", request.RequestUri?.AbsoluteUri);
         }
 
         [Theory]
@@ -190,7 +190,7 @@ namespace jaytwo.FluentHttp.Tests
             request.WithUriPath(path);
 
             // assert
-            Assert.Equal(expected, request.RequestUri.ToString());
+            Assert.Equal(expected, request.RequestUri?.ToString());
         }
 
         [Fact]
@@ -222,7 +222,7 @@ namespace jaytwo.FluentHttp.Tests
             request.WithUriQuery(obj);
 
             // assert
-            Assert.Equal("?hello=world&foo=bar", request.RequestUri.OriginalString);
+            Assert.Equal("?hello=world&foo=bar", request.RequestUri?.OriginalString);
         }
 
         [Fact]
@@ -240,7 +240,7 @@ namespace jaytwo.FluentHttp.Tests
             request.WithUriQuery(obj);
 
             // assert
-            Assert.Equal("http://www.example.com/?hello=world&foo=bar", request.RequestUri.AbsoluteUri);
+            Assert.Equal("http://www.example.com/?hello=world&foo=bar", request.RequestUri?.AbsoluteUri);
         }
 
         [Fact]
@@ -258,7 +258,7 @@ namespace jaytwo.FluentHttp.Tests
             request.WithUriQuery(obj);
 
             // assert
-            Assert.Equal("?hello=world&foo=bar", request.RequestUri.OriginalString);
+            Assert.Equal("?hello=world&foo=bar", request.RequestUri?.OriginalString);
         }
 
         [Fact]
@@ -276,7 +276,7 @@ namespace jaytwo.FluentHttp.Tests
             request.WithUriQuery(dictionary);
 
             // assert
-            Assert.Equal("?hello=world&foo=bar", request.RequestUri.OriginalString);
+            Assert.Equal("?hello=world&foo=bar", request.RequestUri?.OriginalString);
         }
 
         [Fact]
@@ -294,7 +294,7 @@ namespace jaytwo.FluentHttp.Tests
             request.WithUriQuery(dictionary);
 
             // assert
-            Assert.Equal("?hello=world&hello=team&foo=bar", request.RequestUri.OriginalString);
+            Assert.Equal("?hello=world&hello=team&foo=bar", request.RequestUri?.OriginalString);
         }
 
         [Fact]
@@ -312,7 +312,7 @@ namespace jaytwo.FluentHttp.Tests
             request.WithUriQuery(dictionary);
 
             // assert
-            Assert.Equal("?hello=world&foo=123", request.RequestUri.OriginalString);
+            Assert.Equal("?hello=world&foo=123", request.RequestUri?.OriginalString);
         }
 
         [Fact]
@@ -330,7 +330,7 @@ namespace jaytwo.FluentHttp.Tests
             request.WithUriQuery(dictionary);
 
             // assert
-            Assert.Equal("?hello=world&hello=123&foo=bar&foo=456", request.RequestUri.OriginalString);
+            Assert.Equal("?hello=world&hello=123&foo=bar&foo=456", request.RequestUri?.OriginalString);
         }
 
         [Fact]
@@ -647,7 +647,7 @@ namespace jaytwo.FluentHttp.Tests
         public void WithHeader_format_null_object_array_InclusionRule(string format, InclusionRule inclusionRule, string expected)
         {
             // arrange
-            object[] value = null;
+            object[]? value = null;
             var name = "somename";
             var request = new HttpRequestMessage();
 
@@ -697,7 +697,7 @@ namespace jaytwo.FluentHttp.Tests
         {
             // arrange
             var format = "foo";
-            object[] value = null;
+            object[]? value = null;
             var name = "somename";
             var expected = "foo";
             var request = new HttpRequestMessage();
@@ -868,7 +868,7 @@ namespace jaytwo.FluentHttp.Tests
             request.WithHeaderAuthorization(scheme);
 
             // assert
-            Assert.Equal(scheme, request.Headers.Authorization.ToString());
+            Assert.Equal(scheme, request.Headers.Authorization?.ToString());
         }
 
         [Fact]
@@ -884,7 +884,7 @@ namespace jaytwo.FluentHttp.Tests
             request.WithHeaderAuthorization(scheme, value);
 
             // assert
-            Assert.Equal(expected, request.Headers.Authorization.ToString());
+            Assert.Equal(expected, request.Headers.Authorization?.ToString());
         }
 
         [Fact]
@@ -898,7 +898,7 @@ namespace jaytwo.FluentHttp.Tests
             request.WithHeaderCacheControl(cacheControl);
 
             // assert
-            Assert.Equal(cacheControl, request.Headers.CacheControl.ToString());
+            Assert.Equal(cacheControl, request.Headers.CacheControl?.ToString());
         }
 
         [Fact]
@@ -911,7 +911,7 @@ namespace jaytwo.FluentHttp.Tests
             request.WithHeaderCacheControlNoCache();
 
             // assert
-            Assert.Equal("no-cache", request.Headers.CacheControl.ToString());
+            Assert.Equal("no-cache", request.Headers.CacheControl?.ToString());
         }
 
         [Theory]
@@ -1047,7 +1047,7 @@ namespace jaytwo.FluentHttp.Tests
             request.WithHeaderIfRange(lastModified);
 
             // assert
-            Assert.Equal(lastModified, request.Headers.IfRange.Date);
+            Assert.Equal(lastModified, request.Headers.IfRange?.Date);
         }
 
         [Theory]
@@ -1062,7 +1062,7 @@ namespace jaytwo.FluentHttp.Tests
             request.WithHeaderIfRange(entityTag);
 
             // assert
-            Assert.Equal(expected, request.Headers.IfRange.EntityTag.ToString());
+            Assert.Equal(expected, request.Headers.IfRange?.EntityTag?.ToString());
         }
 
         [Theory]
@@ -1079,7 +1079,7 @@ namespace jaytwo.FluentHttp.Tests
             request.WithHeaderIfRange(entityTag, isWeak);
 
             // assert
-            Assert.Equal(expected, request.Headers.IfRange.EntityTag.ToString());
+            Assert.Equal(expected, request.Headers.IfRange?.EntityTag?.ToString());
         }
 
         [Fact]
@@ -1121,7 +1121,7 @@ namespace jaytwo.FluentHttp.Tests
             request.WithHeaderPragma(pragma);
 
             // assert
-            Assert.Equal(pragma, request.Headers.Pragma.ToString());
+            Assert.Equal(pragma, request.Headers.Pragma?.ToString());
         }
 
         [Fact]
@@ -1166,7 +1166,7 @@ namespace jaytwo.FluentHttp.Tests
             request.WithHeaderPragmaNoCache();
 
             // assert
-            Assert.Equal("no-cache", request.Headers.Pragma.ToString());
+            Assert.Equal("no-cache", request.Headers.Pragma?.ToString());
         }
 
         [Theory]
@@ -1186,8 +1186,8 @@ namespace jaytwo.FluentHttp.Tests
             request.WithHeaderRange(from, to);
 
             // assert
-            Assert.Equal(from, request.Headers.Range.Ranges.Single().From);
-            Assert.Equal(to, request.Headers.Range.Ranges.Single().To);
+            Assert.Equal(from, request.Headers.Range?.Ranges.Single().From);
+            Assert.Equal(to, request.Headers.Range?.Ranges.Single().To);
         }
 
         [Theory]
@@ -1203,7 +1203,7 @@ namespace jaytwo.FluentHttp.Tests
             request.WithHeaderUserAgent(userAgent);
 
             // assert
-            Assert.Equal(userAgent, request.Headers.UserAgent.ToString());
+            Assert.Equal(userAgent, request.Headers.UserAgent?.ToString());
         }
 
         [Theory]
@@ -1218,7 +1218,7 @@ namespace jaytwo.FluentHttp.Tests
             request.WithHeaderUserAgent(product, version);
 
             // assert
-            Assert.Equal(expected, request.Headers.UserAgent.ToString());
+            Assert.Equal(expected, request.Headers.UserAgent?.ToString());
         }
 
         [Theory]
@@ -1235,7 +1235,7 @@ namespace jaytwo.FluentHttp.Tests
             request.WithHeaderUserAgent(product, version, comment);
 
             // assert
-            Assert.Equal(expected, request.Headers.UserAgent.ToString());
+            Assert.Equal(expected, request.Headers.UserAgent?.ToString());
         }
 
         [Theory]
@@ -1252,7 +1252,7 @@ namespace jaytwo.FluentHttp.Tests
             request.WithUri(uri).WithBaseUri(baseUri);
 
             // assert
-            Assert.Equal(expectedUrl, request.RequestUri.OriginalString);
+            Assert.Equal(expectedUrl, request.RequestUri?.OriginalString);
         }
 
         [Theory]
@@ -1267,7 +1267,7 @@ namespace jaytwo.FluentHttp.Tests
             request.WithUriPath(path);
 
             // assert
-            Assert.Equal(expectedUrl, request.RequestUri.ToString());
+            Assert.Equal(expectedUrl, request.RequestUri?.ToString());
         }
 
         [Theory]
@@ -1281,7 +1281,7 @@ namespace jaytwo.FluentHttp.Tests
             request.WithUriQuery(query);
 
             // assert
-            Assert.Equal(expectedUrl, request.RequestUri.ToString());
+            Assert.Equal(expectedUrl, request.RequestUri?.ToString());
         }
 
         [Theory]
@@ -1295,7 +1295,7 @@ namespace jaytwo.FluentHttp.Tests
             request.WithUriQuery(query).WithUriPath(path);
 
             // assert
-            Assert.Equal(expectedUrl, request.RequestUri.ToString());
+            Assert.Equal(expectedUrl, request.RequestUri?.ToString());
         }
 
         [Fact]
@@ -1310,7 +1310,7 @@ namespace jaytwo.FluentHttp.Tests
             request.WithUriQueryParameter(name, value);
 
             // assert
-            Assert.Equal("?hello=world", request.RequestUri.OriginalString);
+            Assert.Equal("?hello=world", request.RequestUri?.OriginalString);
         }
 
         [Fact]
@@ -1325,7 +1325,7 @@ namespace jaytwo.FluentHttp.Tests
             request.WithUriQueryParameter(name, value);
 
             // assert
-            Assert.Equal("http://example.com/?hello=world", request.RequestUri.AbsoluteUri);
+            Assert.Equal("http://example.com/?hello=world", request.RequestUri?.AbsoluteUri);
         }
 
         [Fact]
@@ -1340,7 +1340,7 @@ namespace jaytwo.FluentHttp.Tests
             request.WithUriQueryParameter(name, value);
 
             // assert
-            Assert.Equal("?hello=123", request.RequestUri.OriginalString);
+            Assert.Equal("?hello=123", request.RequestUri?.OriginalString);
         }
 
         [Fact]
@@ -1355,7 +1355,7 @@ namespace jaytwo.FluentHttp.Tests
             request.WithUriQueryParameter(name, value);
 
             // assert
-            Assert.Equal("http://example.com/?hello=123", request.RequestUri.AbsoluteUri);
+            Assert.Equal("http://example.com/?hello=123", request.RequestUri?.AbsoluteUri);
         }
 
         [Fact]
@@ -1370,8 +1370,8 @@ namespace jaytwo.FluentHttp.Tests
             request.WithUriQueryParameter(name, value);
 
             // assert
-            var query = Url.GetQuery(request.RequestUri.OriginalString);
-            var queryParameterValue = Url.GetQueryValue(request.RequestUri.OriginalString, name);
+            var query = Url.GetQuery(request.RequestUri?.OriginalString);
+            var queryParameterValue = Url.GetQueryValue(request.RequestUri?.OriginalString, name);
             Assert.Equal(value, queryParameterValue);
         }
 
@@ -1385,7 +1385,7 @@ namespace jaytwo.FluentHttp.Tests
             request.WithUriQueryParameter("hello", "wo{0}", "rld");
 
             // assert
-            Assert.Equal("?hello=world", request.RequestUri.OriginalString);
+            Assert.Equal("?hello=world", request.RequestUri?.OriginalString);
         }
 
         [Theory]
@@ -1415,14 +1415,14 @@ namespace jaytwo.FluentHttp.Tests
             request.WithUriQueryParameter("hello", "wo{0}{1}", new object[] { "rld", 1 });
 
             // assert
-            Assert.Equal("?hello=world1", request.RequestUri.OriginalString);
+            Assert.Equal("?hello=world1", request.RequestUri?.OriginalString);
         }
 
         [Fact]
         public void WithUriQueryParameter_format_objectarray_ExcludeIfNull()
         {
             // arrange
-            object[] values = null;
+            object[]? values = null;
             var request = new HttpRequestMessage();
 
             // act
@@ -1444,7 +1444,7 @@ namespace jaytwo.FluentHttp.Tests
             request.WithUriQueryParameter(name, value);
 
             // assert
-            Assert.Equal("?hello=123", request.RequestUri.OriginalString);
+            Assert.Equal("?hello=123", request.RequestUri?.OriginalString);
         }
 
         [Theory]
@@ -1470,14 +1470,14 @@ namespace jaytwo.FluentHttp.Tests
         {
             // arrange
             var name = "hello";
-            object[] values = null;
+            object[]? values = null;
             var request = new HttpRequestMessage();
 
             // act
             request.WithUriQueryParameter(name, values);
 
             // assert
-            Assert.Equal("?hello=", request.RequestUri.OriginalString);
+            Assert.Equal("?hello=", request.RequestUri?.OriginalString);
         }
 
         [Fact]
@@ -1485,14 +1485,14 @@ namespace jaytwo.FluentHttp.Tests
         {
             // arrange
             var name = "hello";
-            IEnumerable<object> values = null;
+            IEnumerable<object>? values = null;
             var request = new HttpRequestMessage();
 
             // act
             request.WithUriQueryParameter(name, values);
 
             // assert
-            Assert.Equal("?hello=", request.RequestUri.OriginalString);
+            Assert.Equal("?hello=", request.RequestUri?.OriginalString);
         }
 
         [Fact]
@@ -1500,14 +1500,14 @@ namespace jaytwo.FluentHttp.Tests
         {
             // arrange
             var name = "hello";
-            string[] values = null;
+            string[]? values = null;
             var request = new HttpRequestMessage();
 
             // act
             request.WithUriQueryParameter(name, values);
 
             // assert
-            Assert.Equal("?hello=", request.RequestUri.OriginalString);
+            Assert.Equal("?hello=", request.RequestUri?.OriginalString);
         }
 
         [Fact]
@@ -1515,14 +1515,14 @@ namespace jaytwo.FluentHttp.Tests
         {
             // arrange
             var name = "hello";
-            IEnumerable<string> values = null;
+            IEnumerable<string>? values = null;
             var request = new HttpRequestMessage();
 
             // act
             request.WithUriQueryParameter(name, values);
 
             // assert
-            Assert.Equal("?hello=", request.RequestUri.OriginalString);
+            Assert.Equal("?hello=", request.RequestUri?.OriginalString);
         }
 
         [Fact]
@@ -1537,7 +1537,7 @@ namespace jaytwo.FluentHttp.Tests
             request.WithUriQueryParameter(name, values);
 
             // assert
-            Assert.Equal("?hello=fizz&hello=buzz", request.RequestUri.OriginalString);
+            Assert.Equal("?hello=fizz&hello=buzz", request.RequestUri?.OriginalString);
         }
 
         [Fact]
@@ -1552,7 +1552,7 @@ namespace jaytwo.FluentHttp.Tests
             request.WithUriQueryParameter(name, values);
 
             // assert
-            Assert.Equal("?hello=fizz&hello=buzz", request.RequestUri.OriginalString);
+            Assert.Equal("?hello=fizz&hello=buzz", request.RequestUri?.OriginalString);
         }
 
         [Fact]
@@ -1567,7 +1567,7 @@ namespace jaytwo.FluentHttp.Tests
             request.WithUriQueryParameter(name, values);
 
             // assert
-            Assert.Equal("?hello=123&hello=456", request.RequestUri.OriginalString);
+            Assert.Equal("?hello=123&hello=456", request.RequestUri?.OriginalString);
         }
 
         [Fact]
@@ -1582,7 +1582,7 @@ namespace jaytwo.FluentHttp.Tests
             request.WithUriQueryParameter(name, values);
 
             // assert
-            Assert.Equal("?hello=123&hello=456", request.RequestUri.OriginalString);
+            Assert.Equal("?hello=123&hello=456", request.RequestUri?.OriginalString);
         }
 
         [Fact]
@@ -1590,7 +1590,7 @@ namespace jaytwo.FluentHttp.Tests
         {
             // arrange
             var name = "hello";
-            string[] values = null;
+            string[]? values = null;
             var request = new HttpRequestMessage();
 
             // act
@@ -1605,7 +1605,7 @@ namespace jaytwo.FluentHttp.Tests
         {
             // arrange
             var name = "hello";
-            IEnumerable<string> values = null;
+            IEnumerable<string>? values = null;
             var request = new HttpRequestMessage();
 
             // act
@@ -1627,7 +1627,7 @@ namespace jaytwo.FluentHttp.Tests
             request.WithUriQueryParameter(name, values);
 
             // assert
-            Assert.Equal("http://example.com/?hello=fizz&hello=buzz", request.RequestUri.AbsoluteUri);
+            Assert.Equal("http://example.com/?hello=fizz&hello=buzz", request.RequestUri?.AbsoluteUri);
         }
 
         [Fact]
@@ -1642,7 +1642,7 @@ namespace jaytwo.FluentHttp.Tests
             request.WithUriQueryParameter(name, values);
 
             // assert
-            Assert.Equal("http://example.com/?hello=fizz&hello=buzz", request.RequestUri.AbsoluteUri);
+            Assert.Equal("http://example.com/?hello=fizz&hello=buzz", request.RequestUri?.AbsoluteUri);
         }
 
         [Fact]
@@ -1657,7 +1657,7 @@ namespace jaytwo.FluentHttp.Tests
             request.WithUriQueryParameter(name, values);
 
             // assert
-            Assert.Equal("http://example.com/?hello=123&hello=456", request.RequestUri.AbsoluteUri);
+            Assert.Equal("http://example.com/?hello=123&hello=456", request.RequestUri?.AbsoluteUri);
         }
 
         [Fact]
@@ -1672,7 +1672,7 @@ namespace jaytwo.FluentHttp.Tests
             request.WithUriQueryParameter(name, values);
 
             // assert
-            Assert.Equal("http://example.com/?hello=123&hello=456", request.RequestUri.AbsoluteUri);
+            Assert.Equal("http://example.com/?hello=123&hello=456", request.RequestUri?.AbsoluteUri);
         }
 
         [Fact]
@@ -1680,7 +1680,7 @@ namespace jaytwo.FluentHttp.Tests
         {
             // arrange
             var name = "hello";
-            object[] values = null;
+            object[]? values = null;
             var request = new HttpRequestMessage();
 
             // act
@@ -1695,7 +1695,7 @@ namespace jaytwo.FluentHttp.Tests
         {
             // arrange
             var name = "hello";
-            IEnumerable<object> values = null;
+            IEnumerable<object>? values = null;
             var request = new HttpRequestMessage();
 
             // act
@@ -1715,7 +1715,7 @@ namespace jaytwo.FluentHttp.Tests
             // arrange
             var name = "hello";
 
-            object[] values = (value1 == null)
+            object[]? values = (value1 == null)
                 ? null
                 : new[] { value1, value2 };
 
@@ -1738,7 +1738,7 @@ namespace jaytwo.FluentHttp.Tests
             // arrange
             var name = "hello";
 
-            IEnumerable<object> values = (value1 == null)
+            IEnumerable<object>? values = (value1 == null)
                 ? null
                 : new[] { value1, value2 };
 
@@ -1756,15 +1756,15 @@ namespace jaytwo.FluentHttp.Tests
         {
             // arrange
             var name = "hello";
-            string value = null;
+            string? value = null;
             var request = new HttpRequestMessage();
 
             // act
             request.WithUriQueryParameter(name, value, InclusionRule.IncludeAlways);
 
             // assert
-            var query = Url.GetQuery(request.RequestUri.OriginalString);
-            var queryParameterValue = Url.GetQueryValue(request.RequestUri.OriginalString, name);
+            var query = Url.GetQuery(request.RequestUri?.OriginalString);
+            var queryParameterValue = Url.GetQueryValue(request.RequestUri?.OriginalString, name);
             Assert.Equal($"{value}", queryParameterValue);
         }
 
@@ -1773,7 +1773,7 @@ namespace jaytwo.FluentHttp.Tests
         {
             // arrange
             var name = "hello";
-            string value = null;
+            string? value = null;
             var request = new HttpRequestMessage();
 
             // act
@@ -1788,7 +1788,7 @@ namespace jaytwo.FluentHttp.Tests
         {
             // arrange
             var name = "hello";
-            string value = null;
+            string? value = null;
             var request = new HttpRequestMessage();
 
             // act
@@ -1810,8 +1810,8 @@ namespace jaytwo.FluentHttp.Tests
             request.WithUriQueryParameter(name, value, InclusionRule.IncludeAlways);
 
             // assert
-            var query = Url.GetQuery(request.RequestUri.OriginalString);
-            var queryParameterValue = Url.GetQueryValue(request.RequestUri.OriginalString, name);
+            var query = Url.GetQuery(request.RequestUri?.OriginalString);
+            var queryParameterValue = Url.GetQueryValue(request.RequestUri?.OriginalString, name);
             Assert.Equal(value, queryParameterValue);
         }
 
@@ -1827,8 +1827,8 @@ namespace jaytwo.FluentHttp.Tests
             request.WithUriQueryParameter(name, value, InclusionRule.ExcludeIfNull);
 
             // assert
-            var query = Url.GetQuery(request.RequestUri.OriginalString);
-            var queryParameterValue = Url.GetQueryValue(request.RequestUri.OriginalString, name);
+            var query = Url.GetQuery(request.RequestUri?.OriginalString);
+            var queryParameterValue = Url.GetQueryValue(request.RequestUri?.OriginalString, name);
             Assert.Equal(value, queryParameterValue);
         }
 
@@ -1859,8 +1859,8 @@ namespace jaytwo.FluentHttp.Tests
             request.WithUriQueryParameter(name, value, InclusionRule.IncludeAlways);
 
             // assert
-            var query = Url.GetQuery(request.RequestUri.OriginalString);
-            var queryParameterValue = Url.GetQueryValue(request.RequestUri.OriginalString, name);
+            var query = Url.GetQuery(request.RequestUri?.OriginalString);
+            var queryParameterValue = Url.GetQueryValue(request.RequestUri?.OriginalString, name);
             Assert.Equal(value, queryParameterValue);
         }
 
@@ -1876,8 +1876,8 @@ namespace jaytwo.FluentHttp.Tests
             request.WithUriQueryParameter(name, value, InclusionRule.ExcludeIfNull);
 
             // assert
-            var query = Url.GetQuery(request.RequestUri.OriginalString);
-            var queryParameterValue = Url.GetQueryValue(request.RequestUri.OriginalString, name);
+            var query = Url.GetQuery(request.RequestUri?.OriginalString);
+            var queryParameterValue = Url.GetQueryValue(request.RequestUri?.OriginalString, name);
             Assert.Equal(value, queryParameterValue);
         }
 
@@ -1893,8 +1893,8 @@ namespace jaytwo.FluentHttp.Tests
             request.WithUriQueryParameter(name, value, InclusionRule.ExcludeIfNullOrEmpty);
 
             // assert
-            var query = Url.GetQuery(request.RequestUri.OriginalString);
-            var queryParameterValue = Url.GetQueryValue(request.RequestUri.OriginalString, name);
+            var query = Url.GetQuery(request.RequestUri?.OriginalString);
+            var queryParameterValue = Url.GetQueryValue(request.RequestUri?.OriginalString, name);
             Assert.Equal(value, queryParameterValue);
         }
 
@@ -1911,8 +1911,8 @@ namespace jaytwo.FluentHttp.Tests
             request.WithUriQueryParameter(name, format, value, InclusionRule.IncludeAlways);
 
             // assert
-            var query = Url.GetQuery(request.RequestUri.OriginalString);
-            var queryParameterValue = Url.GetQueryValue(request.RequestUri.OriginalString, name);
+            var query = Url.GetQuery(request.RequestUri?.OriginalString);
+            var queryParameterValue = Url.GetQueryValue(request.RequestUri?.OriginalString, name);
             Assert.Equal(string.Format(format, value), queryParameterValue);
         }
 
@@ -1929,8 +1929,8 @@ namespace jaytwo.FluentHttp.Tests
             request.WithUriQueryParameter(name, format, value, InclusionRule.ExcludeIfNull);
 
             // assert
-            var query = Url.GetQuery(request.RequestUri.OriginalString);
-            var queryParameterValue = Url.GetQueryValue(request.RequestUri.OriginalString, name);
+            var query = Url.GetQuery(request.RequestUri?.OriginalString);
+            var queryParameterValue = Url.GetQueryValue(request.RequestUri?.OriginalString, name);
             Assert.Equal(string.Format(format, value), queryParameterValue);
         }
 
@@ -1947,8 +1947,8 @@ namespace jaytwo.FluentHttp.Tests
             request.WithUriQueryParameter(name, format, value, InclusionRule.ExcludeIfNullOrEmpty);
 
             // assert
-            var query = Url.GetQuery(request.RequestUri.OriginalString);
-            var queryParameterValue = Url.GetQueryValue(request.RequestUri.OriginalString, name);
+            var query = Url.GetQuery(request.RequestUri?.OriginalString);
+            var queryParameterValue = Url.GetQueryValue(request.RequestUri?.OriginalString, name);
             Assert.Equal(string.Format(format, value), queryParameterValue);
         }
 
@@ -1958,15 +1958,15 @@ namespace jaytwo.FluentHttp.Tests
             // arrange
             var name = "hello";
             var format = "{0}";
-            object value = null;
+            object? value = null;
             var request = new HttpRequestMessage();
 
             // act
             request.WithUriQueryParameter(name, format, value, InclusionRule.IncludeAlways);
 
             // assert
-            var query = Url.GetQuery(request.RequestUri.OriginalString);
-            var queryParameterValue = Url.GetQueryValue(request.RequestUri.OriginalString, name);
+            var query = Url.GetQuery(request.RequestUri?.OriginalString);
+            var queryParameterValue = Url.GetQueryValue(request.RequestUri?.OriginalString, name);
             Assert.Equal(string.Format(format, value), queryParameterValue);
         }
 
@@ -1976,7 +1976,7 @@ namespace jaytwo.FluentHttp.Tests
             // arrange
             var name = "hello";
             var format = "{0}";
-            object value = null;
+            object? value = null;
             var request = new HttpRequestMessage();
 
             // act
@@ -1992,7 +1992,7 @@ namespace jaytwo.FluentHttp.Tests
             // arrange
             var name = "hello";
             var format = "{0}";
-            object value = null;
+            object? value = null;
             var request = new HttpRequestMessage();
 
             // act
@@ -2015,8 +2015,8 @@ namespace jaytwo.FluentHttp.Tests
             request.WithUriQueryParameter(name, format, values, InclusionRule.IncludeAlways);
 
             // assert
-            var query = Url.GetQuery(request.RequestUri.OriginalString);
-            var queryParameterValue = Url.GetQueryValue(request.RequestUri.OriginalString, name);
+            var query = Url.GetQuery(request.RequestUri?.OriginalString);
+            var queryParameterValue = Url.GetQueryValue(request.RequestUri?.OriginalString, name);
             Assert.Equal(string.Format(format, values), queryParameterValue);
         }
 
@@ -2033,8 +2033,8 @@ namespace jaytwo.FluentHttp.Tests
             request.WithUriQueryParameter(name, format, values, InclusionRule.ExcludeIfNull);
 
             // assert
-            var query = Url.GetQuery(request.RequestUri.OriginalString);
-            var queryParameterValue = Url.GetQueryValue(request.RequestUri.OriginalString, name);
+            var query = Url.GetQuery(request.RequestUri?.OriginalString);
+            var queryParameterValue = Url.GetQueryValue(request.RequestUri?.OriginalString, name);
             Assert.Equal(string.Format(format, values), queryParameterValue);
         }
 
@@ -2051,8 +2051,8 @@ namespace jaytwo.FluentHttp.Tests
             request.WithUriQueryParameter(name, format, values, InclusionRule.ExcludeIfNullOrEmpty);
 
             // assert
-            var query = Url.GetQuery(request.RequestUri.OriginalString);
-            var queryParameterValue = Url.GetQueryValue(request.RequestUri.OriginalString, name);
+            var query = Url.GetQuery(request.RequestUri?.OriginalString);
+            var queryParameterValue = Url.GetQueryValue(request.RequestUri?.OriginalString, name);
             Assert.Equal(string.Format(format, values), queryParameterValue);
         }
 
@@ -2062,7 +2062,7 @@ namespace jaytwo.FluentHttp.Tests
             // arrange
             var name = "hello";
             var format = "{0}";
-            object[] values = null;
+            object[]? values = null;
             var request = new HttpRequestMessage();
 
             // act & assert
@@ -2075,7 +2075,7 @@ namespace jaytwo.FluentHttp.Tests
             // arrange
             var name = "hello";
             var format = "{0}";
-            object[] values = null;
+            object[]? values = null;
             var request = new HttpRequestMessage();
 
             // act
@@ -2091,7 +2091,7 @@ namespace jaytwo.FluentHttp.Tests
             // arrange
             var name = "hello";
             var format = "{0}";
-            object[] values = null;
+            object[]? values = null;
             var request = new HttpRequestMessage();
 
             // act
@@ -2156,7 +2156,7 @@ namespace jaytwo.FluentHttp.Tests
             request.WithUriQueryParameter(name, value);
 
             // assert
-            var queryParameterValue = Url.GetQueryValue(request.RequestUri.OriginalString, name);
+            var queryParameterValue = Url.GetQueryValue(request.RequestUri?.OriginalString, name);
             Assert.Equal(expected, queryParameterValue);
         }
 
@@ -2180,7 +2180,7 @@ namespace jaytwo.FluentHttp.Tests
             }
             else
             {
-                var queryParameterValue = Url.GetQueryValue(request.RequestUri.OriginalString, name);
+                var queryParameterValue = Url.GetQueryValue(request.RequestUri?.OriginalString, name);
                 Assert.Equal(expected, queryParameterValue);
             }
         }
@@ -2199,8 +2199,8 @@ namespace jaytwo.FluentHttp.Tests
             request.WithUriQueryParameter(name, value, formatting);
 
             // assert
-            var query = Url.GetQuery(request.RequestUri.OriginalString);
-            var queryParameterValue = Url.GetQueryValue(request.RequestUri.OriginalString, name);
+            var query = Url.GetQuery(request.RequestUri?.OriginalString);
+            var queryParameterValue = Url.GetQueryValue(request.RequestUri?.OriginalString, name);
             Assert.Equal(expected, queryParameterValue);
         }
 
@@ -2225,7 +2225,7 @@ namespace jaytwo.FluentHttp.Tests
             }
             else
             {
-                var queryParameterValue = Url.GetQueryValue(request.RequestUri.OriginalString, name);
+                var queryParameterValue = Url.GetQueryValue(request.RequestUri?.OriginalString, name);
                 Assert.Equal(expected, queryParameterValue);
             }
         }
@@ -2245,8 +2245,8 @@ namespace jaytwo.FluentHttp.Tests
             request.WithUriQueryParameter(name, value, inclusionRule);
 
             // assert
-            var query = Url.GetQuery(request.RequestUri.OriginalString);
-            var queryParameterValue = Url.GetQueryValue(request.RequestUri.OriginalString, name);
+            var query = Url.GetQuery(request.RequestUri?.OriginalString);
+            var queryParameterValue = Url.GetQueryValue(request.RequestUri?.OriginalString, name);
             Assert.Equal(expected, queryParameterValue);
         }
 
@@ -2274,7 +2274,7 @@ namespace jaytwo.FluentHttp.Tests
             }
             else
             {
-                var queryParameterValue = Url.GetQueryValue(request.RequestUri.OriginalString, name);
+                var queryParameterValue = Url.GetQueryValue(request.RequestUri?.OriginalString, name);
                 Assert.Equal(expected, queryParameterValue);
             }
         }
@@ -2295,8 +2295,8 @@ namespace jaytwo.FluentHttp.Tests
             request.WithUriQueryParameter(name, value, formatting, inclusionRule);
 
             // assert
-            var query = Url.GetQuery(request.RequestUri.OriginalString);
-            var queryParameterValue = Url.GetQueryValue(request.RequestUri.OriginalString, name);
+            var query = Url.GetQuery(request.RequestUri?.OriginalString);
+            var queryParameterValue = Url.GetQueryValue(request.RequestUri?.OriginalString, name);
             Assert.Equal(expected, queryParameterValue);
         }
 
@@ -2323,7 +2323,7 @@ namespace jaytwo.FluentHttp.Tests
             }
             else
             {
-                var queryParameterValue = Url.GetQueryValue(request.RequestUri.OriginalString, name);
+                var queryParameterValue = Url.GetQueryValue(request.RequestUri?.OriginalString, name);
                 Assert.Equal(expected, queryParameterValue);
             }
         }
@@ -2341,7 +2341,7 @@ namespace jaytwo.FluentHttp.Tests
             request.WithUriQueryParameter(name, value);
 
             // assert
-            var queryParameterValue = Url.GetQueryValue(request.RequestUri.OriginalString, name);
+            var queryParameterValue = Url.GetQueryValue(request.RequestUri?.OriginalString, name);
             Assert.Equal(expected, queryParameterValue);
         }
 
@@ -2352,7 +2352,7 @@ namespace jaytwo.FluentHttp.Tests
         {
             // arrange
             var value = (year != null)
-                ? new DateTime(year.Value, month.Value, day.Value)
+                ? new DateTime(year.Value, month!.Value, day!.Value)
                 : default(DateTime?);
 
             var name = "hello";
@@ -2368,7 +2368,7 @@ namespace jaytwo.FluentHttp.Tests
             }
             else
             {
-                var queryParameterValue = Url.GetQueryValue(request.RequestUri.OriginalString, name);
+                var queryParameterValue = Url.GetQueryValue(request.RequestUri?.OriginalString, name);
                 Assert.Equal(expected, queryParameterValue);
             }
         }
@@ -2388,8 +2388,8 @@ namespace jaytwo.FluentHttp.Tests
             request.WithUriQueryParameter(name, value, formatting);
 
             // assert
-            var query = Url.GetQuery(request.RequestUri.OriginalString);
-            var queryParameterValue = Url.GetQueryValue(request.RequestUri.OriginalString, name);
+            var query = Url.GetQuery(request.RequestUri?.OriginalString);
+            var queryParameterValue = Url.GetQueryValue(request.RequestUri?.OriginalString, name);
             Assert.Equal(expected, queryParameterValue);
         }
 
@@ -2402,7 +2402,7 @@ namespace jaytwo.FluentHttp.Tests
         {
             // arrange
             var value = (year != null)
-                ? new DateTime(year.Value, month.Value, day.Value)
+                ? new DateTime(year.Value, month!.Value, day!.Value)
                 : default(DateTime?);
 
             var name = "hello";
@@ -2418,7 +2418,7 @@ namespace jaytwo.FluentHttp.Tests
             }
             else
             {
-                var queryParameterValue = Url.GetQueryValue(request.RequestUri.OriginalString, name);
+                var queryParameterValue = Url.GetQueryValue(request.RequestUri?.OriginalString, name);
                 Assert.Equal(expected, queryParameterValue);
             }
         }
@@ -2438,8 +2438,8 @@ namespace jaytwo.FluentHttp.Tests
             request.WithUriQueryParameter(name, value, inclusionRule);
 
             // assert
-            var query = Url.GetQuery(request.RequestUri.OriginalString);
-            var queryParameterValue = Url.GetQueryValue(request.RequestUri.OriginalString, name);
+            var query = Url.GetQuery(request.RequestUri?.OriginalString);
+            var queryParameterValue = Url.GetQueryValue(request.RequestUri?.OriginalString, name);
             Assert.Equal(expected, queryParameterValue);
         }
 
@@ -2454,7 +2454,7 @@ namespace jaytwo.FluentHttp.Tests
         {
             // arrange
             var value = (year != null)
-                ? new DateTime(year.Value, month.Value, day.Value)
+                ? new DateTime(year.Value, month!.Value, day!.Value)
                 : default(DateTime?);
 
             var name = "hello";
@@ -2470,7 +2470,7 @@ namespace jaytwo.FluentHttp.Tests
             }
             else
             {
-                var queryParameterValue = Url.GetQueryValue(request.RequestUri.OriginalString, name);
+                var queryParameterValue = Url.GetQueryValue(request.RequestUri?.OriginalString, name);
                 Assert.Equal(expected, queryParameterValue);
             }
         }
@@ -2492,8 +2492,8 @@ namespace jaytwo.FluentHttp.Tests
             request.WithUriQueryParameter(name, value, formatting, inclusionRule);
 
             // assert
-            var query = Url.GetQuery(request.RequestUri.OriginalString);
-            var queryParameterValue = Url.GetQueryValue(request.RequestUri.OriginalString, name);
+            var query = Url.GetQuery(request.RequestUri?.OriginalString);
+            var queryParameterValue = Url.GetQueryValue(request.RequestUri?.OriginalString, name);
             Assert.Equal(expected, queryParameterValue);
         }
 
@@ -2510,7 +2510,7 @@ namespace jaytwo.FluentHttp.Tests
         {
             // arrange
             var value = (year != null)
-                ? new DateTime(year.Value, month.Value, day.Value)
+                ? new DateTime(year.Value, month!.Value, day!.Value)
                 : default(DateTime?);
 
             var name = "hello";
@@ -2526,7 +2526,7 @@ namespace jaytwo.FluentHttp.Tests
             }
             else
             {
-                var queryParameterValue = Url.GetQueryValue(request.RequestUri.OriginalString, name);
+                var queryParameterValue = Url.GetQueryValue(request.RequestUri?.OriginalString, name);
                 Assert.Equal(expected, queryParameterValue);
             }
         }
@@ -2544,7 +2544,7 @@ namespace jaytwo.FluentHttp.Tests
             request.WithUriQueryParameter(name, value);
 
             // assert
-            var queryParameterValue = Url.GetQueryValue(request.RequestUri.OriginalString, name);
+            var queryParameterValue = Url.GetQueryValue(request.RequestUri?.OriginalString, name);
             Assert.Equal(expected, queryParameterValue);
         }
 
@@ -2555,7 +2555,7 @@ namespace jaytwo.FluentHttp.Tests
         {
             // arrange
             var value = (year != null)
-                ? new DateTimeOffset(year.Value, month.Value, day.Value, 0, 0, 0, TimeSpan.FromHours(offset.Value))
+                ? new DateTimeOffset(year.Value, month!.Value, day!.Value, 0, 0, 0, TimeSpan.FromHours(offset!.Value))
                 : default(DateTimeOffset?);
 
             var name = "hello";
@@ -2571,7 +2571,7 @@ namespace jaytwo.FluentHttp.Tests
             }
             else
             {
-                var queryParameterValue = Url.GetQueryValue(request.RequestUri.OriginalString, name);
+                var queryParameterValue = Url.GetQueryValue(request.RequestUri?.OriginalString, name);
                 Assert.Equal(expected, queryParameterValue);
             }
         }
@@ -2591,8 +2591,8 @@ namespace jaytwo.FluentHttp.Tests
             request.WithUriQueryParameter(name, value, formatting);
 
             // assert
-            var query = Url.GetQuery(request.RequestUri.OriginalString);
-            var queryParameterValue = Url.GetQueryValue(request.RequestUri.OriginalString, name);
+            var query = Url.GetQuery(request.RequestUri?.OriginalString);
+            var queryParameterValue = Url.GetQueryValue(request.RequestUri?.OriginalString, name);
             Assert.Equal(expected, queryParameterValue);
         }
 
@@ -2605,7 +2605,7 @@ namespace jaytwo.FluentHttp.Tests
         {
             // arrange
             var value = (year != null)
-                ? new DateTimeOffset(year.Value, month.Value, day.Value, 0, 0, 0, TimeSpan.FromHours(offset.Value))
+                ? new DateTimeOffset(year.Value, month!.Value, day!.Value, 0, 0, 0, TimeSpan.FromHours(offset!.Value))
                 : default(DateTimeOffset?);
 
             var name = "hello";
@@ -2621,7 +2621,7 @@ namespace jaytwo.FluentHttp.Tests
             }
             else
             {
-                var queryParameterValue = Url.GetQueryValue(request.RequestUri.OriginalString, name);
+                var queryParameterValue = Url.GetQueryValue(request.RequestUri?.OriginalString, name);
                 Assert.Equal(expected, queryParameterValue);
             }
         }
@@ -2641,8 +2641,8 @@ namespace jaytwo.FluentHttp.Tests
             request.WithUriQueryParameter(name, value, inclusionRule);
 
             // assert
-            var query = Url.GetQuery(request.RequestUri.OriginalString);
-            var queryParameterValue = Url.GetQueryValue(request.RequestUri.OriginalString, name);
+            var query = Url.GetQuery(request.RequestUri?.OriginalString);
+            var queryParameterValue = Url.GetQueryValue(request.RequestUri?.OriginalString, name);
             Assert.Equal(expected, queryParameterValue);
         }
 
@@ -2657,7 +2657,7 @@ namespace jaytwo.FluentHttp.Tests
         {
             // arrange
             var value = (year != null)
-                ? new DateTimeOffset(year.Value, month.Value, day.Value, 0, 0, 0, TimeSpan.FromHours(offset.Value))
+                ? new DateTimeOffset(year.Value, month!.Value, day!.Value, 0, 0, 0, TimeSpan.FromHours(offset!.Value))
                 : default(DateTimeOffset?);
 
             var name = "hello";
@@ -2673,7 +2673,7 @@ namespace jaytwo.FluentHttp.Tests
             }
             else
             {
-                var queryParameterValue = Url.GetQueryValue(request.RequestUri.OriginalString, name);
+                var queryParameterValue = Url.GetQueryValue(request.RequestUri?.OriginalString, name);
                 Assert.Equal(expected, queryParameterValue);
             }
         }
@@ -2695,8 +2695,8 @@ namespace jaytwo.FluentHttp.Tests
             request.WithUriQueryParameter(name, value, formatting, inclusionRule);
 
             // assert
-            var query = Url.GetQuery(request.RequestUri.OriginalString);
-            var queryParameterValue = Url.GetQueryValue(request.RequestUri.OriginalString, name);
+            var query = Url.GetQuery(request.RequestUri?.OriginalString);
+            var queryParameterValue = Url.GetQueryValue(request.RequestUri?.OriginalString, name);
             Assert.Equal(expected, queryParameterValue);
         }
 
@@ -2713,7 +2713,7 @@ namespace jaytwo.FluentHttp.Tests
         {
             // arrange
             var value = (year != null)
-                ? new DateTimeOffset(year.Value, month.Value, day.Value, 0, 0, 0, TimeSpan.FromHours(offset.Value))
+                ? new DateTimeOffset(year.Value, month!.Value, day!.Value, 0, 0, 0, TimeSpan.FromHours(offset!.Value))
                 : default(DateTimeOffset?);
 
             var name = "hello";
@@ -2729,7 +2729,7 @@ namespace jaytwo.FluentHttp.Tests
             }
             else
             {
-                var queryParameterValue = Url.GetQueryValue(request.RequestUri.OriginalString, name);
+                var queryParameterValue = Url.GetQueryValue(request.RequestUri?.OriginalString, name);
                 Assert.Equal(expected, queryParameterValue);
             }
         }
@@ -2750,7 +2750,7 @@ namespace jaytwo.FluentHttp.Tests
             var contentAsString = await content.ReadAsStringAsync();
             var anonymousPrototype = new { mykey = default(string) };
             var deserialized = JsonConvert.DeserializeAnonymousType(contentAsString, anonymousPrototype);
-            Assert.Equal(someValue, deserialized.mykey);
+            Assert.Equal(someValue, deserialized!.mykey);
         }
 
         [Fact]
@@ -2769,7 +2769,7 @@ namespace jaytwo.FluentHttp.Tests
             var contentAsString = await content.ReadAsStringAsync();
             var anonymousPrototype = new { mykey = default(string) };
             var deserialized = JsonConvert.DeserializeAnonymousType(contentAsString, anonymousPrototype);
-            Assert.Equal(someValue, deserialized.mykey);
+            Assert.Equal(someValue, deserialized!.mykey);
         }
 
         [Fact]
@@ -2863,7 +2863,7 @@ namespace jaytwo.FluentHttp.Tests
 
             // assert
             var content = Assert.IsType<StringContent>(request.Content);
-            Assert.Equal(content.Headers.ContentType.MediaType, mediaType);
+            Assert.Equal(content.Headers.ContentType?.MediaType, mediaType);
 
             var contentAsString = await content.ReadAsStringAsync();
             Assert.Equal(contentAsString, value);
@@ -2881,7 +2881,7 @@ namespace jaytwo.FluentHttp.Tests
 
             // assert
             var content = Assert.IsType<StringContent>(request.Content);
-            Assert.Equal("text/plain", content.Headers.ContentType.MediaType);
+            Assert.Equal("text/plain", content.Headers?.ContentType?.MediaType);
 
             var contentAsString = await content.ReadAsStringAsync();
             Assert.Equal(contentAsString, value);
@@ -2901,7 +2901,7 @@ namespace jaytwo.FluentHttp.Tests
 
             // assert
             var content = Assert.IsType<ByteArrayContent>(request.Content);
-            Assert.Equal(content.Headers.ContentType.MediaType, mediaType);
+            Assert.Equal(content.Headers.ContentType?.MediaType, mediaType);
 
             var contentAsString = await content.ReadAsStringAsync();
             Assert.Equal(contentAsString, value);
@@ -2942,7 +2942,7 @@ namespace jaytwo.FluentHttp.Tests
 
                 // assert
                 var content = Assert.IsType<StreamContent>(request.Content);
-                Assert.Equal(content.Headers.ContentType.MediaType, mediaType);
+                Assert.Equal(content.Headers.ContentType?.MediaType, mediaType);
 
                 var contentAsString = await content.ReadAsStringAsync();
                 Assert.Equal(contentAsString, value);
@@ -2987,7 +2987,7 @@ namespace jaytwo.FluentHttp.Tests
             // assert
             var content = Assert.IsType<MultipartFormDataContent>(request.Content);
             var stringContent = content.Single();
-            var stringContentName = stringContent.Headers.ContentDisposition.Name;
+            var stringContentName = stringContent.Headers.ContentDisposition?.Name;
             Assert.Equal(someName, stringContentName);
 
             var contentAsString = await stringContent.ReadAsStringAsync();
@@ -3008,7 +3008,7 @@ namespace jaytwo.FluentHttp.Tests
             // assert
             var content = Assert.IsType<MultipartFormDataContent>(request.Content);
             var stringContent = content.Single();
-            var stringContentName = stringContent.Headers.ContentDisposition.Name;
+            var stringContentName = stringContent.Headers.ContentDisposition?.Name;
             Assert.Equal(someName, stringContentName);
 
             var contentAsString = await stringContent.ReadAsStringAsync();

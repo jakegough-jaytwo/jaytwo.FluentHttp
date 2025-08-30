@@ -14,7 +14,7 @@ namespace jaytwo.FluentHttp.Tests
 {
     public class HttpClientTests
     {
-        public const string HttpBinUrl = "http://httpbin.jaytwo.com/";
+        public const string HttpBinUrl = "https://httpbin.jaytwo.net/";
 
         private readonly IHttpClient _httpClient;
         private readonly ITestOutputHelper _output;
@@ -139,7 +139,7 @@ namespace jaytwo.FluentHttp.Tests
 
             // assert
             response.EnsureSuccessStatusCode();
-            Assert.Equal(MediaType.image_jpeg, response.Content.Headers.ContentType.MediaType);
+            Assert.Equal(MediaType.image_jpeg, response.Content?.Headers?.ContentType?.MediaType);
         }
 
         [Fact]

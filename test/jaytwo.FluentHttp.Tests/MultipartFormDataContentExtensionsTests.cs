@@ -31,7 +31,7 @@ namespace jaytwo.FluentHttp.Tests
 
             var singleContent = form.Single();
             var stringContent = Assert.IsType<StringContent>(singleContent);
-            var stringContentName = singleContent.Headers.ContentDisposition.Name;
+            var stringContentName = singleContent.Headers?.ContentDisposition?.Name;
             var stringContentValue = await stringContent.ReadAsStringAsync();
 
             Assert.Equal(name, stringContentName);
@@ -68,7 +68,7 @@ namespace jaytwo.FluentHttp.Tests
 
                 var singleContent = form.Single();
                 var stringContent = Assert.IsType<StringContent>(singleContent);
-                var stringContentName = singleContent.Headers.ContentDisposition.Name;
+                var stringContentName = singleContent.Headers?.ContentDisposition?.Name;
                 var stringContentValue = await stringContent.ReadAsStringAsync();
 
                 Assert.Equal(name, stringContentName);
@@ -95,7 +95,7 @@ namespace jaytwo.FluentHttp.Tests
 
             var singleContent = form.Single();
             var stringContent = Assert.IsType<StringContent>(singleContent);
-            var stringContentName = singleContent.Headers.ContentDisposition.Name;
+            var stringContentName = singleContent.Headers?.ContentDisposition?.Name;
             var stringContentValue = await stringContent.ReadAsStringAsync();
 
             Assert.Equal(name, stringContentName);
@@ -135,7 +135,7 @@ namespace jaytwo.FluentHttp.Tests
 
                 var singleContent = form.Single();
                 var stringContent = Assert.IsType<StringContent>(singleContent);
-                var stringContentName = singleContent.Headers.ContentDisposition.Name;
+                var stringContentName = singleContent.Headers?.ContentDisposition?.Name;
                 var stringContentValue = await stringContent.ReadAsStringAsync();
 
                 Assert.Equal(name, stringContentName);
@@ -162,7 +162,7 @@ namespace jaytwo.FluentHttp.Tests
 
             var singleContent = form.Single();
             var stringContent = Assert.IsType<StringContent>(singleContent);
-            var stringContentName = singleContent.Headers.ContentDisposition.Name;
+            var stringContentName = singleContent.Headers?.ContentDisposition?.Name;
             var stringContentValue = await stringContent.ReadAsStringAsync();
 
             Assert.Equal(name, stringContentName);
@@ -202,7 +202,7 @@ namespace jaytwo.FluentHttp.Tests
 
                 var singleContent = form.Single();
                 var stringContent = Assert.IsType<StringContent>(singleContent);
-                var stringContentName = singleContent.Headers.ContentDisposition.Name;
+                var stringContentName = singleContent.Headers?.ContentDisposition?.Name;
                 var stringContentValue = await stringContent.ReadAsStringAsync();
 
                 Assert.Equal(name, stringContentName);
@@ -227,7 +227,7 @@ namespace jaytwo.FluentHttp.Tests
 
             var singleContent = form.Single();
             var stringContent = Assert.IsType<StringContent>(singleContent);
-            var stringContentName = singleContent.Headers.ContentDisposition.Name;
+            var stringContentName = singleContent.Headers?.ContentDisposition?.Name;
             var stringContentValue = await stringContent.ReadAsStringAsync();
 
             Assert.Equal(name, stringContentName);
@@ -240,7 +240,7 @@ namespace jaytwo.FluentHttp.Tests
             // arrange
             var name = "hello";
             var format = "foo";
-            object[] value = null;
+            object[]? value = null;
             var expected = "foo";
             var form = new MultipartFormDataContent();
 
@@ -252,7 +252,7 @@ namespace jaytwo.FluentHttp.Tests
 
             var singleContent = form.Single();
             var stringContent = Assert.IsType<StringContent>(singleContent);
-            var stringContentName = singleContent.Headers.ContentDisposition.Name;
+            var stringContentName = singleContent.Headers?.ContentDisposition?.Name;
             var stringContentValue = await stringContent.ReadAsStringAsync();
 
             Assert.Equal(name, stringContentName);
@@ -277,7 +277,7 @@ namespace jaytwo.FluentHttp.Tests
 
             var singleContent = form.Single();
             var stringContent = Assert.IsType<StringContent>(singleContent);
-            var stringContentName = singleContent.Headers.ContentDisposition.Name;
+            var stringContentName = singleContent.Headers?.ContentDisposition?.Name;
             var stringContentValue = await stringContent.ReadAsStringAsync();
 
             Assert.Equal(name, stringContentName);
@@ -311,7 +311,7 @@ namespace jaytwo.FluentHttp.Tests
 
                 var singleContent = form.Single();
                 var stringContent = Assert.IsType<StringContent>(singleContent);
-                var stringContentName = singleContent.Headers.ContentDisposition.Name;
+                var stringContentName = singleContent.Headers?.ContentDisposition?.Name;
                 var stringContentValue = await stringContent.ReadAsStringAsync();
 
                 Assert.Equal(name, stringContentName);
@@ -328,7 +328,7 @@ namespace jaytwo.FluentHttp.Tests
             // arrange
             var name = "hello";
             var format = "foo";
-            object[] value = null;
+            object[]? value = null;
             var form = new MultipartFormDataContent();
 
             // act
@@ -345,7 +345,7 @@ namespace jaytwo.FluentHttp.Tests
 
                 var singleContent = form.Single();
                 var stringContent = Assert.IsType<StringContent>(singleContent);
-                var stringContentName = singleContent.Headers.ContentDisposition.Name;
+                var stringContentName = singleContent.Headers?.ContentDisposition?.Name;
                 var stringContentValue = await stringContent.ReadAsStringAsync();
 
                 Assert.Equal(name, stringContentName);
@@ -379,7 +379,7 @@ namespace jaytwo.FluentHttp.Tests
 
                 var singleContent = form.Single();
                 var stringContent = Assert.IsType<StringContent>(singleContent);
-                var stringContentName = singleContent.Headers.ContentDisposition.Name;
+                var stringContentName = singleContent.Headers?.ContentDisposition?.Name;
                 var stringContentValue = await stringContent.ReadAsStringAsync();
 
                 Assert.Equal(name, stringContentName);
@@ -404,7 +404,7 @@ namespace jaytwo.FluentHttp.Tests
 
             var singleContent = form.Single();
             var stringContent = Assert.IsType<StringContent>(singleContent);
-            var stringContentName = singleContent.Headers.ContentDisposition.Name;
+            var stringContentName = singleContent.Headers?.ContentDisposition?.Name;
             var stringContentValue = await stringContent.ReadAsStringAsync();
 
             Assert.Equal(name, stringContentName);
@@ -435,7 +435,7 @@ namespace jaytwo.FluentHttp.Tests
 
                 var singleContent = form.Single();
                 var stringContent = Assert.IsType<StringContent>(singleContent);
-                var stringContentName = singleContent.Headers.ContentDisposition.Name;
+                var stringContentName = singleContent.Headers?.ContentDisposition?.Name;
                 var stringContentValue = await stringContent.ReadAsStringAsync();
 
                 Assert.Equal(name, stringContentName);
@@ -461,7 +461,7 @@ namespace jaytwo.FluentHttp.Tests
 
             var singleContent = form.Single();
             var stringContent = Assert.IsType<StringContent>(singleContent);
-            var stringContentName = singleContent.Headers.ContentDisposition.Name;
+            var stringContentName = singleContent.Headers?.ContentDisposition?.Name;
             var stringContentValue = await stringContent.ReadAsStringAsync();
 
             Assert.Equal(name, stringContentName);
@@ -493,7 +493,7 @@ namespace jaytwo.FluentHttp.Tests
 
                 var singleContent = form.Single();
                 var stringContent = Assert.IsType<StringContent>(singleContent);
-                var stringContentName = singleContent.Headers.ContentDisposition.Name;
+                var stringContentName = singleContent.Headers?.ContentDisposition?.Name;
                 var stringContentValue = await stringContent.ReadAsStringAsync();
 
                 Assert.Equal(name, stringContentName);
@@ -520,7 +520,7 @@ namespace jaytwo.FluentHttp.Tests
 
             var singleContent = form.Single();
             var stringContent = Assert.IsType<StringContent>(singleContent);
-            var stringContentName = singleContent.Headers.ContentDisposition.Name;
+            var stringContentName = singleContent.Headers?.ContentDisposition?.Name;
             var stringContentValue = await stringContent.ReadAsStringAsync();
 
             Assert.Equal(name, stringContentName);
@@ -555,7 +555,7 @@ namespace jaytwo.FluentHttp.Tests
 
                 var singleContent = form.Single();
                 var stringContent = Assert.IsType<StringContent>(singleContent);
-                var stringContentName = singleContent.Headers.ContentDisposition.Name;
+                var stringContentName = singleContent.Headers?.ContentDisposition?.Name;
                 var stringContentValue = await stringContent.ReadAsStringAsync();
 
                 Assert.Equal(name, stringContentName);
@@ -583,7 +583,7 @@ namespace jaytwo.FluentHttp.Tests
 
             var singleContent = form.Single();
             var stringContent = Assert.IsType<StringContent>(singleContent);
-            var stringContentName = singleContent.Headers.ContentDisposition.Name;
+            var stringContentName = singleContent.Headers?.ContentDisposition?.Name;
             var stringContentValue = await stringContent.ReadAsStringAsync();
 
             Assert.Equal(name, stringContentName);
@@ -617,7 +617,7 @@ namespace jaytwo.FluentHttp.Tests
 
                 var singleContent = form.Single();
                 var stringContent = Assert.IsType<StringContent>(singleContent);
-                var stringContentName = singleContent.Headers.ContentDisposition.Name;
+                var stringContentName = singleContent.Headers?.ContentDisposition?.Name;
                 var stringContentValue = await stringContent.ReadAsStringAsync();
 
                 Assert.Equal(name, stringContentName);
@@ -642,7 +642,7 @@ namespace jaytwo.FluentHttp.Tests
 
             var singleContent = form.Single();
             var stringContent = Assert.IsType<StringContent>(singleContent);
-            var stringContentName = singleContent.Headers.ContentDisposition.Name;
+            var stringContentName = singleContent.Headers?.ContentDisposition?.Name;
             var stringContentValue = await stringContent.ReadAsStringAsync();
 
             Assert.Equal(name, stringContentName);
@@ -656,7 +656,7 @@ namespace jaytwo.FluentHttp.Tests
         {
             // arrange
             var value = (year != null)
-                ? new DateTime(year.Value, month.Value, day.Value)
+                ? new DateTime(year.Value, month!.Value, day!.Value)
                 : default(DateTime?);
 
             var name = "hello";
@@ -676,7 +676,7 @@ namespace jaytwo.FluentHttp.Tests
 
                 var singleContent = form.Single();
                 var stringContent = Assert.IsType<StringContent>(singleContent);
-                var stringContentName = singleContent.Headers.ContentDisposition.Name;
+                var stringContentName = singleContent.Headers?.ContentDisposition?.Name;
                 var stringContentValue = await stringContent.ReadAsStringAsync();
 
                 Assert.Equal(name, stringContentName);
@@ -703,7 +703,7 @@ namespace jaytwo.FluentHttp.Tests
 
             var singleContent = form.Single();
             var stringContent = Assert.IsType<StringContent>(singleContent);
-            var stringContentName = singleContent.Headers.ContentDisposition.Name;
+            var stringContentName = singleContent.Headers?.ContentDisposition?.Name;
             var stringContentValue = await stringContent.ReadAsStringAsync();
 
             Assert.Equal(name, stringContentName);
@@ -719,7 +719,7 @@ namespace jaytwo.FluentHttp.Tests
         {
             // arrange
             var value = (year != null)
-                ? new DateTime(year.Value, month.Value, day.Value)
+                ? new DateTime(year.Value, month!.Value, day!.Value)
                 : default(DateTime?);
 
             var name = "hello";
@@ -739,7 +739,7 @@ namespace jaytwo.FluentHttp.Tests
 
                 var singleContent = form.Single();
                 var stringContent = Assert.IsType<StringContent>(singleContent);
-                var stringContentName = singleContent.Headers.ContentDisposition.Name;
+                var stringContentName = singleContent.Headers?.ContentDisposition?.Name;
                 var stringContentValue = await stringContent.ReadAsStringAsync();
 
                 Assert.Equal(name, stringContentName);
@@ -766,7 +766,7 @@ namespace jaytwo.FluentHttp.Tests
 
             var singleContent = form.Single();
             var stringContent = Assert.IsType<StringContent>(singleContent);
-            var stringContentName = singleContent.Headers.ContentDisposition.Name;
+            var stringContentName = singleContent.Headers?.ContentDisposition?.Name;
             var stringContentValue = await stringContent.ReadAsStringAsync();
 
             Assert.Equal(name, stringContentName);
@@ -784,7 +784,7 @@ namespace jaytwo.FluentHttp.Tests
         {
             // arrange
             var value = (year != null)
-                ? new DateTime(year.Value, month.Value, day.Value)
+                ? new DateTime(year.Value, month!.Value, day!.Value)
                 : default(DateTime?);
 
             var name = "hello";
@@ -804,7 +804,7 @@ namespace jaytwo.FluentHttp.Tests
 
                 var singleContent = form.Single();
                 var stringContent = Assert.IsType<StringContent>(singleContent);
-                var stringContentName = singleContent.Headers.ContentDisposition.Name;
+                var stringContentName = singleContent.Headers?.ContentDisposition?.Name;
                 var stringContentValue = await stringContent.ReadAsStringAsync();
 
                 Assert.Equal(name, stringContentName);
@@ -833,7 +833,7 @@ namespace jaytwo.FluentHttp.Tests
 
             var singleContent = form.Single();
             var stringContent = Assert.IsType<StringContent>(singleContent);
-            var stringContentName = singleContent.Headers.ContentDisposition.Name;
+            var stringContentName = singleContent.Headers?.ContentDisposition?.Name;
             var stringContentValue = await stringContent.ReadAsStringAsync();
 
             Assert.Equal(name, stringContentName);
@@ -853,7 +853,7 @@ namespace jaytwo.FluentHttp.Tests
         {
             // arrange
             var value = (year != null)
-                ? new DateTime(year.Value, month.Value, day.Value)
+                ? new DateTime(year.Value, month!.Value, day!.Value)
                 : default(DateTime?);
 
             var name = "hello";
@@ -873,7 +873,7 @@ namespace jaytwo.FluentHttp.Tests
 
                 var singleContent = form.Single();
                 var stringContent = Assert.IsType<StringContent>(singleContent);
-                var stringContentName = singleContent.Headers.ContentDisposition.Name;
+                var stringContentName = singleContent.Headers?.ContentDisposition?.Name;
                 var stringContentValue = await stringContent.ReadAsStringAsync();
 
                 Assert.Equal(name, stringContentName);
@@ -898,7 +898,7 @@ namespace jaytwo.FluentHttp.Tests
 
             var singleContent = form.Single();
             var stringContent = Assert.IsType<StringContent>(singleContent);
-            var stringContentName = singleContent.Headers.ContentDisposition.Name;
+            var stringContentName = singleContent.Headers?.ContentDisposition?.Name;
             var stringContentValue = await stringContent.ReadAsStringAsync();
 
             Assert.Equal(name, stringContentName);
@@ -912,7 +912,7 @@ namespace jaytwo.FluentHttp.Tests
         {
             // arrange
             var value = (year != null)
-                ? new DateTimeOffset(year.Value, month.Value, day.Value, 0, 0, 0, TimeSpan.FromHours(offset.Value))
+                ? new DateTimeOffset(year.Value, month!.Value, day!.Value, 0, 0, 0, TimeSpan.FromHours(offset!.Value))
                 : default(DateTimeOffset?);
 
             var name = "hello";
@@ -932,7 +932,7 @@ namespace jaytwo.FluentHttp.Tests
 
                 var singleContent = form.Single();
                 var stringContent = Assert.IsType<StringContent>(singleContent);
-                var stringContentName = singleContent.Headers.ContentDisposition.Name;
+                var stringContentName = singleContent.Headers?.ContentDisposition?.Name;
                 var stringContentValue = await stringContent.ReadAsStringAsync();
 
                 Assert.Equal(name, stringContentName);
@@ -959,7 +959,7 @@ namespace jaytwo.FluentHttp.Tests
 
             var singleContent = form.Single();
             var stringContent = Assert.IsType<StringContent>(singleContent);
-            var stringContentName = singleContent.Headers.ContentDisposition.Name;
+            var stringContentName = singleContent.Headers?.ContentDisposition?.Name;
             var stringContentValue = await stringContent.ReadAsStringAsync();
 
             Assert.Equal(name, stringContentName);
@@ -975,7 +975,7 @@ namespace jaytwo.FluentHttp.Tests
         {
             // arrange
             var value = (year != null)
-                ? new DateTimeOffset(year.Value, month.Value, day.Value, 0, 0, 0, TimeSpan.FromHours(offset.Value))
+                ? new DateTimeOffset(year.Value, month!.Value, day!.Value, 0, 0, 0, TimeSpan.FromHours(offset!.Value))
                 : default(DateTimeOffset?);
 
             var name = "hello";
@@ -995,7 +995,7 @@ namespace jaytwo.FluentHttp.Tests
 
                 var singleContent = form.Single();
                 var stringContent = Assert.IsType<StringContent>(singleContent);
-                var stringContentName = singleContent.Headers.ContentDisposition.Name;
+                var stringContentName = singleContent.Headers?.ContentDisposition?.Name;
                 var stringContentValue = await stringContent.ReadAsStringAsync();
 
                 Assert.Equal(name, stringContentName);
@@ -1022,7 +1022,7 @@ namespace jaytwo.FluentHttp.Tests
 
             var singleContent = form.Single();
             var stringContent = Assert.IsType<StringContent>(singleContent);
-            var stringContentName = singleContent.Headers.ContentDisposition.Name;
+            var stringContentName = singleContent.Headers?.ContentDisposition?.Name;
             var stringContentValue = await stringContent.ReadAsStringAsync();
 
             Assert.Equal(name, stringContentName);
@@ -1040,7 +1040,7 @@ namespace jaytwo.FluentHttp.Tests
         {
             // arrange
             var value = (year != null)
-                ? new DateTimeOffset(year.Value, month.Value, day.Value, 0, 0, 0, TimeSpan.FromHours(offset.Value))
+                ? new DateTimeOffset(year.Value, month!.Value, day!.Value, 0, 0, 0, TimeSpan.FromHours(offset!.Value))
                 : default(DateTimeOffset?);
 
             var name = "hello";
@@ -1060,7 +1060,7 @@ namespace jaytwo.FluentHttp.Tests
 
                 var singleContent = form.Single();
                 var stringContent = Assert.IsType<StringContent>(singleContent);
-                var stringContentName = singleContent.Headers.ContentDisposition.Name;
+                var stringContentName = singleContent.Headers?.ContentDisposition?.Name;
                 var stringContentValue = await stringContent.ReadAsStringAsync();
 
                 Assert.Equal(name, stringContentName);
@@ -1089,7 +1089,7 @@ namespace jaytwo.FluentHttp.Tests
 
             var singleContent = form.Single();
             var stringContent = Assert.IsType<StringContent>(singleContent);
-            var stringContentName = singleContent.Headers.ContentDisposition.Name;
+            var stringContentName = singleContent.Headers?.ContentDisposition?.Name;
             var stringContentValue = await stringContent.ReadAsStringAsync();
 
             Assert.Equal(name, stringContentName);
@@ -1109,7 +1109,7 @@ namespace jaytwo.FluentHttp.Tests
         {
             // arrange
             var value = (year != null)
-                ? new DateTimeOffset(year.Value, month.Value, day.Value, 0, 0, 0, TimeSpan.FromHours(offset.Value))
+                ? new DateTimeOffset(year.Value, month!.Value, day!.Value, 0, 0, 0, TimeSpan.FromHours(offset!.Value))
                 : default(DateTimeOffset?);
 
             var name = "hello";
@@ -1129,7 +1129,7 @@ namespace jaytwo.FluentHttp.Tests
 
                 var singleContent = form.Single();
                 var stringContent = Assert.IsType<StringContent>(singleContent);
-                var stringContentName = singleContent.Headers.ContentDisposition.Name;
+                var stringContentName = singleContent.Headers?.ContentDisposition?.Name;
                 var stringContentValue = await stringContent.ReadAsStringAsync();
 
                 Assert.Equal(name, stringContentName);
@@ -1160,7 +1160,7 @@ namespace jaytwo.FluentHttp.Tests
 
                 var singleContent = form.Single();
                 var stringContent = Assert.IsType<StringContent>(singleContent);
-                var stringContentName = singleContent.Headers.ContentDisposition.Name;
+                var stringContentName = singleContent.Headers?.ContentDisposition?.Name;
                 var stringContentValue = await stringContent.ReadAsStringAsync();
 
                 Assert.Equal(name, stringContentName);
@@ -1196,7 +1196,7 @@ namespace jaytwo.FluentHttp.Tests
 
                 var singleContent = form.Single();
                 var stringContent = Assert.IsType<StringContent>(singleContent);
-                var stringContentName = singleContent.Headers.ContentDisposition.Name;
+                var stringContentName = singleContent.Headers?.ContentDisposition?.Name;
                 var stringContentValue = await stringContent.ReadAsStringAsync();
 
                 Assert.Equal(name, stringContentName);
@@ -1228,8 +1228,8 @@ namespace jaytwo.FluentHttp.Tests
 
                 var singleContent = form.Single();
                 var stringContent = Assert.IsType<StringContent>(singleContent);
-                var stringContentName = singleContent.Headers.ContentDisposition.Name;
-                var stringContentFile = singleContent.Headers.ContentDisposition.FileName;
+                var stringContentName = singleContent.Headers?.ContentDisposition?.Name;
+                var stringContentFile = singleContent.Headers?.ContentDisposition?.FileName;
                 var stringContentValue = await stringContent.ReadAsStringAsync();
 
                 Assert.Equal(name, stringContentName);
@@ -1267,8 +1267,8 @@ namespace jaytwo.FluentHttp.Tests
 
                 var singleContent = form.Single();
                 var stringContent = Assert.IsType<StringContent>(singleContent);
-                var stringContentName = singleContent.Headers.ContentDisposition.Name;
-                var stringContentFile = singleContent.Headers.ContentDisposition.FileName;
+                var stringContentName = singleContent.Headers?.ContentDisposition?.Name;
+                var stringContentFile = singleContent.Headers?.ContentDisposition?.FileName;
                 var stringContentValue = await stringContent.ReadAsStringAsync();
 
                 Assert.Equal(name, stringContentName);
@@ -1301,7 +1301,7 @@ namespace jaytwo.FluentHttp.Tests
 
                     var singleContent = form.Single();
                     var stringContent = Assert.IsType<StreamContent>(singleContent);
-                    var stringContentName = singleContent.Headers.ContentDisposition.Name;
+                    var stringContentName = singleContent.Headers?.ContentDisposition?.Name;
                     var stringContentValue = await stringContent.ReadAsStringAsync();
 
                     Assert.Equal(name, stringContentName);
@@ -1335,8 +1335,8 @@ namespace jaytwo.FluentHttp.Tests
 
                     var singleContent = form.Single();
                     var stringContent = Assert.IsType<StreamContent>(singleContent);
-                    var stringContentName = singleContent.Headers.ContentDisposition.Name;
-                    var stringContentFile = singleContent.Headers.ContentDisposition.FileName;
+                    var stringContentName = singleContent.Headers?.ContentDisposition?.Name;
+                    var stringContentFile = singleContent.Headers?.ContentDisposition?.FileName;
                     var stringContentValue = await stringContent.ReadAsStringAsync();
 
                     Assert.Equal(name, stringContentName);
@@ -1370,7 +1370,7 @@ namespace jaytwo.FluentHttp.Tests
 
                 var singleContent = form.Single();
                 var stringContent = Assert.IsType<ByteArrayContent>(singleContent);
-                var stringContentName = singleContent.Headers.ContentDisposition.Name;
+                var stringContentName = singleContent.Headers?.ContentDisposition?.Name;
                 var stringContentValue = await stringContent.ReadAsStringAsync();
 
                 Assert.Equal(name, stringContentName);
@@ -1412,7 +1412,7 @@ namespace jaytwo.FluentHttp.Tests
 
                 var singleContent = form.Single();
                 var stringContent = Assert.IsType<ByteArrayContent>(singleContent);
-                var stringContentName = singleContent.Headers.ContentDisposition.Name;
+                var stringContentName = singleContent.Headers?.ContentDisposition?.Name;
                 var stringContentValue = await stringContent.ReadAsStringAsync();
 
                 Assert.Equal(name, stringContentName);
@@ -1445,8 +1445,8 @@ namespace jaytwo.FluentHttp.Tests
 
                 var singleContent = form.Single();
                 var stringContent = Assert.IsType<ByteArrayContent>(singleContent);
-                var stringContentName = singleContent.Headers.ContentDisposition.Name;
-                var stringContentFile = singleContent.Headers.ContentDisposition.FileName;
+                var stringContentName = singleContent.Headers?.ContentDisposition?.Name;
+                var stringContentFile = singleContent.Headers?.ContentDisposition?.FileName;
                 var stringContentValue = await stringContent.ReadAsStringAsync();
 
                 Assert.Equal(name, stringContentName);
@@ -1490,8 +1490,8 @@ namespace jaytwo.FluentHttp.Tests
 
                 var singleContent = form.Single();
                 var stringContent = Assert.IsType<ByteArrayContent>(singleContent);
-                var stringContentName = singleContent.Headers.ContentDisposition.Name;
-                var stringContentFile = singleContent.Headers.ContentDisposition.FileName;
+                var stringContentName = singleContent.Headers?.ContentDisposition?.Name;
+                var stringContentFile = singleContent.Headers?.ContentDisposition?.FileName;
                 var stringContentValue = await stringContent.ReadAsStringAsync();
 
                 Assert.Equal(name, stringContentName);

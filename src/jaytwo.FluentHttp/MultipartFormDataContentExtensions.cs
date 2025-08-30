@@ -1,7 +1,5 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
@@ -46,7 +44,7 @@ public static class MultipartFormDataContentExtensions
         return multipartFormDataContent;
     }
 
-    public static MultipartFormDataContent WithTextContent(this MultipartFormDataContent multipartFormDataContent, string name, string value, InclusionRule inclusionRule = InclusionRule.IncludeAlways)
+    public static MultipartFormDataContent WithTextContent(this MultipartFormDataContent multipartFormDataContent, string name, string? value, InclusionRule inclusionRule = InclusionRule.IncludeAlways)
     {
         if (InclusionRuleHelper.IncludeContent(value, inclusionRule))
         {
@@ -90,7 +88,7 @@ public static class MultipartFormDataContentExtensions
     public static MultipartFormDataContent WithTextContent(this MultipartFormDataContent multipartFormDataContent, string key, DateTimeOffset value, DateTimeFormatting formatting, InclusionRule inclusionRule = InclusionRule.IncludeAlways)
         => multipartFormDataContent.WithTextContent(key, DateTimeFormattingHelper.Format(value, formatting), inclusionRule);
 
-    public static MultipartFormDataContent WithJsonContent(this MultipartFormDataContent multipartFormDataContent, string name, object value, InclusionRule inclusionRule = InclusionRule.IncludeAlways)
+    public static MultipartFormDataContent WithJsonContent(this MultipartFormDataContent multipartFormDataContent, string name, object? value, InclusionRule inclusionRule = InclusionRule.IncludeAlways)
     {
         if (InclusionRuleHelper.IncludeContent(value, inclusionRule))
         {
@@ -102,7 +100,7 @@ public static class MultipartFormDataContentExtensions
         return multipartFormDataContent;
     }
 
-    public static MultipartFormDataContent WithJsonContent(this MultipartFormDataContent multipartFormDataContent, string name, string fileName, object value, InclusionRule inclusionRule = InclusionRule.IncludeAlways)
+    public static MultipartFormDataContent WithJsonContent(this MultipartFormDataContent multipartFormDataContent, string name, string fileName, object? value, InclusionRule inclusionRule = InclusionRule.IncludeAlways)
     {
         if (InclusionRuleHelper.IncludeContent(value, inclusionRule))
         {

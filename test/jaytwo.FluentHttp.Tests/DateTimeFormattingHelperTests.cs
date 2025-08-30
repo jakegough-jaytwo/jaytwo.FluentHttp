@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using jaytwo.FluentHttp.Formatting;
 using Xunit;
 
@@ -45,7 +43,7 @@ namespace jaytwo.FluentHttp.Tests
         {
             // arrange
             DateTime? input = year.HasValue
-                ? new DateTime(year.Value, month.Value, day.Value)
+                ? new DateTime(year.Value, month!.Value, day!.Value)
                 : default(DateTime?);
 
             // act
@@ -94,7 +92,7 @@ namespace jaytwo.FluentHttp.Tests
         {
             // arrange
             DateTimeOffset? input = year.HasValue
-                ? new DateTimeOffset(year.Value, month.Value, day.Value, 0, 0, 0, 0, TimeSpan.FromHours(offset.Value))
+                ? new DateTimeOffset(year.Value, month!.Value, day!.Value, 0, 0, 0, 0, TimeSpan.FromHours(offset!.Value))
                 : default(DateTimeOffset?);
 
             // act

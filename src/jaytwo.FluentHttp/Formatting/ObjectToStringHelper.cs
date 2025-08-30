@@ -1,14 +1,10 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace jaytwo.FluentHttp.Formatting;
 
 internal static class ObjectToStringHelper
 {
-    public static string GetString(object value)
+    public static string GetString(object? value)
     {
         if (value == null)
         {

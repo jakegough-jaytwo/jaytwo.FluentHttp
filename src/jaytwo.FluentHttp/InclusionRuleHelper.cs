@@ -4,7 +4,7 @@ namespace jaytwo.FluentHttp;
 
 internal class InclusionRuleHelper
 {
-    public static bool IncludeContent(object value, InclusionRule inclusionRule)
+    public static bool IncludeContent(object? value, InclusionRule inclusionRule)
     {
         if (inclusionRule == InclusionRule.IncludeAlways)
         {

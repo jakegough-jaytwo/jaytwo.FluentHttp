@@ -1,13 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Security;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 
 namespace jaytwo.FluentHttp;
 
@@ -19,9 +14,9 @@ public class FluentHttpClientBuilder
 
     public List<Func<HttpMessageHandler, DelegatingHandler>> HandlerBuilders { get; } = new List<Func<HttpMessageHandler, DelegatingHandler>>();
 
-    public IWebProxy Proxy { get; set; }
+    public IWebProxy? Proxy { get; set; }
 
-    public CookieContainer CookieContainer { get; set; }
+    public CookieContainer? CookieContainer { get; set; }
 
     public bool? AllowAutoRedirect { get; set; }
 
@@ -29,11 +24,11 @@ public class FluentHttpClientBuilder
 
     public DecompressionMethods? AutomaticDecompression { get; set; }
 
-    public Uri BaseAddress { get; set; }
+    public Uri? BaseAddress { get; set; }
 
     public TimeSpan? Timeout { get; set; }
 
-    public RemoteCertificateValidationCallback RemoteCertificateValidationCallback { get; set; }
+    public RemoteCertificateValidationCallback? RemoteCertificateValidationCallback { get; set; }
 
     public FluentHttpClientBuilder WithProxy(string host, int port)
         => WithProxy(new WebProxy(host, port));

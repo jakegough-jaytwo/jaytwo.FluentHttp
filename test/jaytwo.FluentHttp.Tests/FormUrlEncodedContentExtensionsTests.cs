@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using jaytwo.FluentHttp.Formatting;
 using Xunit;
 
@@ -208,7 +207,7 @@ namespace jaytwo.FluentHttp.Tests
             // arrange
             var name = "hello";
             var format = "foo";
-            object[] value = null;
+            object[]? value = null;
             var expected = "foo";
             var form = new List<KeyValuePair<string, string>>();
 
@@ -284,7 +283,7 @@ namespace jaytwo.FluentHttp.Tests
             // arrange
             var name = "hello";
             var format = "foo";
-            object[] value = null;
+            object[]? value = null;
             var form = new List<KeyValuePair<string, string>>();
 
             // act
@@ -561,7 +560,7 @@ namespace jaytwo.FluentHttp.Tests
         {
             // arrange
             var value = (year != null)
-                ? new DateTime(year.Value, month.Value, day.Value)
+                ? new DateTime(year.Value, month!.Value, day!.Value)
                 : default(DateTime?);
 
             var name = "hello";
@@ -616,7 +615,7 @@ namespace jaytwo.FluentHttp.Tests
         {
             // arrange
             var value = (year != null)
-                ? new DateTime(year.Value, month.Value, day.Value)
+                ? new DateTime(year.Value, month!.Value, day!.Value)
                 : default(DateTime?);
 
             var name = "hello";
@@ -673,7 +672,7 @@ namespace jaytwo.FluentHttp.Tests
         {
             // arrange
             var value = (year != null)
-                ? new DateTime(year.Value, month.Value, day.Value)
+                ? new DateTime(year.Value, month!.Value, day!.Value)
                 : default(DateTime?);
 
             var name = "hello";
@@ -734,7 +733,7 @@ namespace jaytwo.FluentHttp.Tests
         {
             // arrange
             var value = (year != null)
-                ? new DateTime(year.Value, month.Value, day.Value)
+                ? new DateTime(year.Value, month!.Value, day!.Value)
                 : default(DateTime?);
 
             var name = "hello";
@@ -785,7 +784,7 @@ namespace jaytwo.FluentHttp.Tests
         {
             // arrange
             var value = (year != null)
-                ? new DateTimeOffset(year.Value, month.Value, day.Value, 0, 0, 0, TimeSpan.FromHours(offset.Value))
+                ? new DateTimeOffset(year.Value, month!.Value, day!.Value, 0, 0, 0, TimeSpan.FromHours(offset!.Value))
                 : default(DateTimeOffset?);
 
             var name = "hello";
@@ -840,7 +839,7 @@ namespace jaytwo.FluentHttp.Tests
         {
             // arrange
             var value = (year != null)
-                ? new DateTimeOffset(year.Value, month.Value, day.Value, 0, 0, 0, TimeSpan.FromHours(offset.Value))
+                ? new DateTimeOffset(year.Value, month!.Value, day!.Value, 0, 0, 0, TimeSpan.FromHours(offset!.Value))
                 : default(DateTimeOffset?);
 
             var name = "hello";
@@ -897,7 +896,7 @@ namespace jaytwo.FluentHttp.Tests
         {
             // arrange
             var value = (year != null)
-                ? new DateTimeOffset(year.Value, month.Value, day.Value, 0, 0, 0, TimeSpan.FromHours(offset.Value))
+                ? new DateTimeOffset(year.Value, month!.Value, day!.Value, 0, 0, 0, TimeSpan.FromHours(offset!.Value))
                 : default(DateTimeOffset?);
 
             var name = "hello";
@@ -958,7 +957,7 @@ namespace jaytwo.FluentHttp.Tests
         {
             // arrange
             var value = (year != null)
-                ? new DateTimeOffset(year.Value, month.Value, day.Value, 0, 0, 0, TimeSpan.FromHours(offset.Value))
+                ? new DateTimeOffset(year.Value, month!.Value, day!.Value, 0, 0, 0, TimeSpan.FromHours(offset!.Value))
                 : default(DateTimeOffset?);
 
             var name = "hello";

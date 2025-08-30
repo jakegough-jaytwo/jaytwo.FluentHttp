@@ -4,7 +4,7 @@ namespace jaytwo.FluentHttp.Formatting;
 
 internal static class BooleanFormattingHelper
 {
-    public static string Format(bool? value, BooleanFormatting formatting)
+    public static string? Format(bool? value, BooleanFormatting formatting)
     {
         if (value.HasValue)
         {
